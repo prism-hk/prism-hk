@@ -12,8 +12,11 @@ When done, send this file back to Becky and she'll update the site.
 | home | Home | 首頁 |
 | directory | Directory | 目錄 |
 | health | Health & Support | 健康支援 |
+| emergencyServices | Emergency Services | 緊急服務 |
 | events | Events | 活動 |
 | learn | Learn | 了解更多 |
+| aboutUs | About Us | 關於我們 |
+| educationalResources | Educational Resources | 教育資源 |
 | getInvolved | Get Involved | 參與 |
 | support | Support | 支持 |
 
@@ -85,6 +88,28 @@ When done, send this file back to Becky and she'll update the site.
 |-----|---------|---------|
 | learnTitle | About PRISM | 關於 PRISM |
 | learnDesc | PRISM is a bilingual LGBTQ+ directory and community platform for Hong Kong. We connect people with affirming businesses, healthcare providers, community groups, NGOs, and events across all 18 districts. | PRISM 是一個服務香港的雙語 LGBTQ+ 目錄及社區平台。我們連結人們與友善的商戶、醫療提供者、社區組織、非政府組織及十八區的活動。 |
+
+## Emergency Services Page
+
+| Key | English | 繁體中文 |
+|-----|---------|---------|
+| emergencyPageTitle | Emergency Services Directory | 緊急服務目錄 |
+| emergencyPageDesc | If you or someone you know needs immediate support, contact these services. | 如果你或身邊的人需要即時支援，請聯絡以下服務。 |
+| emergencySearch | Search emergency services... | 搜尋緊急服務... |
+
+## Educational Resources Page
+
+| Key | English | 繁體中文 |
+|-----|---------|---------|
+| resourcesTitle | Educational Resources | 教育資源 |
+| resourcesDesc | Learn more about LGBTQ+ topics, rights, and support in Hong Kong. | 了解更多有關香港 LGBTQ+ 議題、權利及支援的資訊。 |
+| knowYourRights | Know Your Rights | 認識你的權利 |
+| comingOutResources | Coming Out Resources | 出櫃資源 |
+| mentalHealth | Mental Health & Wellbeing | 精神健康 |
+| sexualHealth | Sexual Health | 性健康 |
+| workplaceInclusion | Workplace Inclusion | 職場共融 |
+| forAllies | For Allies & Families | 盟友與家人 |
+| suggestResource | Suggest a Resource | 建議資源 |
 
 ## Footer
 

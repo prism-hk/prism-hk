@@ -20,6 +20,7 @@ export async function POST(request: NextRequest) {
     // Revalidate pages that show listings
     revalidatePath("/directory");
     revalidatePath("/health");
+    revalidatePath("/emergency");
     revalidatePath("/");
 
     return NextResponse.json({
@@ -52,6 +53,7 @@ export async function GET(request: NextRequest) {
 
     revalidatePath("/directory");
     revalidatePath("/health");
+    revalidatePath("/emergency");
     revalidatePath("/");
 
     return NextResponse.json({
