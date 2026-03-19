@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { syncFromSheets } from "@/lib/sync";
-import { syncEmergencyServices } from "@/lib/emergency";
 import { revalidatePath } from "next/cache";
 
 export async function POST(request: NextRequest) {
@@ -16,10 +15,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json().catch(() => ({}));
     const sheetName = (body as { sheetName?: string }).sheetName || undefined;
 
-    const [listingsResult, emergencyResult] = await Promise.all([
-      syncFromSheets(sheetName),
-      syncEmergencyServices(),
-    ]);
+    const result = await syncFromSheets(sheetName);
 
     // Revalidate pages that show listings
     revalidatePath("/directory");
@@ -28,8 +24,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      listings: listingsResult,
-      emergency: emergencyResult,
+      listings: result,
     });
   } catch (error) {
     console.error("Sync error:", error);
@@ -53,10 +48,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const [listingsResult, emergencyResult] = await Promise.all([
-      syncFromSheets(),
-      syncEmergencyServices(),
-    ]);
+    const result = await syncFromSheets();
 
     revalidatePath("/directory");
     revalidatePath("/health");
@@ -64,8 +56,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      listings: listingsResult,
-      emergency: emergencyResult,
+      listings: result,
     });
   } catch (error) {
     console.error("Sync error:", error);

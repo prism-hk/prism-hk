@@ -76,6 +76,7 @@ function transformRow(row: SheetRow, rowIndex: number) {
 const SHEETS_TO_SYNC = [
   { name: "Directory", offset: 0 },
   { name: "Testing Services", offset: 10000 },
+  { name: "Emergency Services", offset: 20000 },
 ];
 
 export async function syncFromSheets(sheetName?: string): Promise<SyncResult> {
@@ -115,6 +116,15 @@ export async function syncFromSheets(sheetName?: string): Promise<SyncResult> {
 
       try {
         const transformed = transformRow(row, sheet.offset + i + 2);
+
+        // Emergency Services: force category and tag
+        if (sheet.name === "Emergency Services") {
+          transformed.category = "Healthcare";
+          transformed.status = "Published";
+          if (!transformed.tags.includes("emergency-services")) {
+            transformed.tags = [...transformed.tags, "emergency-services"];
+          }
+        }
 
         const { error } = await supabase
           .from("listings")

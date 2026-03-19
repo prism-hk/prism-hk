@@ -76,9 +76,6 @@ export default function HealthClient({
                     {svc.service_hours && (
                       <span>🕐 {svc.service_hours.split("\n")[0]}</span>
                     )}
-                    {svc.languages && (
-                      <span>🌐 {svc.languages}</span>
-                    )}
                   </div>
                 </div>
                 <div className="flex flex-col items-end gap-1 shrink-0">
