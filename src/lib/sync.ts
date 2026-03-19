@@ -25,8 +25,11 @@ const CATEGORY_MAP: Record<string, string> = {
   "community": "Community",
   "business": "Business",
   "ngo": "NGO",
+  "non-profit & social enterprise": "NGO",
   "government": "Government",
   "media": "Media",
+  "religious organisation": "Community",
+  "embassy / consulate": "Government",
 };
 
 function parseFirstCategory(value: string): string {
@@ -69,42 +72,65 @@ function transformRow(row: SheetRow, rowIndex: number) {
   };
 }
 
+// Sheets to sync — each gets a unique row ID offset to avoid collisions
+const SHEETS_TO_SYNC = [
+  { name: "Directory", offset: 0 },
+  { name: "Testing Services", offset: 10000 },
+];
+
 export async function syncFromSheets(sheetName?: string): Promise<SyncResult> {
   const start = Date.now();
   const errors: { row: number; error: string }[] = [];
   let rows_upserted = 0;
-
-  // Read from Google Sheets
-  const { rows } = await readSheet(sheetName);
+  let total_processed = 0;
 
   const supabase = getServiceClient();
 
-  // Process each row
-  for (let i = 0; i < rows.length; i++) {
-    const row = rows[i];
+  // If a specific sheet is given, only sync that one
+  const sheetsToSync = sheetName
+    ? [{ name: sheetName, offset: 0 }]
+    : SHEETS_TO_SYNC;
 
-    // Skip rows without a name
-    if (!row.name_en) {
+  for (const sheet of sheetsToSync) {
+    let rows: SheetRow[];
+    try {
+      const result = await readSheet(sheet.name);
+      rows = result.rows;
+    } catch (err) {
+      errors.push({
+        row: 0,
+        error: `Failed to read sheet "${sheet.name}": ${err instanceof Error ? err.message : String(err)}`,
+      });
       continue;
     }
 
-    try {
-      const transformed = transformRow(row, i + 2); // +2 because row 1 is headers, sheet is 1-indexed
+    total_processed += rows.length;
 
-      const { error } = await supabase
-        .from("listings")
-        .upsert(transformed, { onConflict: "sheet_row_id" });
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
 
-      if (error) {
-        errors.push({ row: i + 2, error: error.message });
-      } else {
-        rows_upserted++;
+      if (!row.name_en) {
+        continue;
       }
-    } catch (err) {
-      errors.push({
-        row: i + 2,
-        error: err instanceof Error ? err.message : String(err),
-      });
+
+      try {
+        const transformed = transformRow(row, sheet.offset + i + 2);
+
+        const { error } = await supabase
+          .from("listings")
+          .upsert(transformed, { onConflict: "sheet_row_id" });
+
+        if (error) {
+          errors.push({ row: sheet.offset + i + 2, error: error.message });
+        } else {
+          rows_upserted++;
+        }
+      } catch (err) {
+        errors.push({
+          row: sheet.offset + i + 2,
+          error: err instanceof Error ? err.message : String(err),
+        });
+      }
     }
   }
 
@@ -114,7 +140,7 @@ export async function syncFromSheets(sheetName?: string): Promise<SyncResult> {
   try {
     await supabase.from("sync_log").insert({
       synced_at: new Date().toISOString(),
-      rows_processed: rows.length,
+      rows_processed: total_processed,
       rows_upserted,
       errors: errors.length > 0 ? errors : null,
       duration_ms,
@@ -124,7 +150,7 @@ export async function syncFromSheets(sheetName?: string): Promise<SyncResult> {
   }
 
   return {
-    rows_processed: rows.length,
+    rows_processed: total_processed,
     rows_upserted,
     errors,
     duration_ms,
