@@ -16,6 +16,24 @@ function parseTags(value: string): string[] {
     .filter(Boolean);
 }
 
+// Map Blake's sheet categories to our standard categories
+const CATEGORY_MAP: Record<string, string> = {
+  "health & support": "Healthcare",
+  "health": "Healthcare",
+  "healthcare": "Healthcare",
+  "community & student group": "Community",
+  "community": "Community",
+  "business": "Business",
+  "ngo": "NGO",
+  "government": "Government",
+  "media": "Media",
+};
+
+function parseFirstCategory(value: string): string {
+  const first = value.split(",")[0].trim().toLowerCase();
+  return CATEGORY_MAP[first] || value.split(",")[0].trim() || "Other";
+}
+
 function parseBoolean(value: string): boolean {
   return ["yes", "true", "1", "verified"].includes(value.toLowerCase().trim());
 }
@@ -23,10 +41,10 @@ function parseBoolean(value: string): boolean {
 function transformRow(row: SheetRow, rowIndex: number) {
   return {
     sheet_row_id: rowIndex,
-    status: row.status || "Draft",
+    status: row.status || "Published",
     name_en: row.name_en || "",
     name_zh: row.name_zh || null,
-    category: row.category || "Other",
+    category: parseFirstCategory(row.category || "Other"),
     tags: parseTags(row.tags || ""),
     price: row.price || null,
     district_en: row.district_en || null,

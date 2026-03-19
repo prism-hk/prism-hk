@@ -10,6 +10,7 @@ const COLUMN_MAP: Record<string, string> = {
   "name (english)": "name_en",
   "name en": "name_en",
   "name_en": "name_en",
+  "english name": "name_en",
   "name (中文)": "name_zh",
   "name (zh)": "name_zh",
   "name zh": "name_zh",
@@ -55,6 +56,7 @@ const COLUMN_MAP: Record<string, string> = {
   "verified": "verified",
   "last checked": "last_checked",
   "last_checked": "last_checked",
+  "last checked/updated": "last_checked",
 };
 
 function normalizeHeader(header: string): string {
@@ -63,7 +65,7 @@ function normalizeHeader(header: string): string {
 }
 
 export async function readSheet(
-  sheetName: string = "Sheet1"
+  sheetName: string = "Directory"
 ): Promise<{ headers: string[]; rows: SheetRow[]; rawHeaders: string[] }> {
   if (!API_KEY) {
     throw new Error("GOOGLE_SHEETS_API_KEY is not set");
