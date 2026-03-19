@@ -15,6 +15,11 @@ export const metadata: Metadata = {
       "Find LGBTQ+-friendly businesses, community groups, healthcare, NGOs, and events across all 18 districts of Hong Kong.",
     type: "website",
     locale: "en_HK",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/og-image.png"],
   },
 };
 
