@@ -57,6 +57,12 @@ const COLUMN_MAP: Record<string, string> = {
   "last checked": "last_checked",
   "last_checked": "last_checked",
   "last checked/updated": "last_checked",
+  "organization": "organization",
+  "focus area": "focus_area",
+  "shelter": "shelter",
+  "languages": "languages",
+  "service hours": "service_hours",
+  "telephone": "telephone",
 };
 
 function normalizeHeader(header: string): string {
