@@ -115,7 +115,7 @@ export default function ListingCard({ listing }: { listing: Listing }) {
             )}
             {listing.instagram && (
               <ContactIcon
-                href={`https://instagram.com/${listing.instagram.replace(/^@/, "")}`}
+                href={listing.instagram.startsWith("http") ? listing.instagram : listing.instagram.includes("instagram.com") ? `https://${listing.instagram}` : `https://instagram.com/${listing.instagram.replace(/^@/, "")}`}
                 label="Instagram"
                 icon={
                   <svg
