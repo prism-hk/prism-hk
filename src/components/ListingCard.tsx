@@ -67,7 +67,7 @@ export default function ListingCard({ listing }: { listing: Listing }) {
             )}
             {listing.price && (
               <span className="inline-flex items-center text-[10px] font-medium px-2 py-0.5 rounded-full bg-amber-50 text-amber-700">
-                {listing.price}
+                {isZh(language) && listing.price === "Free" ? "免費" : listing.price}
               </span>
             )}
             {listing.verified && (

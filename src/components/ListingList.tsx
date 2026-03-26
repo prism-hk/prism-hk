@@ -71,7 +71,7 @@ export default function ListingList({ listings }: { listings: Listing[] }) {
             {/* Price */}
             {listing.price && (
               <span className="hidden sm:inline text-[10px] font-medium px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 shrink-0">
-                {listing.price}
+                {isZh(language) && listing.price === "Free" ? "免費" : listing.price}
               </span>
             )}
 
