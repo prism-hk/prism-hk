@@ -127,10 +127,10 @@ export default function SmartDispatcher() {
         </div>
 
         {/* Explore button */}
-        <div className="mt-5 text-center sm:text-left">
+        <div className="mt-5 flex justify-center sm:justify-start">
           <button
             onClick={handleExplore}
-            className="w-full sm:w-auto px-8 py-2.5 rounded-xl bg-gradient-to-r from-[#7B68EE] to-[#E879F9] text-white font-semibold text-sm shadow-md hover:shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98]"
+            className="px-10 py-2.5 rounded-xl bg-gradient-to-r from-[#7B68EE] to-[#E879F9] text-white font-semibold text-sm shadow-md hover:shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98]"
           >
             {exploreLabel}
           </button>

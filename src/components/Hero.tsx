@@ -41,13 +41,13 @@ export default function Hero({
         {/* Title */}
         <h1
           className="text-5xl md:text-7xl mb-3"
-          style={{ fontFamily: "'This Appeal', sans-serif", letterSpacing: "0.3em", paddingLeft: "0.3em", textShadow: "0 2px 20px rgba(0,0,0,0.15)" }}
+          style={{ fontFamily: "'This Appeal', sans-serif", letterSpacing: "0.3em", paddingLeft: "0.3em", textShadow: "0 2px 30px rgba(0,0,0,0.3), 0 1px 8px rgba(0,0,0,0.2)" }}
         >
           PRISM
         </h1>
 
         {/* Subtitle */}
-        <p className="text-base md:text-lg text-white/90 max-w-2xl mx-auto mb-10 leading-relaxed whitespace-pre-line">
+        <p className="text-base md:text-lg text-white max-w-2xl mx-auto mb-10 leading-relaxed whitespace-pre-line" style={{ textShadow: "0 1px 12px rgba(0,0,0,0.2)" }}>
           {isZh(language)
             ? (language === "zh-Hans" ? ui["zh-Hans"].heroSubtitle : ui.zh.heroSubtitle)
             : ui.en.heroSubtitle}
@@ -59,7 +59,7 @@ export default function Hero({
             <div key={stat.label} className="text-center">
               <div
                 className="text-3xl md:text-4xl font-bold"
-                style={{ textShadow: "0 1px 10px rgba(0,0,0,0.1)" }}
+                style={{ textShadow: "0 2px 15px rgba(0,0,0,0.25)" }}
               >
                 {typeof stat.value === "number"
                   ? stat.value.toLocaleString()
