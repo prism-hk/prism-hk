@@ -60,7 +60,7 @@ export const CATEGORIES = [
 ] as const;
 
 export function getCategoryInfo(categoryId: string) {
-  return CATEGORIES.find((c) => c.id === categoryId) || {
+  return CATEGORIES.find((c) => c.id === categoryId || categoryId.includes(c.id) || c.id.includes(categoryId)) || {
     id: categoryId,
     emoji: "\uD83D\uDCCB",
     gradient: "from-gray-400 to-gray-500",

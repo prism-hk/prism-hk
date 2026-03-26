@@ -3,8 +3,9 @@
 import type { Listing } from "@/lib/supabase";
 import { getCategoryInfo } from "@/lib/categories";
 import { useLanguage } from "@/lib/LanguageContext";
-import { bilingualText, t } from "@/lib/i18n";
+import { bilingualText, t, isZh } from "@/lib/i18n";
 import { translateTag } from "@/lib/tagTranslations";
+import { translateDistrict } from "@/lib/districtTranslations";
 
 export default function ListingList({ listings }: { listings: Listing[] }) {
   const { language } = useLanguage();
@@ -25,7 +26,9 @@ export default function ListingList({ listings }: { listings: Listing[] }) {
         const categoryInfo = getCategoryInfo(listing.category);
         const name = bilingualText(listing.name_en, listing.name_zh, language);
         const description = bilingualText(listing.description_en, listing.description_zh, language);
-        const district = bilingualText(listing.district_en, listing.district_zh, language);
+        const district = listing.district_en
+          ? (isZh(language) ? translateDistrict(listing.district_en, language) : listing.district_en)
+          : null;
 
         const hasWebsite = !!listing.website;
         const Wrapper = hasWebsite ? "a" : "div";

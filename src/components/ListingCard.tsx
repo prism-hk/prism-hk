@@ -3,8 +3,9 @@
 import type { Listing } from "@/lib/supabase";
 import { getCategoryInfo, getAvatarColor, getInitials } from "@/lib/categories";
 import { useLanguage } from "@/lib/LanguageContext";
-import { bilingualText, t } from "@/lib/i18n";
+import { bilingualText, t, isZh } from "@/lib/i18n";
 import { translateTag } from "@/lib/tagTranslations";
+import { translateDistrict } from "@/lib/districtTranslations";
 
 export default function ListingCard({ listing }: { listing: Listing }) {
   const { language } = useLanguage();
@@ -59,11 +60,9 @@ export default function ListingCard({ listing }: { listing: Listing }) {
             </span>
             {listing.district_en && (
               <span className="inline-flex items-center text-[10px] font-medium px-2 py-0.5 rounded-full bg-[#F0EEFF] text-[#7B68EE]">
-                {bilingualText(
-                  listing.district_en,
-                  listing.district_zh,
-                  language
-                )}
+                {isZh(language)
+                  ? translateDistrict(listing.district_en, language)
+                  : listing.district_en}
               </span>
             )}
             {listing.price && (
