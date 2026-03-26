@@ -35,7 +35,7 @@ export default function Footer() {
         </div>
 
         {/* Middle: Link columns */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 mb-10">
+        <div className="flex flex-wrap justify-between gap-4 mb-10">
           {linkColumns.map((link) => (
             <Link
               key={link.href}
