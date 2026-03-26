@@ -4,6 +4,7 @@ import type { Listing } from "@/lib/supabase";
 import { getCategoryInfo } from "@/lib/categories";
 import { useLanguage } from "@/lib/LanguageContext";
 import { bilingualText, t } from "@/lib/i18n";
+import { translateTag } from "@/lib/tagTranslations";
 
 export default function ListingList({ listings }: { listings: Listing[] }) {
   const { language } = useLanguage();
@@ -59,7 +60,7 @@ export default function ListingList({ listings }: { listings: Listing[] }) {
             <div className="hidden md:flex flex-wrap gap-1 shrink-0 max-w-[200px]">
               {listing.tags?.slice(0, 3).map((tag) => (
                 <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded bg-[#F5F4FA] text-[#6B6890]">
-                  {tag}
+                  {translateTag(tag, language)}
                 </span>
               ))}
             </div>

@@ -4,6 +4,7 @@ import type { Listing } from "@/lib/supabase";
 import { getCategoryInfo, getAvatarColor, getInitials } from "@/lib/categories";
 import { useLanguage } from "@/lib/LanguageContext";
 import { bilingualText, t } from "@/lib/i18n";
+import { translateTag } from "@/lib/tagTranslations";
 
 export default function ListingCard({ listing }: { listing: Listing }) {
   const { language } = useLanguage();
@@ -84,7 +85,7 @@ export default function ListingCard({ listing }: { listing: Listing }) {
                   key={tag}
                   className="inline-flex items-center text-[10px] px-1.5 py-0.5 rounded bg-[#F5F4FA] text-[#6B6890]"
                 >
-                  {tag}
+                  {translateTag(tag, language)}
                 </span>
               ))}
             </div>
