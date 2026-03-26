@@ -28,9 +28,9 @@ body {
   color: var(--color-text);
 }
 
-/* Gradient hero */
+/* Gradient hero — matches PRISM logo colours */
 .hero-gradient {
-  background: linear-gradient(135deg, #7B68EE 0%, #E879F9 35%, #38BDF8 65%, #F472B6 100%);
+  background: linear-gradient(135deg, #5EEDB8 0%, #7CE88E 20%, #F5C55A 45%, #F07090 70%, #EC4899 100%);
 }
 
 .hero-gradient::before {
