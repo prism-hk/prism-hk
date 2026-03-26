@@ -105,7 +105,8 @@ export default function HomeContent({
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {CATEGORIES.map((cat) => {
-            const stat = categoryStats.find((s) => s.category === cat.id);
+            const stat = categoryStats.find((s) => s.category === cat.id || s.category.includes(cat.id) || cat.id.includes(s.category));
+            const count = stat?.count || categoryStats.filter((s) => s.category.includes(cat.id) || cat.id.includes(s.category)).reduce((sum, s) => sum + s.count, 0);
             const name = getCategoryName(cat, language);
             return (
               <a
@@ -122,9 +123,9 @@ export default function HomeContent({
                   <div className="font-semibold text-sm text-[#1E1B3A]">
                     {name}
                   </div>
-                  {stat ? (
+                  {count > 0 ? (
                     <div className="text-xs text-[#6B6890]">
-                      {stat.count}
+                      {count}
                     </div>
                   ) : null}
                 </div>
