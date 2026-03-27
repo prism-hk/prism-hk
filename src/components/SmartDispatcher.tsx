@@ -1,92 +1,160 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/lib/LanguageContext";
-import { CATEGORIES } from "@/lib/categories";
 import { isZh } from "@/lib/i18n";
 
-const IDENTITIES = {
-  en: [
-    { value: "individual", label: "an LGBTQ+ individual" },
-    { value: "ally", label: "an ally" },
-    { value: "business", label: "a business owner" },
-    { value: "healthcare", label: "a healthcare provider" },
-    { value: "researcher", label: "a researcher" },
-  ],
-  zh: [
-    { value: "individual", label: "LGBTQ+ 人士" },
-    { value: "ally", label: "盟友" },
-    { value: "business", label: "商戶經營者" },
-    { value: "healthcare", label: "醫療服務提供者" },
-    { value: "researcher", label: "研究人員" },
-  ],
-  "zh-Hans": [
-    { value: "individual", label: "LGBTQ+ 人士" },
-    { value: "ally", label: "盟友" },
-    { value: "parent", label: "家长/家人" },
-    { value: "business", label: "雇主/同事" },
-    { value: "educator", label: "教育工作者" },
-    { value: "healthcare", label: "医疗提供者" },
-    { value: "researcher", label: "研究人员/记者" },
-  ],
+type UserType = {
+  value: string;
+  en: string;
+  zh: string;
+  zhHans: string;
 };
 
-const NEEDS = {
-  en: [
-    { value: "Business", label: "friendly businesses" },
-    { value: "Community", label: "community groups" },
-    { value: "Healthcare", label: "healthcare" },
-    { value: "NGO", label: "legal support" },
-    { value: "events", label: "events" },
-    { value: "all", label: "everything" },
-  ],
-  zh: [
-    { value: "Business", label: "友善商戶" },
-    { value: "Community", label: "社區組織" },
-    { value: "Healthcare", label: "醫療服務" },
-    { value: "NGO", label: "法律支援" },
-    { value: "events", label: "活動" },
-    { value: "all", label: "全部" },
-  ],
-  "zh-Hans": [
-    { value: "all", label: "全部" },
-    { value: "Community", label: "社区" },
-    { value: "Healthcare", label: "医疗" },
-    { value: "NGO", label: "法律权利" },
-    { value: "mental-health", label: "心理健康" },
-    { value: "events", label: "活动" },
-    { value: "Business", label: "职场资源" },
-  ],
+type ServiceType = {
+  value: string;
+  en: string;
+  zh: string;
+  zhHans: string;
+};
+
+type Route = {
+  path: string;
+  category?: string;
+  tags?: string[];
+};
+
+const USER_TYPES: UserType[] = [
+  { value: "support", en: "in need of support", zh: "需要支援", zhHans: "需要支援" },
+  { value: "student", en: "a student", zh: "學生", zhHans: "学生" },
+  { value: "new-to-hk", en: "new to Hong Kong", zh: "新來港人士", zhHans: "新来港人士" },
+  { value: "professional", en: "a professional", zh: "專業人士", zhHans: "专业人士" },
+  { value: "curious", en: "curious / an ally", zh: "好奇者／盟友", zhHans: "好奇者／盟友" },
+  { value: "party", en: "a party-goer", zh: "派對愛好者", zhHans: "派对爱好者" },
+  { value: "family", en: "a family person", zh: "家庭人士", zhHans: "家庭人士" },
+  { value: "exploring", en: "just exploring", zh: "隨便看看", zhHans: "随便看看" },
+];
+
+const SERVICE_TYPES: ServiceType[] = [
+  { value: "everything", en: "everything", zh: "全部", zhHans: "全部" },
+  { value: "community", en: "community", zh: "社區", zhHans: "社区" },
+  { value: "hangouts", en: "hangouts", zh: "聚會場所", zhHans: "聚会场所" },
+  { value: "activities", en: "activities", zh: "活動", zhHans: "活动" },
+  { value: "learning", en: "learning", zh: "學習資源", zhHans: "学习资源" },
+  { value: "jobs", en: "jobs", zh: "工作機會", zhHans: "工作机会" },
+];
+
+// Routing matrix: [userType][serviceType] → route config
+// Based on the Google Sheet "User Type + Service Type" tab
+const ROUTE_MATRIX: Record<string, Record<string, Route | null>> = {
+  support: {
+    everything: { path: "/directory", tags: ["emergency-services", "sti-testing"] },
+    community: null,
+    hangouts: null,
+    activities: null,
+    learning: { path: "/learn/resources" },
+    jobs: null,
+  },
+  student: {
+    everything: { path: "/directory" },
+    community: { path: "/directory", category: "Community & Student Group", tags: ["university", "high-school"] },
+    hangouts: { path: "/directory", category: "Businesses", tags: ["cafe", "non-alcoholic", "sports", "hobby", "family-friendly", "youth"] },
+    activities: { path: "/events" },
+    learning: { path: "/learn/resources" },
+    jobs: { path: "/directory", tags: ["internship"] },
+  },
+  "new-to-hk": {
+    everything: { path: "/directory" },
+    community: { path: "/directory", category: "Community & Student Group", tags: ["social", "english", "multilingual"] },
+    hangouts: { path: "/directory", category: "Businesses", tags: ["bar", "cafe", "non-alcoholic", "sports", "hobby"] },
+    activities: { path: "/events" },
+    learning: { path: "/learn/resources" },
+    jobs: null,
+  },
+  professional: {
+    everything: { path: "/directory" },
+    community: { path: "/directory", category: "Community & Student Group", tags: ["employee-resource-group", "professional-networking", "volunteering"] },
+    hangouts: null,
+    activities: { path: "/directory", tags: ["volunteering", "professional-networking"] },
+    learning: { path: "/learn/resources" },
+    jobs: { path: "/directory", tags: ["jobs"] },
+  },
+  curious: {
+    everything: { path: "/directory" },
+    community: { path: "/directory", category: "Community & Student Group" },
+    hangouts: { path: "/directory", category: "Businesses", tags: ["cafe", "non-alcoholic", "sports", "hobby", "family-friendly"] },
+    activities: { path: "/directory", tags: ["education"] },
+    learning: { path: "/learn/resources" },
+    jobs: null,
+  },
+  party: {
+    everything: { path: "/directory" },
+    community: { path: "/directory", category: "Community & Student Group", tags: ["social"] },
+    hangouts: { path: "/directory", category: "Businesses", tags: ["bar", "party", "entertainment"] },
+    activities: { path: "/events" },
+    learning: { path: "/learn/resources" },
+    jobs: null,
+  },
+  family: {
+    everything: { path: "/directory" },
+    community: { path: "/directory", category: "Community & Student Group", tags: ["family-friendly", "pet-friendly"] },
+    hangouts: { path: "/directory", category: "Businesses", tags: ["cafe", "non-alcoholic", "sports", "hobby", "family-friendly", "children", "youth", "pet-friendly"] },
+    activities: { path: "/directory", tags: ["family-friendly", "pet-friendly", "volunteering"] },
+    learning: { path: "/learn/resources" },
+    jobs: null,
+  },
+  exploring: {
+    everything: { path: "/directory" },
+    community: { path: "/directory" },
+    hangouts: { path: "/directory" },
+    activities: { path: "/directory" },
+    learning: { path: "/directory" },
+    jobs: { path: "/directory" },
+  },
 };
 
 export default function SmartDispatcher() {
   const { language } = useLanguage();
   const router = useRouter();
-  const [identity, setIdentity] = useState("individual");
-  const [need, setNeed] = useState("all");
+  const [userType, setUserType] = useState("exploring");
+  const [serviceType, setServiceType] = useState("everything");
 
-  const lang = isZh(language) ? (language === "zh-Hans" ? "zh-Hans" : "zh") : "en";
-  const identities = IDENTITIES[lang];
-  const needs = NEEDS[lang];
+  const lang = isZh(language) ? (language === "zh-Hans" ? "zhHans" : "zh") : "en";
+
+  // Filter service types to only show available ones for current user type
+  const availableServices = useMemo(() => {
+    const matrix = ROUTE_MATRIX[userType] || {};
+    return SERVICE_TYPES.filter((s) => {
+      if (s.value === "everything") return true;
+      return matrix[s.value] !== null && matrix[s.value] !== undefined;
+    });
+  }, [userType]);
+
+  // Reset service type if current selection is unavailable
+  const effectiveService = availableServices.find((s) => s.value === serviceType)
+    ? serviceType
+    : "everything";
 
   const iAmLabel = isZh(language) ? "我是" : "I am";
   const lookingForLabel = language === "zh-Hans" ? "，想寻找" : language === "zh" ? "，想尋找" : " looking for ";
   const exploreLabel = isZh(language) ? "探索" : "Explore";
 
   function handleExplore() {
-    if (need === "events") {
-      router.push("/events");
-      return;
-    }
+    const route = ROUTE_MATRIX[userType]?.[effectiveService] || { path: "/directory" };
 
     const params = new URLSearchParams();
-    if (need !== "all") {
-      params.set("category", need);
+    if (route.category) {
+      params.set("category", route.category);
+    }
+    if (route.tags && route.tags.length === 1) {
+      params.set("tag", route.tags[0]);
+    } else if (route.tags && route.tags.length > 1) {
+      params.set("tags", route.tags.join(","));
     }
 
     const query = params.toString();
-    router.push(`/directory${query ? `?${query}` : ""}`);
+    router.push(`${route.path}${query ? `?${query}` : ""}`);
   }
 
   return (
@@ -96,15 +164,15 @@ export default function SmartDispatcher() {
           {/* "I am" */}
           <span className="text-sm font-medium whitespace-nowrap">{iAmLabel}</span>
 
-          {/* Identity dropdown */}
+          {/* User type dropdown */}
           <select
-            value={identity}
-            onChange={(e) => setIdentity(e.target.value)}
+            value={userType}
+            onChange={(e) => setUserType(e.target.value)}
             className="rounded-lg border border-[#E8E6F0] bg-[#FAFAFF] px-3 py-2 text-sm font-medium text-[#7B68EE] focus:outline-none focus:ring-2 focus:ring-[#7B68EE]/30 focus:border-[#7B68EE] cursor-pointer"
           >
-            {identities.map((opt) => (
+            {USER_TYPES.map((opt) => (
               <option key={opt.value} value={opt.value}>
-                {opt.label}
+                {opt[lang]}
               </option>
             ))}
           </select>
@@ -112,15 +180,15 @@ export default function SmartDispatcher() {
           {/* "looking for" */}
           <span className="text-sm font-medium whitespace-nowrap">{lookingForLabel}</span>
 
-          {/* Need dropdown */}
+          {/* Service type dropdown */}
           <select
-            value={need}
-            onChange={(e) => setNeed(e.target.value)}
+            value={effectiveService}
+            onChange={(e) => setServiceType(e.target.value)}
             className="rounded-lg border border-[#E8E6F0] bg-[#FAFAFF] px-3 py-2 text-sm font-medium text-[#7B68EE] focus:outline-none focus:ring-2 focus:ring-[#7B68EE]/30 focus:border-[#7B68EE] cursor-pointer"
           >
-            {needs.map((opt) => (
+            {availableServices.map((opt) => (
               <option key={opt.value} value={opt.value}>
-                {opt.label}
+                {opt[lang]}
               </option>
             ))}
           </select>

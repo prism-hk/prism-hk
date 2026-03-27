@@ -92,7 +92,7 @@ export default function SupportClient() {
                 )}
               </p>
               <a
-                href="https://docs.google.com/forms/d/1n8tA9-VG89JvDtIB281fkvxgDIFlHOQ3N4wuFKTfsOw/viewform"
+                href="https://forms.gle/cCye7fYSfhJKW7TA6"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#FFA726] hover:bg-[#F59E0B] text-white rounded-xl font-semibold text-sm transition-colors"

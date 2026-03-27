@@ -27,6 +27,8 @@ export default function DirectoryClient({
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get("category") || "";
   const initialTag = searchParams.get("tag") || "";
+  const initialTags = searchParams.get("tags")?.split(",").filter(Boolean) || [];
+  const allInitialTags = initialTag ? [initialTag] : initialTags;
 
   const [filters, setFilters] = useState<Filters>({
     search: "",
@@ -37,9 +39,12 @@ export default function DirectoryClient({
 
   const filtered = useMemo(() => {
     return listings.filter((listing) => {
-      // Tag filter from URL param (e.g. ?tag=volunteering)
-      if (initialTag && !(listing.tags || []).includes(initialTag)) {
-        return false;
+      // Tag filter from URL param (e.g. ?tag=volunteering or ?tags=bar,cafe)
+      if (allInitialTags.length > 0) {
+        const listingTags = listing.tags || [];
+        if (!allInitialTags.some((t) => listingTags.includes(t))) {
+          return false;
+        }
       }
 
       // Category filter (contains match for multi-category listings)
@@ -78,7 +83,7 @@ export default function DirectoryClient({
 
       return true;
     });
-  }, [listings, filters, initialTag]);
+  }, [listings, filters, allInitialTags]);
 
   const categories = CATEGORIES.map((c) => c.id);
 
