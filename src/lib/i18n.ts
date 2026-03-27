@@ -69,7 +69,7 @@ export const ui = {
 
     // Learn
     learnTitle: "About PRISM",
-    learnDesc: "PRISM is a bilingual LGBTQ+ directory and community platform for Hong Kong. We connect people with affirming businesses, healthcare providers, community groups, NGOs, and events across all 18 districts.",
+    learnDesc: "PRISM is an LGBTQ+ directory and community platform for Hong Kong. We connect people with affirming businesses, healthcare providers, community groups, NGOs, and events across all 18 districts.",
 
     // Educational Resources
     resourcesTitle: "Educational Resources",
@@ -146,7 +146,7 @@ export const ui = {
     feedback: "提交意見",
 
     learnTitle: "關於 PRISM",
-    learnDesc: "PRISM 是一個服務香港的雙語 LGBTQ+ 資料庫及社區平台。我們將大眾連繫到遍佈十八區的友善商戶、醫療服務提供者、社區組織、非政府組織及活動。",
+    learnDesc: "PRISM 是一個服務香港的 LGBTQ+ 資料庫及社區平台。我們將大眾連繫到遍佈十八區的友善商戶、醫療服務提供者、社區組織、非政府組織及活動。",
 
     resourcesTitle: "教育資源",
     resourcesDesc: "了解更多有關香港 LGBTQ+ 議題、權利及支援的資訊。",
@@ -221,7 +221,7 @@ export const ui = {
     feedback: "提交意见",
 
     learnTitle: "关于 PRISM",
-    learnDesc: "PRISM 是一个服务香港的双语 LGBTQ+ 资料库及社区平台。我们将大众连系到遍布十八区的友善商户、医疗服务提供者、社区组织、非政府组织及活动。",
+    learnDesc: "PRISM 是一个服务香港的 LGBTQ+ 资料库及社区平台。我们将大众连系到遍布十八区的友善商户、医疗服务提供者、社区组织、非政府组织及活动。",
 
     resourcesTitle: "教育资源",
     resourcesDesc: "了解更多有关香港 LGBTQ+ 议题、权利及支援的资讯。",
