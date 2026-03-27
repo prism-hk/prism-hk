@@ -85,6 +85,9 @@ const SHEETS_TO_SYNC = [
   { name: "Emergency Services", offset: 20000 },
 ];
 
+// Batch size for upserts (Supabase handles up to ~1000 rows per call)
+const BATCH_SIZE = 200;
+
 export async function syncFromSheets(sheetName?: string): Promise<SyncResult> {
   const start = Date.now();
   const errors: { row: number; error: string }[] = [];
@@ -101,55 +104,56 @@ export async function syncFromSheets(sheetName?: string): Promise<SyncResult> {
   // Track all sheet_row_ids we upsert, so we can delete stale rows after
   const allUpsertedIds: number[] = [];
 
-  for (const sheet of sheetsToSync) {
-    let rows: SheetRow[];
-    try {
+  // Fetch all sheets in parallel
+  const sheetResults = await Promise.allSettled(
+    sheetsToSync.map(async (sheet) => {
       const result = await readSheet(sheet.name);
-      rows = result.rows;
-    } catch (err) {
-      errors.push({
-        row: 0,
-        error: `Failed to read sheet "${sheet.name}": ${err instanceof Error ? err.message : String(err)}`,
-      });
+      return { sheet, rows: result.rows };
+    })
+  );
+
+  for (const result of sheetResults) {
+    if (result.status === "rejected") {
+      errors.push({ row: 0, error: `Failed to read sheet: ${result.reason}` });
       continue;
     }
 
+    const { sheet, rows } = result.value;
     total_processed += rows.length;
+
+    // Transform all rows into batch
+    const batch: ReturnType<typeof transformRow>[] = [];
 
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i];
+      if (!row.name_en) continue;
 
-      if (!row.name_en) {
-        continue;
+      const transformed = transformRow(row, sheet.offset + i + 2);
+
+      // Emergency Services: force category and tag
+      if (sheet.name === "Emergency Services") {
+        transformed.category = "Healthcare & Support";
+        transformed.status = "Published";
+        if (!transformed.tags.includes("emergency-services")) {
+          transformed.tags = [...transformed.tags, "emergency-services"];
+        }
       }
 
-      try {
-        const transformed = transformRow(row, sheet.offset + i + 2);
+      batch.push(transformed);
+    }
 
-        // Emergency Services: force category and tag
-        if (sheet.name === "Emergency Services") {
-          transformed.category = "Healthcare & Support";
-          transformed.status = "Published";
-          if (!transformed.tags.includes("emergency-services")) {
-            transformed.tags = [...transformed.tags, "emergency-services"];
-          }
-        }
+    // Upsert in batches
+    for (let i = 0; i < batch.length; i += BATCH_SIZE) {
+      const chunk = batch.slice(i, i + BATCH_SIZE);
+      const { error } = await supabase
+        .from("listings")
+        .upsert(chunk, { onConflict: "sheet_row_id" });
 
-        const { error } = await supabase
-          .from("listings")
-          .upsert(transformed, { onConflict: "sheet_row_id" });
-
-        if (error) {
-          errors.push({ row: sheet.offset + i + 2, error: error.message });
-        } else {
-          rows_upserted++;
-          allUpsertedIds.push(transformed.sheet_row_id);
-        }
-      } catch (err) {
-        errors.push({
-          row: sheet.offset + i + 2,
-          error: err instanceof Error ? err.message : String(err),
-        });
+      if (error) {
+        errors.push({ row: 0, error: `Batch upsert error (${sheet.name}): ${error.message}` });
+      } else {
+        rows_upserted += chunk.length;
+        allUpsertedIds.push(...chunk.map((r) => r.sheet_row_id));
       }
     }
   }
