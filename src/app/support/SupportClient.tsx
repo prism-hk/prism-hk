@@ -10,46 +10,6 @@ function tx(en: string, zh: string, zhHans: string, language: Language): string 
   return `${en} ${zh}`;
 }
 
-const HELP_ITEMS = [
-  {
-    emoji: "\u{1F4E2}",
-    titleEn: "Spread the Word",
-    titleZh: "推廣",
-    titleZhHans: "推广",
-    descEn: "Share PRISM with friends, colleagues, and on social media.",
-    descZh: "與朋友、同事分享 PRISM，並在社交媒體上推廣。",
-    descZhHans: "与朋友、同事分享 PRISM，并在社交媒体上推广。",
-  },
-  {
-    emoji: "\u{270D}\u{FE0F}",
-    titleEn: "Submit Listings",
-    titleZh: "提交機構",
-    titleZhHans: "提交机构",
-    descEn: "Know an LGBTQ+-friendly business? Submit it to our directory.",
-    descZh: "認識 LGBTQ+ 友善商戶？提交至我們的資料庫。",
-    descZhHans: "认识 LGBTQ+ 友善商户？提交至我们的资料库。",
-    href: "/get-involved",
-  },
-  {
-    emoji: "\u{1F310}",
-    titleEn: "Help Translate",
-    titleZh: "協助翻譯",
-    titleZhHans: "协助翻译",
-    descEn: "Help us translate listings and content into Chinese or English.",
-    descZh: "協助我們翻譯機構資訊及內容。",
-    descZhHans: "协助我们翻译机构资讯及内容。",
-  },
-  {
-    emoji: "\u{1F91D}",
-    titleEn: "Partner With Us",
-    titleZh: "合作",
-    titleZhHans: "合作",
-    descEn: "Organizations can partner with PRISM for events and visibility.",
-    descZh: "組織可以與 PRISM 合作舉辦活動及提升可見度。",
-    descZhHans: "组织可以与 PRISM 合作举办活动及提升可见度。",
-  },
-];
-
 export default function SupportClient() {
   const { language } = useLanguage();
 
@@ -63,44 +23,119 @@ export default function SupportClient() {
       </p>
 
       <div className="space-y-6">
-        <div className="bg-gradient-to-br from-[#F3F0FF] to-[#FCE4EC] rounded-2xl p-8 text-center">
-          <div className="text-4xl mb-4">{"\u{1F49C}"}</div>
-          <h2 className="text-xl font-bold mb-2">
-            {tx("How You Can Help", "如何幫助", "如何帮助", language)}
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {HELP_ITEMS.map((item) => (
-            <div
-              key={item.titleEn}
-              className="bg-white rounded-xl border border-[#E8E6F0] p-5"
-            >
-              <span className="text-2xl">{item.emoji}</span>
-              <h3 className="font-bold mt-2 text-sm">
-                {tx(item.titleEn, item.titleZh, item.titleZhHans, language)}
-              </h3>
-              <p className="text-xs text-[#6B6890] mt-1">
-                {tx(item.descEn, item.descZh, item.descZhHans, language)}
+        {/* Spread the Word */}
+        <div className="bg-white rounded-2xl border border-[#E8E6F0] p-6">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#E879F9] to-[#F472B6] flex items-center justify-center text-xl shrink-0">
+              {"\u{1F4E2}"}
+            </div>
+            <div className="flex-1">
+              <h2 className="text-lg font-bold mb-1">
+                {tx("Spread the Word", "推廣", "推广", language)}
+              </h2>
+              <p className="text-sm text-[#6B6890]">
+                {tx(
+                  "Share PRISM with friends, colleagues, and on social media.",
+                  "與朋友、同事分享 PRISM，並在社交媒體上推廣。",
+                  "与朋友、同事分享 PRISM，并在社交媒体上推广。",
+                  language
+                )}
               </p>
             </div>
-          ))}
+          </div>
         </div>
 
-        {/* Quick actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <a
-            href="https://forms.gle/G2J1u9rupXvdydBs8"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-3 bg-white rounded-xl border border-[#E8E6F0] p-5 hover:border-[#7B68EE] transition-colors"
-          >
-            <span className="text-2xl">{"\u{1F4AC}"}</span>
-            <div>
-              <h3 className="font-bold text-sm">
+        {/* Donate */}
+        <div className="bg-gradient-to-br from-[#F3F0FF] to-[#FCE4EC] rounded-2xl p-6">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#7B68EE] to-[#A78BFA] flex items-center justify-center text-xl shrink-0">
+              {"\u{2615}"}
+            </div>
+            <div className="flex-1">
+              <h2 className="text-lg font-bold mb-1">
+                {tx("Buy Us a Coffee", "請我們喝杯咖啡", "请我们喝杯咖啡", language)}
+              </h2>
+              <p className="text-sm text-[#6B6890] mb-4">
+                {tx(
+                  "PRISM is volunteer-run. Your support helps keep the platform running and accessible to all.",
+                  "PRISM 由義工運營。你的支持有助保持平台持續運作，向所有人開放。",
+                  "PRISM 由义工运营。你的支持有助保持平台持续运作，向所有人开放。",
+                  language
+                )}
+              </p>
+              <a
+                href="/directory?tag=donations"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#7B68EE] text-white rounded-xl font-semibold text-sm hover:bg-[#6B5CE7] transition-colors"
+              >
+                {tx("Donate", "捐款", "捐款", language)} &rarr;
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* Volunteer */}
+        <div className="bg-white rounded-2xl border border-[#E8E6F0] p-6">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#FFA726] to-[#FB923C] flex items-center justify-center text-xl shrink-0">
+              {"\u{1F64B}"}
+            </div>
+            <div className="flex-1">
+              <h2 className="text-lg font-bold mb-1">
+                {tx("Volunteer", "義工", "义工", language)}
+              </h2>
+              <p className="text-sm text-[#6B6890] mb-4">
+                {tx(
+                  "Help with research, verification, translation, outreach, or events.",
+                  "協助研究、驗證、翻譯、推廣或活動工作。",
+                  "协助研究、验证、翻译、推广或活动工作。",
+                  language
+                )}
+              </p>
+              <a
+                href="https://docs.google.com/forms/d/1n8tA9-VG89JvDtIB281fkvxgDIFlHOQ3N4wuFKTfsOw/viewform"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#FFA726] hover:bg-[#F59E0B] text-white rounded-xl font-semibold text-sm transition-colors"
+              >
+                {tx("Apply to Volunteer", "申請成為義工", "申请成为义工", language)} &rarr;
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* Partner With Us */}
+        <div className="bg-white rounded-2xl border border-[#E8E6F0] p-6">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#22C55E] to-[#16A34A] flex items-center justify-center text-xl shrink-0">
+              {"\u{1F91D}"}
+            </div>
+            <div className="flex-1">
+              <h2 className="text-lg font-bold mb-1">
+                {tx("Partner With Us", "合作", "合作", language)}
+              </h2>
+              <p className="text-sm text-[#6B6890]">
+                {tx(
+                  "Organizations can partner with PRISM for events and visibility.",
+                  "組織可以與 PRISM 合作舉辦活動及提升可見度。",
+                  "组织可以与 PRISM 合作举办活动及提升可见度。",
+                  language
+                )}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Submit Feedback */}
+        <div className="bg-white rounded-2xl border border-[#E8E6F0] p-6">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#38BDF8] to-[#0EA5E9] flex items-center justify-center text-xl shrink-0">
+              {"\u{1F4AC}"}
+            </div>
+            <div className="flex-1">
+              <h2 className="text-lg font-bold mb-1">
                 {t("feedback", language)}
-              </h3>
-              <p className="text-xs text-[#6B6890] mt-0.5">
+              </h2>
+              <p className="text-sm text-[#6B6890] mb-4">
                 {tx(
                   "Suggestions, corrections, or ideas to improve PRISM.",
                   "建議、更正或改善 PRISM 的想法。",
@@ -108,29 +143,19 @@ export default function SupportClient() {
                   language
                 )}
               </p>
+              <a
+                href="https://forms.gle/G2J1u9rupXvdydBs8"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#38BDF8] hover:bg-[#2AABEB] text-white rounded-xl font-semibold text-sm transition-colors"
+              >
+                {t("feedback", language)} &rarr;
+              </a>
             </div>
-          </a>
-          <a
-            href="/get-involved"
-            className="flex items-center gap-3 bg-white rounded-xl border border-[#E8E6F0] p-5 hover:border-[#7B68EE] transition-colors"
-          >
-            <span className="text-2xl">{"\u{1F64B}"}</span>
-            <div>
-              <h3 className="font-bold text-sm">
-                {t("volunteer", language)}
-              </h3>
-              <p className="text-xs text-[#6B6890] mt-0.5">
-                {tx(
-                  "Help with research, verification, translation, or outreach.",
-                  "協助研究、驗證、翻譯或推廣工作。",
-                  "协助研究、验证、翻译或推广工作。",
-                  language
-                )}
-              </p>
-            </div>
-          </a>
+          </div>
         </div>
 
+        {/* Get in Touch */}
         <div className="bg-white rounded-2xl border border-[#E8E6F0] p-6 text-center">
           <h3 className="font-bold mb-2">
             {tx("Get in Touch", "聯絡我們", "联络我们", language)}
@@ -144,10 +169,10 @@ export default function SupportClient() {
             )}
           </p>
           <a
-            href="mailto:hello@prism.lgbt"
+            href="mailto:support@prism.lgbt"
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#7B68EE] text-white rounded-xl font-semibold text-sm hover:bg-[#6B5CE7] transition-colors"
           >
-            hello@prism.lgbt
+            support@prism.lgbt
           </a>
         </div>
       </div>
