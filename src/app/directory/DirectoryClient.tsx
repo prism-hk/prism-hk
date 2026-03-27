@@ -9,6 +9,7 @@ import ListingList from "@/components/ListingList";
 import { CATEGORIES } from "@/lib/categories";
 import { useLanguage } from "@/lib/LanguageContext";
 import { t, isZh } from "@/lib/i18n";
+import { translateTag } from "@/lib/tagTranslations";
 
 type Filters = {
   search: string;
@@ -19,9 +20,13 @@ type Filters = {
 export default function DirectoryClient({
   listings,
   districts,
+  tags,
+  prices,
 }: {
   listings: Listing[];
   districts: string[];
+  tags: string[];
+  prices: string[];
 }) {
   const { language } = useLanguage();
   const searchParams = useSearchParams();
@@ -36,6 +41,10 @@ export default function DirectoryClient({
     district: "",
   });
   const [view, setView] = useState<"grid" | "list">("grid");
+  const [activeTag, setActiveTag] = useState("");
+  const [activePrice, setActivePrice] = useState("");
+  const [showTags, setShowTags] = useState(false);
+  const [showPrices, setShowPrices] = useState(false);
 
   const filtered = useMemo(() => {
     return listings.filter((listing) => {
@@ -47,12 +56,22 @@ export default function DirectoryClient({
         }
       }
 
-      // Category filter (contains match for multi-category listings)
+      // Tag filter from UI
+      if (activeTag) {
+        if (!(listing.tags || []).includes(activeTag)) return false;
+      }
+
+      // Price filter
+      if (activePrice) {
+        if (listing.price !== activePrice) return false;
+      }
+
+      // Category filter
       if (filters.category && !listing.category?.includes(filters.category)) {
         return false;
       }
 
-      // District filter (check if any of the listing's comma-separated districts match)
+      // District filter
       if (filters.district) {
         const listingDistricts = listing.district_en
           ?.split(",")
@@ -83,7 +102,7 @@ export default function DirectoryClient({
 
       return true;
     });
-  }, [listings, filters, allInitialTags]);
+  }, [listings, filters, allInitialTags, activeTag, activePrice]);
 
   const categories = CATEGORIES.map((c) => c.id);
 
@@ -130,6 +149,98 @@ export default function DirectoryClient({
           initialCategory={initialCategory}
         />
       </div>
+
+      {/* Tag filter */}
+      <div className="mt-3">
+        <button
+          onClick={() => setShowTags(!showTags)}
+          className="flex items-center gap-2 text-sm font-medium text-[#6B6890] hover:text-[#7B68EE] transition-colors"
+        >
+          <svg
+            className={`w-4 h-4 transition-transform ${showTags ? "rotate-180" : ""}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+          {activeTag
+            ? `${isZh(language) ? "標籤" : "Tag"}: ${translateTag(activeTag, language)}`
+            : isZh(language) ? "篩選標籤" : "Filter by Tag"}
+          {activeTag && (
+            <span
+              onClick={(e) => { e.stopPropagation(); setActiveTag(""); }}
+              className="ml-1 text-xs bg-[#F0EEFF] text-[#7B68EE] rounded-full px-1.5 py-0.5 hover:bg-[#E0DDFF] cursor-pointer"
+            >
+              ✕
+            </span>
+          )}
+        </button>
+        {showTags && (
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {tags.map((tag) => (
+              <button
+                key={tag}
+                onClick={() => setActiveTag(activeTag === tag ? "" : tag)}
+                className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors ${
+                  activeTag === tag
+                    ? "bg-[#7B68EE] text-white border-[#7B68EE]"
+                    : "bg-white border-[#E8E6F0] text-[#6B6890] hover:border-[#A78BFA] hover:text-[#7B68EE]"
+                }`}
+              >
+                {translateTag(tag, language)}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Price filter */}
+      {prices.length > 0 && (
+        <div className="mt-3">
+          <button
+            onClick={() => setShowPrices(!showPrices)}
+            className="flex items-center gap-2 text-sm font-medium text-[#6B6890] hover:text-[#7B68EE] transition-colors"
+          >
+            <svg
+              className={`w-4 h-4 transition-transform ${showPrices ? "rotate-180" : ""}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+            {activePrice
+              ? `${isZh(language) ? "價格" : "Price"}: ${activePrice}`
+              : isZh(language) ? "篩選價格" : "Filter by Price"}
+            {activePrice && (
+              <span
+                onClick={(e) => { e.stopPropagation(); setActivePrice(""); }}
+                className="ml-1 text-xs bg-[#F0EEFF] text-[#7B68EE] rounded-full px-1.5 py-0.5 hover:bg-[#E0DDFF] cursor-pointer"
+              >
+                ✕
+              </span>
+            )}
+          </button>
+          {showPrices && (
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {prices.map((price) => (
+                <button
+                  key={price}
+                  onClick={() => setActivePrice(activePrice === price ? "" : price)}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors ${
+                    activePrice === price
+                      ? "bg-amber-500 text-white border-amber-500"
+                      : "bg-white border-[#E8E6F0] text-[#6B6890] hover:border-amber-300 hover:text-amber-700"
+                  }`}
+                >
+                  {isZh(language) && price === "Free" ? "免費" : price}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="mt-6">
         {view === "grid" ? (

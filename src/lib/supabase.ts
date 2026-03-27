@@ -107,6 +107,33 @@ export async function getCategoryStats(): Promise<{ category: string; count: num
     .sort((a, b) => b.count - a.count);
 }
 
+export async function getDistinctTags(): Promise<string[]> {
+  const supabase = getServiceClient();
+  const { data } = await supabase
+    .from("listings")
+    .select("tags")
+    .eq("status", "Published");
+
+  if (!data) return [];
+  const allTags = data
+    .flatMap((r) => r.tags || [])
+    .filter(Boolean);
+  return [...new Set(allTags)].sort();
+}
+
+export async function getDistinctPrices(): Promise<string[]> {
+  const supabase = getServiceClient();
+  const { data } = await supabase
+    .from("listings")
+    .select("price")
+    .eq("status", "Published")
+    .not("price", "is", null);
+
+  if (!data) return [];
+  const prices = [...new Set(data.map((r) => r.price).filter(Boolean))] as string[];
+  return prices.sort();
+}
+
 export async function getDistinctDistricts(): Promise<string[]> {
   const supabase = getServiceClient();
   const { data } = await supabase

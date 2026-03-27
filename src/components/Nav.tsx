@@ -90,8 +90,8 @@ export default function Nav() {
                   </Link>
 
                   {/* Dropdown */}
-                  <div className="absolute top-full left-0 pt-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150">
-                    <div className="bg-white rounded-lg shadow-lg border border-[#E8E6F0] py-1 min-w-[200px]">
+                  <div className={`absolute top-full pt-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 ${link.key === "more" ? "right-0" : "left-0"}`}>
+                    <div className="bg-white rounded-lg shadow-lg border border-[#E8E6F0] py-1 min-w-[200px] whitespace-nowrap">
                       {link.children.map((child) => {
                         const childActive = pathname === child.href;
                         return (

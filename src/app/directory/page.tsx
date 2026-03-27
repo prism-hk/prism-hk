@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { getPublishedListings, getDistinctDistricts } from "@/lib/supabase";
+import { getPublishedListings, getDistinctDistricts, getDistinctTags, getDistinctPrices } from "@/lib/supabase";
 import DirectoryClient from "./DirectoryClient";
 
 export const revalidate = 300;
@@ -10,14 +10,16 @@ export const metadata = {
 };
 
 export default async function DirectoryPage() {
-  const [listings, districts] = await Promise.all([
+  const [listings, districts, tags, prices] = await Promise.all([
     getPublishedListings(),
     getDistinctDistricts(),
+    getDistinctTags(),
+    getDistinctPrices(),
   ]);
 
   return (
     <Suspense>
-      <DirectoryClient listings={listings} districts={districts} />
+      <DirectoryClient listings={listings} districts={districts} tags={tags} prices={prices} />
     </Suspense>
   );
 }

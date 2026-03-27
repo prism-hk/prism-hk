@@ -52,12 +52,13 @@ const TEAM = [
   },
   {
     name: "Becky Isjwara",
-    pronouns: "",
+    pronouns: "she/her",
     gradient: "from-[#E879F9] to-[#F472B6]",
     initials: "BI",
-    bioEn: "",
-    bioZh: "",
-    bioZhHans: "",
+    website: "https://beckyisj.com",
+    bioEn: "Becky is an LGBTQ+ professional who spent her early career in Hong Kong, where she founded her university's first LGBTQ+ network at HKUST. She co-led Interbank Hong Kong in 2024\u20132025, a peer organisation for LGBTQ+ networks across the city's financial services sector, and mentors LGBTQ+ students in the city. She builds and maintains the PRISM platform.",
+    bioZh: "Becky 是一位 LGBTQ+ 專業人士，職業生涯早期在香港發展。她在香港科技大學創立了校內首個 LGBTQ+ 網絡，並於 2024\u20132025 年共同領導 Interbank Hong Kong——一個連繫本港金融服務業 LGBTQ+ 網絡的同儕組織，同時擔任本港 LGBTQ+ 學生的導師。她負責建設及維護 PRISM 平台。",
+    bioZhHans: "Becky 是一位 LGBTQ+ 专业人士，职业生涯早期在香港发展。她在香港科技大学创立了校内首个 LGBTQ+ 网络，并于 2024\u20132025 年共同领导 Interbank Hong Kong——一个连系本港金融服务业 LGBTQ+ 网络的同侪组织，同时担任本港 LGBTQ+ 学生的导师。她负责建设及维护 PRISM 平台。",
   },
 ];
 
@@ -164,6 +165,16 @@ export default function LearnClient() {
                   <p className="text-sm text-[#6B6890] leading-relaxed">
                     {tx(member.bioEn, member.bioZh, member.bioZhHans, language)}
                   </p>
+                )}
+                {"website" in member && member.website && (
+                  <a
+                    href={member.website as string}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-xs text-[#7B68EE] hover:underline mt-2"
+                  >
+                    {tx("Work with her", "與她合作", "与她合作", language)} &rarr;
+                  </a>
                 )}
               </div>
             ))}
