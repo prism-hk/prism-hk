@@ -30,7 +30,7 @@ export default function Hero({
           {/* Left side — text */}
           <div className="flex-1 max-w-lg pt-2">
             <h1 className="text-4xl md:text-5xl lg:text-[3.4rem] font-bold leading-[1.15] bg-gradient-to-r from-[#7B68EE] via-[#E879F9] to-[#F472B6] bg-clip-text text-transparent">
-              Connect, Care,{"\n"}and Celebrate
+              Find your{"\n"}wavelength.
             </h1>
 
             <p className="mt-5 text-[#6B6890] text-sm leading-relaxed max-w-sm">

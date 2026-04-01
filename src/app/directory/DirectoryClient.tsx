@@ -57,10 +57,10 @@ export default function DirectoryClient({
 
   const filtered = useMemo(() => {
     return listings.filter((listing) => {
-      // Multi-select tag filter (combines URL params + UI selection)
+      // Multi-select tag filter — AND logic (listing must have ALL selected tags)
       if (activeTags.length > 0) {
         const listingTags = listing.tags || [];
-        if (!activeTags.some((t) => listingTags.includes(t))) {
+        if (!activeTags.every((t) => listingTags.includes(t))) {
           return false;
         }
       }

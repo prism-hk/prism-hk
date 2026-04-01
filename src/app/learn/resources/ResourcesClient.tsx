@@ -19,7 +19,7 @@ const RESOURCES = [
     descZh: "了解香港 LGBTQ+ 法律保障及權利。",
     descZhHans: "了解更多有关香港 LGBTQ+ 法律权利的资讯。",
     emoji: "\u{2696}\u{FE0F}",
-    url: "https://www.equallove.hk",
+    url: "https://www.aoshearman.com/en/insights/the-recognition-and-treatment-of-relationships-under-hong-kong-law-2026",
   },
   {
     titleEn: "Coming Out Resources",

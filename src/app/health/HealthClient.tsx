@@ -40,9 +40,10 @@ export default function HealthClient({
 
   const filtered = useMemo(() => {
     return listings.filter((listing) => {
+      // AND logic — listing must have ALL selected tags
       if (activeTags.length > 0) {
         const listingTags = listing.tags || [];
-        if (!activeTags.some((t) => listingTags.includes(t))) return false;
+        if (!activeTags.every((t) => listingTags.includes(t))) return false;
       }
       if (activePrice && listing.price !== activePrice) return false;
       if (filters.category && !listing.category?.includes(filters.category)) return false;
