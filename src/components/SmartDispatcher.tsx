@@ -162,13 +162,13 @@ export default function SmartDispatcher() {
       <div className="max-w-lg">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 flex-wrap text-[#1E1B3A]">
           {/* "I am" */}
-          <span className="text-sm font-medium whitespace-nowrap">{iAmLabel}</span>
+          <span className="text-base font-medium whitespace-nowrap">{iAmLabel}</span>
 
           {/* User type dropdown */}
           <select
             value={userType}
             onChange={(e) => setUserType(e.target.value)}
-            className="rounded-lg border border-[#E8E6F0] bg-[#FAFAFF] px-3 py-2 text-sm font-medium text-[#7B68EE] focus:outline-none focus:ring-2 focus:ring-[#7B68EE]/30 focus:border-[#7B68EE] cursor-pointer"
+            className="rounded-lg border border-[#E8E6F0] bg-[#FAFAFF] px-3 py-2 text-base font-medium text-[#7B68EE] focus:outline-none focus:ring-2 focus:ring-[#7B68EE]/30 focus:border-[#7B68EE] cursor-pointer"
           >
             {USER_TYPES.map((opt) => (
               <option key={opt.value} value={opt.value}>
@@ -178,13 +178,13 @@ export default function SmartDispatcher() {
           </select>
 
           {/* "looking for" */}
-          <span className="text-sm font-medium whitespace-nowrap">{lookingForLabel}</span>
+          <span className="text-base font-medium whitespace-nowrap">{lookingForLabel}</span>
 
           {/* Service type dropdown */}
           <select
             value={effectiveService}
             onChange={(e) => setServiceType(e.target.value)}
-            className="rounded-lg border border-[#E8E6F0] bg-[#FAFAFF] px-3 py-2 text-sm font-medium text-[#7B68EE] focus:outline-none focus:ring-2 focus:ring-[#7B68EE]/30 focus:border-[#7B68EE] cursor-pointer"
+            className="rounded-lg border border-[#E8E6F0] bg-[#FAFAFF] px-3 py-2 text-base font-medium text-[#7B68EE] focus:outline-none focus:ring-2 focus:ring-[#7B68EE]/30 focus:border-[#7B68EE] cursor-pointer"
           >
             {availableServices.map((opt) => (
               <option key={opt.value} value={opt.value}>
