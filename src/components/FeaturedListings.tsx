@@ -28,9 +28,10 @@ export default function FeaturedListings({ listings }: { listings: Listing[] }) 
         </p>
       </div>
       {listings.length === 0 ? (
-        <p className="text-center text-[#6B6890] text-sm py-8">
-          {h.empty}
-        </p>
+        <div className="bg-[#F8F7FF] rounded-2xl py-12 text-center">
+          <img src="/empty-search.png" alt="" className="w-16 h-16 mx-auto mb-4 opacity-60" />
+          <p className="text-[#6B6890] text-sm">{h.empty}</p>
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
           {listings.map((listing) => (
