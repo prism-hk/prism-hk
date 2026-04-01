@@ -14,6 +14,7 @@ export const ui = {
     educationalResources: "Educational Resources",
     getInvolved: "Get Involved",
     support: "Support Us",
+    contact: "Contact Us",
 
     // Hero
     heroTitle: "PRISM",
@@ -99,6 +100,7 @@ export const ui = {
     educationalResources: "教育資源",
     getInvolved: "參與",
     support: "支持我們",
+    contact: "聯絡我們",
 
     heroTitle: "PRISM",
     heroSubtitle: "探索香港十八區的 LGBTQ+ 友善商戶、社區組織、醫療服務、NGO 及活動。",
@@ -174,6 +176,7 @@ export const ui = {
     educationalResources: "教育资源",
     getInvolved: "参与",
     support: "支持我们",
+    contact: "联络我们",
 
     heroTitle: "PRISM",
     heroSubtitle: "探索全港十八区的 LGBTQ+ 友善商户、社区组织、医疗服务、非政府组织及活动。",

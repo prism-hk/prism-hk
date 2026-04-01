@@ -7,7 +7,7 @@ import { bilingualText, t, isZh } from "@/lib/i18n";
 import { translateTag } from "@/lib/tagTranslations";
 import { translateDistrict } from "@/lib/districtTranslations";
 
-export default function ListingList({ listings }: { listings: Listing[] }) {
+export default function ListingList({ listings, onSelect }: { listings: Listing[]; onSelect?: (listing: Listing) => void }) {
   const { language } = useLanguage();
 
   if (listings.length === 0) {
@@ -30,16 +30,10 @@ export default function ListingList({ listings }: { listings: Listing[] }) {
           ? (isZh(language) ? translateDistrict(listing.district_en, language) : listing.district_en)
           : null;
 
-        const hasWebsite = !!listing.website;
-        const Wrapper = hasWebsite ? "a" : "div";
-        const wrapperProps = hasWebsite
-          ? { href: listing.website!, target: "_blank" as const, rel: "noopener noreferrer" }
-          : {};
-
         return (
-          <Wrapper
+          <div
             key={listing.id}
-            {...wrapperProps}
+            onClick={() => onSelect?.(listing)}
             className="flex items-center gap-4 bg-white border border-[#E8E6F0] rounded-xl px-4 py-3 hover:border-[#A78BFA] transition-colors cursor-pointer"
           >
             {/* Category badge */}
@@ -83,12 +77,10 @@ export default function ListingList({ listings }: { listings: Listing[] }) {
             )}
 
             {/* Arrow */}
-            {hasWebsite && (
-              <svg className="w-4 h-4 text-[#6B6890] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            )}
-          </Wrapper>
+            <svg className="w-4 h-4 text-[#6B6890] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
         );
       })}
     </div>

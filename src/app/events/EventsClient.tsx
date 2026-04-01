@@ -40,7 +40,7 @@ export default function EventsClient() {
   return (
     <div className="max-w-5xl mx-auto px-6 pt-24 pb-20">
       <div className="text-center mb-12">
-        <div className="inline-flex items-center gap-2 bg-[#F3F0FF] text-[#7B68EE] rounded-full px-4 py-1.5 text-sm font-semibold mb-4">
+        <div className="inline-flex items-center gap-2 bg-[#F0EEFF] text-[#7B68EE] rounded-full px-4 py-1.5 text-sm font-semibold mb-4">
           {t("comingSoon", language)}
         </div>
         <h1 className="text-4xl font-bold mb-3">

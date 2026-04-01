@@ -6,6 +6,7 @@ import { type Listing } from "@/lib/supabase";
 import FilterBar from "@/components/FilterBar";
 import ListingGrid from "@/components/ListingGrid";
 import ListingList from "@/components/ListingList";
+import ListingPanel from "@/components/ListingPanel";
 import { CATEGORIES } from "@/lib/categories";
 import { useLanguage } from "@/lib/LanguageContext";
 import { t, isZh } from "@/lib/i18n";
@@ -34,31 +35,34 @@ export default function DirectoryClient({
   const initialTag = searchParams.get("tag") || "";
   const initialTags = searchParams.get("tags")?.split(",").filter(Boolean) || [];
   const allInitialTags = initialTag ? [initialTag] : initialTags;
+  const initialSearch = searchParams.get("search") || "";
 
   const [filters, setFilters] = useState<Filters>({
-    search: "",
+    search: initialSearch,
     category: initialCategory,
     district: "",
   });
   const [view, setView] = useState<"grid" | "list">("grid");
-  const [activeTag, setActiveTag] = useState("");
+  const [activeTags, setActiveTags] = useState<string[]>(allInitialTags);
   const [activePrice, setActivePrice] = useState("");
-  const [showTags, setShowTags] = useState(false);
+  const [showTags, setShowTags] = useState(allInitialTags.length > 0);
   const [showPrices, setShowPrices] = useState(false);
+  const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
+
+  function toggleTag(tag: string) {
+    setActiveTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
+  }
 
   const filtered = useMemo(() => {
     return listings.filter((listing) => {
-      // Tag filter from URL param (e.g. ?tag=volunteering or ?tags=bar,cafe)
-      if (allInitialTags.length > 0) {
+      // Multi-select tag filter (combines URL params + UI selection)
+      if (activeTags.length > 0) {
         const listingTags = listing.tags || [];
-        if (!allInitialTags.some((t) => listingTags.includes(t))) {
+        if (!activeTags.some((t) => listingTags.includes(t))) {
           return false;
         }
-      }
-
-      // Tag filter from UI
-      if (activeTag) {
-        if (!(listing.tags || []).includes(activeTag)) return false;
       }
 
       // Price filter
@@ -102,7 +106,7 @@ export default function DirectoryClient({
 
       return true;
     });
-  }, [listings, filters, allInitialTags, activeTag, activePrice]);
+  }, [listings, filters, activeTags, activePrice]);
 
   const categories = CATEGORIES.map((c) => c.id);
 
@@ -150,7 +154,7 @@ export default function DirectoryClient({
         />
       </div>
 
-      {/* Tag filter */}
+      {/* Tag filter — multi-select */}
       <div className="mt-3">
         <button
           onClick={() => setShowTags(!showTags)}
@@ -164,15 +168,15 @@ export default function DirectoryClient({
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
-          {activeTag
-            ? `${isZh(language) ? "標籤" : "Tag"}: ${translateTag(activeTag, language)}`
-            : isZh(language) ? "篩選標籤" : "Filter by Tag"}
-          {activeTag && (
+          {activeTags.length > 0
+            ? `${isZh(language) ? "標籤" : "Tags"} (${activeTags.length})`
+            : isZh(language) ? "篩選標籤" : "Filter by Tags"}
+          {activeTags.length > 0 && (
             <span
-              onClick={(e) => { e.stopPropagation(); setActiveTag(""); }}
+              onClick={(e) => { e.stopPropagation(); setActiveTags([]); }}
               className="ml-1 text-xs bg-[#F0EEFF] text-[#7B68EE] rounded-full px-1.5 py-0.5 hover:bg-[#E0DDFF] cursor-pointer"
             >
-              ✕
+              {isZh(language) ? "清除" : "Clear"}
             </span>
           )}
         </button>
@@ -181,9 +185,9 @@ export default function DirectoryClient({
             {tags.map((tag) => (
               <button
                 key={tag}
-                onClick={() => setActiveTag(activeTag === tag ? "" : tag)}
+                onClick={() => toggleTag(tag)}
                 className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors ${
-                  activeTag === tag
+                  activeTags.includes(tag)
                     ? "bg-[#7B68EE] text-white border-[#7B68EE]"
                     : "bg-white border-[#E8E6F0] text-[#6B6890] hover:border-[#A78BFA] hover:text-[#7B68EE]"
                 }`}
@@ -244,11 +248,19 @@ export default function DirectoryClient({
 
       <div className="mt-6">
         {view === "grid" ? (
-          <ListingGrid listings={filtered} />
+          <ListingGrid listings={filtered} onSelect={setSelectedListing} />
         ) : (
-          <ListingList listings={filtered} />
+          <ListingList listings={filtered} onSelect={setSelectedListing} />
         )}
       </div>
+
+      {/* Slide-out detail panel */}
+      {selectedListing && (
+        <ListingPanel
+          listing={selectedListing}
+          onClose={() => setSelectedListing(null)}
+        />
+      )}
     </div>
   );
 }

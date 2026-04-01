@@ -46,7 +46,7 @@ export default function SupportClient() {
         </div>
 
         {/* Donate */}
-        <div className="bg-gradient-to-br from-[#F3F0FF] to-[#FCE4EC] rounded-2xl p-6">
+        <div className="bg-gradient-to-br from-[#F0EEFF] to-[#FCE4EC] rounded-2xl p-6">
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#7B68EE] to-[#A78BFA] flex items-center justify-center text-xl shrink-0">
               {"\u{2615}"}
@@ -125,54 +125,21 @@ export default function SupportClient() {
           </div>
         </div>
 
-        {/* Submit Feedback */}
-        <div className="bg-white rounded-2xl border border-[#E8E6F0] p-6">
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#38BDF8] to-[#0EA5E9] flex items-center justify-center text-xl shrink-0">
-              {"\u{1F4AC}"}
-            </div>
-            <div className="flex-1">
-              <h2 className="text-lg font-bold mb-1">
-                {t("feedback", language)}
-              </h2>
-              <p className="text-sm text-[#6B6890] mb-4">
-                {tx(
-                  "Suggestions, corrections, or ideas to improve PRISM.",
-                  "建議、更正或改善 PRISM 的想法。",
-                  "建议、更正或改善 PRISM 的想法。",
-                  language
-                )}
-              </p>
-              <a
-                href="https://forms.gle/G2J1u9rupXvdydBs8"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#38BDF8] hover:bg-[#2AABEB] text-white rounded-xl font-semibold text-sm transition-colors"
-              >
-                {t("feedback", language)} &rarr;
-              </a>
-            </div>
-          </div>
-        </div>
-
-        {/* Get in Touch */}
+        {/* Contact link */}
         <div className="bg-white rounded-2xl border border-[#E8E6F0] p-6 text-center">
-          <h3 className="font-bold mb-2">
-            {tx("Get in Touch", "聯絡我們", "联络我们", language)}
-          </h3>
-          <p className="text-sm text-[#6B6890] mb-4">
+          <p className="text-sm text-[#6B6890] mb-3">
             {tx(
-              "For partnerships, sponsorships, or general enquiries:",
-              "如有合作、贊助或一般查詢：",
-              "如有合作、赞助或一般查询：",
+              "Have questions or feedback?",
+              "有問題或意見？",
+              "有问题或意见？",
               language
             )}
           </p>
           <a
-            href="mailto:support@prism.lgbt"
+            href="/contact"
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#7B68EE] text-white rounded-xl font-semibold text-sm hover:bg-[#6B5CE7] transition-colors"
           >
-            support@prism.lgbt
+            {tx("Contact Us", "聯絡我們", "联络我们", language)} &rarr;
           </a>
         </div>
       </div>

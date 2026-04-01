@@ -19,10 +19,16 @@ export default async function HealthPage() {
     (l) => l.category?.includes("Healthcare") || l.category?.includes("NGO")
   );
 
+  // Extract tags and prices from health listings only
+  const tags = [...new Set(healthListings.flatMap((l) => l.tags || []).filter(Boolean))].sort();
+  const prices = [...new Set(healthListings.map((l) => l.price).filter(Boolean))] as string[];
+
   return (
     <HealthClient
       listings={healthListings}
       districts={districts}
+      tags={tags}
+      prices={prices.sort()}
     />
   );
 }

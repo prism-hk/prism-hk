@@ -1,25 +1,29 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { type EmergencyService } from "@/lib/emergency";
+import { type Listing } from "@/lib/supabase";
 import { useLanguage } from "@/lib/LanguageContext";
-import { isZh, t } from "@/lib/i18n";
+import ListingCard from "@/components/ListingCard";
+import ListingPanel from "@/components/ListingPanel";
 
-export default function EmergencyClient({ services }: { services: EmergencyService[] }) {
+export default function EmergencyClient({ listings }: { listings: Listing[] }) {
   const { language } = useLanguage();
   const [search, setSearch] = useState("");
+  const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
 
   const filtered = useMemo(() => {
-    if (!search) return services;
+    if (!search) return listings;
     const q = search.toLowerCase();
-    return services.filter((svc) =>
-      [svc.organization, svc.focus_area, svc.telephone]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase()
-        .includes(q)
-    );
-  }, [services, search]);
+    return listings.filter((listing) => {
+      const searchable = [
+        listing.name_en, listing.name_zh,
+        listing.description_en, listing.description_zh,
+        listing.phone,
+        ...(listing.tags || []),
+      ].filter(Boolean).join(" ").toLowerCase();
+      return searchable.includes(q);
+    });
+  }, [listings, search]);
 
   return (
     <div className="max-w-5xl mx-auto px-6 pt-24 pb-20">
@@ -58,56 +62,19 @@ export default function EmergencyClient({ services }: { services: EmergencyServi
       {/* Count */}
       <p className="text-xs text-[#6B6890] mb-4">{filtered.length} services</p>
 
-      {/* Services Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {filtered.map((svc) => (
-          <div
-            key={svc.id}
-            className="bg-white border border-[#E8E6F0] rounded-xl p-4 hover:border-[#A78BFA] hover:shadow-md transition-all"
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-sm text-[#1E1B3A] leading-tight">
-                  {svc.organization}
-                </h3>
-                {svc.focus_area && (
-                  <p className="text-xs text-[#6B6890] mt-1">{svc.focus_area}</p>
-                )}
-                <div className="flex flex-wrap gap-x-3 gap-y-1 mt-2 text-xs text-[#6B6890]">
-                  {svc.service_hours && (
-                    <span className="flex items-center gap-1">
-                      <span>🕐</span> {svc.service_hours.split("\n")[0]}
-                    </span>
-                  )}
-                </div>
-              </div>
-              <div className="flex flex-col items-end gap-1.5 shrink-0">
-                {svc.telephone && (
-                  <a
-                    href={`tel:${svc.telephone}`}
-                    className="inline-flex items-center gap-1 bg-[#DC2626] text-white rounded-lg px-3 py-1.5 text-xs font-semibold hover:bg-[#B91C1C] transition-colors"
-                  >
-                    📞 {svc.telephone}
-                  </a>
-                )}
-                {svc.website && (
-                  <a
-                    href={svc.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs text-[#7B68EE] hover:underline"
-                  >
-                    Website
-                  </a>
-                )}
-              </div>
-            </div>
-          </div>
+      {/* Listings Grid — same format as directory */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+        {filtered.map((listing) => (
+          <ListingCard key={listing.id} listing={listing} onSelect={setSelectedListing} />
         ))}
       </div>
 
       {filtered.length === 0 && (
         <p className="text-center text-[#6B6890] py-12">No services found.</p>
+      )}
+
+      {selectedListing && (
+        <ListingPanel listing={selectedListing} onClose={() => setSelectedListing(null)} />
       )}
     </div>
   );

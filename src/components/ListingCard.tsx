@@ -7,7 +7,7 @@ import { bilingualText, t, isZh } from "@/lib/i18n";
 import { translateTag } from "@/lib/tagTranslations";
 import { translateDistrict } from "@/lib/districtTranslations";
 
-export default function ListingCard({ listing }: { listing: Listing }) {
+export default function ListingCard({ listing, onSelect }: { listing: Listing; onSelect?: (listing: Listing) => void }) {
   const { language } = useLanguage();
   const categoryInfo = getCategoryInfo(listing.category);
   const avatarGradient = getAvatarColor(listing.name_en);
@@ -20,12 +20,10 @@ export default function ListingCard({ listing }: { listing: Listing }) {
     language
   );
 
-  const hasWebsite = !!listing.website;
-
   return (
     <div
-      onClick={hasWebsite ? () => window.open(listing.website!, "_blank", "noopener,noreferrer") : undefined}
-      className={`listing-card block bg-white border border-[#E8E6F0] rounded-xl p-4 transition-all duration-200 ${hasWebsite ? "cursor-pointer" : ""}`}
+      onClick={() => onSelect?.(listing)}
+      className="listing-card block bg-white border border-[#E8E6F0] rounded-xl p-4 transition-all duration-200 cursor-pointer"
     >
       <div className="flex gap-3">
         {/* Avatar */}

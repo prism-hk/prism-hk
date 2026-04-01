@@ -22,7 +22,7 @@ export async function getEmergencyServices(): Promise<EmergencyService[]> {
   const { data, error } = await supabase
     .from("listings")
     .select("*")
-    .contains("tags", ["emergency-services"])
+    .or("tags.cs.{emergency-services},tags.cs.{sti-testing}")
     .order("sheet_row_id");
 
   if (error) {

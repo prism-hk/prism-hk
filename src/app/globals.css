@@ -63,6 +63,27 @@ body {
   border-color: var(--color-prism-5);
 }
 
+/* Frosted glass card */
+.glass-card {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Sparkle decoration */
+.sparkle {
+  animation: sparkle-pulse 2s ease-in-out infinite;
+}
+.sparkle:nth-child(2) { animation-delay: 0.5s; }
+.sparkle:nth-child(3) { animation-delay: 1s; }
+.sparkle:nth-child(4) { animation-delay: 1.5s; }
+
+@keyframes sparkle-pulse {
+  0%, 100% { opacity: 0.4; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.1); }
+}
+
 /* Map pin shape */
 .map-pin {
   border-radius: 50% 50% 50% 0;

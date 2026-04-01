@@ -6,7 +6,7 @@ import { useLanguage } from "@/lib/LanguageContext";
 import { bilingualText, t } from "@/lib/i18n";
 import ListingCard from "./ListingCard";
 
-export default function ListingGrid({ listings }: { listings: Listing[] }) {
+export default function ListingGrid({ listings, onSelect }: { listings: Listing[]; onSelect?: (listing: Listing) => void }) {
   const { language } = useLanguage();
 
   if (listings.length === 0) {
@@ -68,7 +68,7 @@ export default function ListingGrid({ listings }: { listings: Listing[] }) {
             {/* Listing Grid */}
             <div className="grid gap-3.5" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))" }}>
               {items.map((listing) => (
-                <ListingCard key={listing.id} listing={listing} />
+                <ListingCard key={listing.id} listing={listing} onSelect={onSelect} />
               ))}
             </div>
           </section>

@@ -158,8 +158,8 @@ export default function SmartDispatcher() {
   }
 
   return (
-    <div className="relative z-20 max-w-2xl mx-auto px-4 -mt-8">
-      <div className="bg-white rounded-2xl shadow-lg border border-[#E8E6F0] p-6 md:p-8">
+    <div className="relative z-20 max-w-5xl mx-auto px-6 -mt-4 mb-8">
+      <div className="max-w-lg">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 flex-wrap text-[#1E1B3A]">
           {/* "I am" */}
           <span className="text-sm font-medium whitespace-nowrap">{iAmLabel}</span>
@@ -195,10 +195,10 @@ export default function SmartDispatcher() {
         </div>
 
         {/* Explore button */}
-        <div className="mt-5 text-center">
+        <div className="mt-5">
           <button
             onClick={handleExplore}
-            className="w-full sm:w-auto px-10 py-2.5 rounded-xl bg-gradient-to-r from-[#7B68EE] to-[#E879F9] text-white font-semibold text-sm shadow-md hover:shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98]"
+            className="px-8 py-2.5 rounded-full bg-gradient-to-r from-[#7B68EE] to-[#E879F9] text-white font-semibold text-sm shadow-md hover:shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98]"
           >
             {exploreLabel}
           </button>

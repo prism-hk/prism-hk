@@ -120,7 +120,7 @@ export default function ResourcesClient() {
         ))}
       </div>
 
-      <div className="mt-10 bg-gradient-to-r from-[#F3F0FF] to-[#FCE4EC] rounded-2xl p-6 text-center">
+      <div className="mt-10 bg-gradient-to-r from-[#F0EEFF] to-[#FCE4EC] rounded-2xl p-6 text-center">
         <p className="text-sm text-[#6B6890] mb-3">
           {knowResourceText}
         </p>

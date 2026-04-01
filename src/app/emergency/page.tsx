@@ -1,4 +1,4 @@
-import { getEmergencyServices } from "@/lib/emergency";
+import { getServiceClient } from "@/lib/supabase";
 import EmergencyClient from "./EmergencyClient";
 
 export const revalidate = 300;
@@ -9,6 +9,13 @@ export const metadata = {
 };
 
 export default async function EmergencyPage() {
-  const services = await getEmergencyServices();
-  return <EmergencyClient services={services} />;
+  const supabase = getServiceClient();
+  const { data } = await supabase
+    .from("listings")
+    .select("*")
+    .eq("status", "Published")
+    .or("tags.cs.{emergency-services},tags.cs.{sti-testing}")
+    .order("name_en");
+
+  return <EmergencyClient listings={data || []} />;
 }

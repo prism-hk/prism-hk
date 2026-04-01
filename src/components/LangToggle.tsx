@@ -14,7 +14,7 @@ export default function LangToggle() {
 
   return (
     <div
-      className="fixed top-20 right-4 z-40 flex bg-white rounded-full shadow-md border border-[#E8E6F0] overflow-hidden"
+      className="fixed top-[6.25rem] right-4 z-40 flex bg-white rounded-full shadow-md border border-[#E8E6F0] overflow-hidden"
       style={{ fontFamily: "Inter, sans-serif" }}
     >
       {options.map((opt) => (

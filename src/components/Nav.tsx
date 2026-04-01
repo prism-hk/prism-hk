@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "@/lib/LanguageContext";
-import { t } from "@/lib/i18n";
+import { t, isZh } from "@/lib/i18n";
 
 type NavLink = {
   href: string;
@@ -41,6 +41,7 @@ const navLinks: NavLink[] = [
       },
       { href: "/get-involved", label: { en: "Get Involved", zh: "參與", zhHans: "参与" } },
       { href: "/support", label: { en: "Support Us", zh: "支持我們", zhHans: "支持我们" } },
+      { href: "/contact", label: { en: "Contact Us", zh: "聯絡我們", zhHans: "联络我们" } },
     ],
   },
 ];
@@ -48,13 +49,29 @@ const navLinks: NavLink[] = [
 export default function Nav() {
   const { language } = useLanguage();
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [mobileExpandedKey, setMobileExpandedKey] = useState<string | null>(
-    null
-  );
+  const [mobileExpandedKey, setMobileExpandedKey] = useState<string | null>(null);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  function handleSearch(e: React.FormEvent) {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push(`/directory?search=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchOpen(false);
+      setSearchQuery("");
+    }
+  }
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-[#E8E6F0]">
+    <>
+    {/* Beta banner */}
+    <div className="fixed top-0 left-0 right-0 z-[51] bg-gradient-to-r from-[#7B68EE] to-[#F5C55A] text-white text-center py-1.5 text-xs font-medium" style={{ textShadow: "0 1px 2px rgba(0,0,0,0.1)" }}>
+      {isZh(language) ? "🚀 我們正在測試中！歡迎提供反饋。" : "🚀 We're in beta! Your feedback helps us improve."}
+    </div>
+    <nav className="fixed top-7 left-0 right-0 z-50 bg-white border-b border-[#E8E6F0]">
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex-shrink-0 flex items-center gap-3">
@@ -134,6 +151,33 @@ export default function Nav() {
           })}
         </div>
 
+        {/* Search button */}
+        <div className="flex items-center gap-2">
+          {searchOpen ? (
+            <form onSubmit={handleSearch} className="flex items-center">
+              <input
+                ref={searchRef}
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onBlur={() => { if (!searchQuery) setSearchOpen(false); }}
+                placeholder={isZh(language) ? "搜索..." : "Search..."}
+                className="w-40 md:w-56 px-3 py-1.5 text-sm border border-[#E8E6F0] rounded-lg focus:outline-none focus:border-[#7B68EE] bg-white"
+                autoFocus
+              />
+            </form>
+          ) : (
+            <button
+              onClick={() => { setSearchOpen(true); setTimeout(() => searchRef.current?.focus(), 100); }}
+              className="p-2 text-[#6B6890] hover:text-[#7B68EE] transition-colors"
+              aria-label="Search"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </button>
+          )}
+
         {/* Mobile hamburger */}
         <button
           className="md:hidden flex flex-col gap-1.5 p-2"
@@ -156,6 +200,7 @@ export default function Nav() {
             }`}
           />
         </button>
+        </div>
       </div>
 
       {/* Mobile dropdown */}
@@ -245,5 +290,6 @@ export default function Nav() {
         </div>
       )}
     </nav>
+    </>
   );
 }

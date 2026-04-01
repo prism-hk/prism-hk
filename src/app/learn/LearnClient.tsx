@@ -88,7 +88,7 @@ export default function LearnClient() {
         </section>
 
         {/* Prism meaning */}
-        <section className="bg-gradient-to-r from-[#F3F0FF] to-[#FCE4EC] rounded-2xl p-6">
+        <section className="bg-gradient-to-r from-[#F0EEFF] to-[#FCE4EC] rounded-2xl p-6">
           <p className="text-sm text-[#1E1B3A] leading-relaxed">
             {tx(
               "Prism represents both diversity and unity. Just as a prism refracts light into a spectrum of colors, it reflects the rich diversity within the LGBTQ+ community and the array of resources available to support it. When viewed in reverse, light recombines into a single beam, symbolizing collective strength, shared purpose, and the unification of our community. As a scientific instrument, Prism also embodies precision, progress, and insight, reminding us that light is both particles and waves, representing individuals and community, working together to illuminate change.",
@@ -182,7 +182,7 @@ export default function LearnClient() {
         </section>
 
         {/* CTA */}
-        <section className="bg-gradient-to-r from-[#F3F0FF] to-[#FCE4EC] rounded-2xl p-6">
+        <section className="bg-gradient-to-r from-[#F0EEFF] to-[#FCE4EC] rounded-2xl p-6">
           <h2 className="text-lg font-bold mb-2">
             {tx("Want to contribute?", "想參與？", "想参与？", language)}
           </h2>
