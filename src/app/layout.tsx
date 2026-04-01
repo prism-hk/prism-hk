@@ -3,7 +3,6 @@ import { LanguageProvider } from "@/lib/LanguageContext";
 import { AccessibilityProvider } from "@/lib/AccessibilityContext";
 import Nav from "@/components/Nav";
 import LangToggle from "@/components/LangToggle";
-import AccessibilityBar from "@/components/AccessibilityBar";
 import Footer from "@/components/Footer";
 import "./globals.css";
 
@@ -43,7 +42,6 @@ export default function RootLayout({
           <AccessibilityProvider>
             <Nav />
             <LangToggle />
-            <AccessibilityBar />
             <main className="min-h-screen">{children}</main>
             <Footer />
           </AccessibilityProvider>
