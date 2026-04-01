@@ -4,14 +4,16 @@ import { getPublishedListings, getCategoryStats, getDistinctDistricts } from "@/
 import { CATEGORIES } from "@/lib/categories";
 import FeaturedListings from "@/components/FeaturedListings";
 import HomeContent from "@/components/HomeContent";
+import { getEvents, type PrismEvent } from "@/lib/events";
 
 export const revalidate = 300; // ISR every 5 minutes
 
 export default async function HomePage() {
-  const [listings, categoryStats, districts] = await Promise.all([
+  const [listings, categoryStats, districts, events] = await Promise.all([
     getPublishedListings(),
     getCategoryStats(),
     getDistinctDistricts(),
+    getEvents(),
   ]);
 
   const featured = listings.filter((l) => l.verified).slice(0, 6);
@@ -30,7 +32,7 @@ export default async function HomePage() {
         <FeaturedListings listings={featured} />
       </section>
 
-      <HomeContent categoryStats={categoryStats} />
+      <HomeContent categoryStats={categoryStats} events={events} />
     </>
   );
 }
