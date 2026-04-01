@@ -47,9 +47,10 @@ const SERVICE_TYPES: ServiceType[] = [
 
 // Routing matrix: [userType][serviceType] → route config
 // Based on the Google Sheet "User Type + Service Type" tab
+// Routing matrix updated to match Blake's streamlined tags (April 2026)
 const ROUTE_MATRIX: Record<string, Record<string, Route | null>> = {
   support: {
-    everything: { path: "/directory", tags: ["emergency-services", "sti-testing"] },
+    everything: { path: "/directory", tags: ["sti-testing", "emergency"] },
     community: null,
     hangouts: null,
     activities: null,
@@ -58,32 +59,32 @@ const ROUTE_MATRIX: Record<string, Record<string, Route | null>> = {
   },
   student: {
     everything: { path: "/directory" },
-    community: { path: "/directory", category: "Community & Student Group", tags: ["university", "high-school"] },
-    hangouts: { path: "/directory", category: "Businesses", tags: ["cafe", "non-alcoholic", "sports", "hobby", "family-friendly", "youth"] },
+    community: { path: "/directory", category: "Community & Student Group", tags: ["children-youth", "university"] },
+    hangouts: { path: "/directory", category: "Businesses", tags: ["cafe", "non-alcoholic", "fitness", "hobby", "family-friendly"] },
     activities: { path: "/events" },
     learning: { path: "/learn/resources" },
-    jobs: { path: "/directory", tags: ["internship"] },
+    jobs: null,
   },
   "new-to-hk": {
     everything: { path: "/directory" },
-    community: { path: "/directory", category: "Community & Student Group", tags: ["social", "english", "multilingual"] },
-    hangouts: { path: "/directory", category: "Businesses", tags: ["bar", "cafe", "non-alcoholic", "sports", "hobby"] },
+    community: { path: "/directory", category: "Community & Student Group", tags: ["social", "english"] },
+    hangouts: { path: "/directory", category: "Businesses", tags: ["bar", "cafe", "non-alcoholic", "fitness", "hobby"] },
     activities: { path: "/events" },
     learning: { path: "/learn/resources" },
     jobs: null,
   },
   professional: {
     everything: { path: "/directory" },
-    community: { path: "/directory", category: "Community & Student Group", tags: ["employee-resource-group", "professional-networking", "volunteering"] },
+    community: { path: "/directory", category: "Community & Student Group", tags: ["professional", "volunteering"] },
     hangouts: null,
-    activities: { path: "/directory", tags: ["volunteering", "professional-networking"] },
+    activities: { path: "/directory", tags: ["volunteering", "professional"] },
     learning: { path: "/learn/resources" },
-    jobs: { path: "/directory", tags: ["jobs"] },
+    jobs: null,
   },
   curious: {
     everything: { path: "/directory" },
     community: { path: "/directory", category: "Community & Student Group" },
-    hangouts: { path: "/directory", category: "Businesses", tags: ["cafe", "non-alcoholic", "sports", "hobby", "family-friendly"] },
+    hangouts: { path: "/directory", category: "Businesses", tags: ["cafe", "non-alcoholic", "fitness", "hobby", "family-friendly"] },
     activities: { path: "/directory", tags: ["education"] },
     learning: { path: "/learn/resources" },
     jobs: null,
@@ -99,7 +100,7 @@ const ROUTE_MATRIX: Record<string, Record<string, Route | null>> = {
   family: {
     everything: { path: "/directory" },
     community: { path: "/directory", category: "Community & Student Group", tags: ["family-friendly", "pet-friendly"] },
-    hangouts: { path: "/directory", category: "Businesses", tags: ["cafe", "non-alcoholic", "sports", "hobby", "family-friendly", "children", "youth", "pet-friendly"] },
+    hangouts: { path: "/directory", category: "Businesses", tags: ["cafe", "non-alcoholic", "fitness", "hobby", "family-friendly", "children-youth", "pet-friendly"] },
     activities: { path: "/directory", tags: ["family-friendly", "pet-friendly", "volunteering"] },
     learning: { path: "/learn/resources" },
     jobs: null,

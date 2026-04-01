@@ -1,15 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" width="1200" height="1200">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#3BC49A"/>
-      <stop offset="30%" stop-color="#5EBB6A"/>
-      <stop offset="50%" stop-color="#D4A030"/>
-      <stop offset="75%" stop-color="#C85070"/>
-      <stop offset="100%" stop-color="#C03878"/>
-    </linearGradient>
-    <linearGradient id="overlay" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="white" stop-opacity="0.1"/>
-      <stop offset="100%" stop-color="white" stop-opacity="0.03"/>
+      <stop offset="0%" stop-color="#7B68EE"/>
+      <stop offset="50%" stop-color="#9B7FFF"/>
+      <stop offset="100%" stop-color="#E879F9"/>
     </linearGradient>
     <linearGradient id="prism-left" x1="0.5" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="#5EEDB8"/>
@@ -31,9 +25,11 @@
     </radialGradient>
   </defs>
 
-  <!-- Background -->
+  <!-- Background — purple gradient -->
   <rect width="1200" height="1200" fill="url(#bg)"/>
-  <rect width="1200" height="1200" fill="url(#overlay)"/>
+  <!-- Subtle depth circles -->
+  <circle cx="200" cy="400" r="300" fill="rgba(255,255,255,0.03)"/>
+  <circle cx="1000" cy="800" r="350" fill="rgba(0,0,0,0.04)"/>
 
   <!-- === CROP ZONE: y=285 to y=915 (630px) === -->
 
@@ -45,15 +41,18 @@
     <polygon points="-72,72 72,72 0,82" fill="url(#prism-base)" opacity="0.45"/>
   </g>
 
-  <!-- PRISM title -->
-  <text x="600" y="600" text-anchor="middle" font-family="-apple-system, 'Helvetica Neue', sans-serif" font-size="84" font-weight="700" letter-spacing="22" fill="white">PRISM</text>
+  <!-- PRISM wordmark -->
+  <text x="600" y="570" text-anchor="middle" font-family="-apple-system, 'Helvetica Neue', sans-serif" font-size="48" font-weight="400" letter-spacing="18" fill="rgba(255,255,255,0.9)">P R I S M</text>
+
+  <!-- Tagline -->
+  <text x="600" y="660" text-anchor="middle" font-family="-apple-system, 'Helvetica Neue', sans-serif" font-size="68" font-weight="700" fill="white">Find your wavelength.</text>
 
   <!-- Subtitle English -->
-  <text x="600" y="670" text-anchor="middle" font-family="-apple-system, 'Helvetica Neue', sans-serif" font-size="34" font-weight="500" fill="white" opacity="0.92">Hong Kong's LGBTQ+ Bilingual Directory</text>
+  <text x="600" y="730" text-anchor="middle" font-family="-apple-system, 'Helvetica Neue', sans-serif" font-size="30" font-weight="400" fill="rgba(255,255,255,0.8)">Hong Kong's LGBTQ+ Directory</text>
 
   <!-- Subtitle Chinese -->
-  <text x="600" y="720" text-anchor="middle" font-family="'PingFang HK', 'Noto Sans TC', 'Hiragino Sans GB', sans-serif" font-size="32" font-weight="400" fill="white" opacity="0.8">&#x9999;&#x6E2F; LGBTQ+ &#x96D9;&#x8A9E;&#x8CC7;&#x6599;&#x5EAB;</text>
+  <text x="600" y="775" text-anchor="middle" font-family="'PingFang HK', 'Noto Sans TC', sans-serif" font-size="28" font-weight="400" fill="rgba(255,255,255,0.65)">香港 LGBTQ+ 資料庫</text>
 
   <!-- Domain -->
-  <text x="600" y="810" text-anchor="middle" font-family="-apple-system, 'Helvetica Neue', sans-serif" font-size="26" font-weight="400" fill="white" opacity="0.6">prism.lgbt</text>
+  <text x="600" y="860" text-anchor="middle" font-family="-apple-system, 'Helvetica Neue', sans-serif" font-size="26" font-weight="500" fill="rgba(255,255,255,0.45)">prism.lgbt</text>
 </svg>
