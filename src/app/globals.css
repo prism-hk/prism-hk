@@ -102,8 +102,8 @@ button[class*="rounded-lg"]:active {
   scale: 0.96;
 }
 
-/* Subtle image outlines */
-img:not([class*="logo"]) {
+/* Subtle image outlines — only on photos, not icons/logos */
+img[class*="object-cover"] {
   outline: 1px solid rgba(0, 0, 0, 0.06);
   outline-offset: -1px;
 }

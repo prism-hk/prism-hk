@@ -28,7 +28,7 @@ export default function FeaturedListings({ listings }: { listings: Listing[] }) 
         </p>
       </div>
       {listings.length === 0 ? (
-        <div className="bg-[#F5F3FF] rounded-2xl py-14 text-center">
+        <div className="bg-white rounded-2xl border border-[#E8E6F0] py-14 text-center">
           <img src="/empty-search.png" alt="" className="w-20 h-20 mx-auto mb-4 object-contain" />
           <p className="text-[#6B6890] text-sm">{h.empty}</p>
         </div>
