@@ -70,8 +70,16 @@ export default function HomeContent({
         {upcomingEvents.length > 0 ? (
           <div className="space-y-4">
             {upcomingEvents.map((event, i) => {
-              const name = isZh(language) && event.name_zh ? event.name_zh : event.name_en;
-              const org = isZh(language) && event.org_zh ? event.org_zh : event.org_en;
+              const name = language === "zh-Hans"
+                ? (event.name_zhHans || event.name_zh || event.name_en)
+                : language === "zh"
+                ? (event.name_zh || event.name_en)
+                : event.name_en;
+              const org = language === "zh-Hans"
+                ? (event.org_zhHans || event.org_zh || event.org_en)
+                : language === "zh"
+                ? (event.org_zh || event.org_en)
+                : event.org_en;
               const eventDate = parseDate(event.date);
 
               return (
@@ -97,8 +105,14 @@ export default function HomeContent({
                           {isZh(language) ? "主辦：" : "by "}{org}
                         </p>
                       )}
-                      {event.description && (
-                        <p className="text-sm text-[#6B6890] mt-1">{event.description}</p>
+                      {(event.description_en || event.description_zh) && (
+                        <p className="text-sm text-[#6B6890] mt-1 line-clamp-2">
+                          {language === "zh-Hans"
+                            ? (event.description_zhHans || event.description_zh || event.description_en)
+                            : language === "zh"
+                            ? (event.description_zh || event.description_en)
+                            : event.description_en}
+                        </p>
                       )}
                       <div className="flex flex-wrap gap-3 mt-2 text-xs text-[#6B6890]">
                         {(event.start_time || event.end_time) && (

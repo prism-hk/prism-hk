@@ -4,19 +4,36 @@ const API_KEY = process.env.GOOGLE_SHEETS_API_KEY;
 export type PrismEvent = {
   name_en: string;
   name_zh: string | null;
+  name_zhHans: string | null;
   org_en: string;
   org_zh: string | null;
+  org_zhHans: string | null;
   date: string;
   start_time: string | null;
   end_time: string | null;
+  recurring: string | null;
   link: string | null;
-  description: string | null;
+  description_en: string | null;
+  description_zh: string | null;
+  description_zhHans: string | null;
+  image: string | null;
   price: string | null;
   district: string | null;
-  address: string | null;
+  region: string | null;
+  venue_en: string | null;
+  venue_zh: string | null;
+  venue_zhHans: string | null;
+  phone: string | null;
+  whatsapp: string | null;
+  facebook: string | null;
   instagram: string | null;
+  linkedin: string | null;
+  email: string | null;
   tags: string[];
 };
+
+// Keep backward-compatible alias
+export type { PrismEvent as PrismEventLegacy };
 
 export async function getEvents(): Promise<PrismEvent[]> {
   if (!API_KEY) return [];
@@ -46,17 +63,31 @@ export async function getEvents(): Promise<PrismEvent[]> {
       events.push({
         name_en: name,
         name_zh: get("event name (traditional chinese)") || null,
+        name_zhHans: get("event name (simplified chinese)") || null,
         org_en: get("organization name (english)") || get("organization"),
         org_zh: get("organization name (traditional chinese)") || null,
+        org_zhHans: get("organization name (simplied chinese)") || get("organization name (simplified chinese)") || null,
         date: get("date"),
         start_time: get("start time") || null,
         end_time: get("end time") || null,
+        recurring: get("recurring event") || null,
         link: get("link") || null,
-        description: get("description") || null,
+        description_en: get("description") || null,
+        description_zh: get("description (traditional chinese)") || null,
+        description_zhHans: get("description (simplied chinese)") || get("description (simplified chinese)") || null,
+        image: get("logo/image") || null,
         price: get("price") || null,
         district: get("district") || null,
-        address: get("address") || null,
+        region: get("region") || null,
+        venue_en: get("venue (english)") || null,
+        venue_zh: get("venue (traditional chinese)") || null,
+        venue_zhHans: get("venue (simplifed chinese)") || get("venue (simplified chinese)") || null,
+        phone: get("phone") || null,
+        whatsapp: get("whatsapp") || null,
+        facebook: get("facebook") || null,
         instagram: get("instagram") || null,
+        linkedin: get("linkedin") || null,
+        email: get("email") || null,
         tags: (get("tags") || "").split(",").map((t: string) => t.trim()).filter(Boolean),
       });
     }
