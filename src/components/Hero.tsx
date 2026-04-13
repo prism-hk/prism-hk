@@ -19,7 +19,7 @@ export default function Hero({}: HeroProps) {
         <div className="flex flex-col md:flex-row items-start gap-6 md:gap-10">
           {/* Left — text + SmartDispatcher */}
           <div className="flex-1 pt-4 md:pt-8">
-            <p className="text-xl md:text-2xl font-bold mb-3 bg-gradient-to-r from-[#5B6BEE] via-[#C278E0] to-[#F5B870] bg-clip-text text-transparent">
+            <p className="text-xl md:text-2xl font-bold mb-3 bg-[linear-gradient(to_right,#7B5CE7_0%,#C47ED0_20%,#F5A623_55%,#F5A623_100%)] bg-clip-text text-transparent">
               Find Your Wavelength
             </p>
             <h1 className="text-3xl md:text-[2.8rem] font-bold leading-[1.15] text-[#1E1B3A] mb-8">
