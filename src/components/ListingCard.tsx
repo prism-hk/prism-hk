@@ -100,6 +100,13 @@ export default function ListingCard({ listing, onSelect }: { listing: Listing; o
             </div>
           )}
 
+          {/* Last updated */}
+          {listing.last_checked && (
+            <p className="text-[10px] text-[#6B6890]/60 mt-1.5">
+              {isZh(language) ? "最後更新：" : "Updated: "}{listing.last_checked}
+            </p>
+          )}
+
           {/* Contact Icons */}
           <div className="flex items-center gap-2.5 mt-2.5">
             {listing.website && (

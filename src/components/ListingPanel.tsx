@@ -231,6 +231,13 @@ export default function ListingPanel({
             </div>
           )}
 
+          {/* Last updated */}
+          {listing.last_checked && (
+            <p className="text-xs text-[#6B6890]/60 mb-6">
+              {isZh(language) ? "最後更新：" : "Last updated: "}{listing.last_checked}
+            </p>
+          )}
+
           {/* Visit Website CTA */}
           {listing.website && (
             <a
