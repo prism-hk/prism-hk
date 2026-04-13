@@ -2,11 +2,10 @@ import Hero from "@/components/Hero";
 import SmartDispatcher from "@/components/SmartDispatcher";
 import { getPublishedListings, getCategoryStats, getDistinctDistricts } from "@/lib/supabase";
 import { CATEGORIES } from "@/lib/categories";
-import FeaturedListings from "@/components/FeaturedListings";
 import HomeContent from "@/components/HomeContent";
-import { getEvents, type PrismEvent } from "@/lib/events";
+import { getEvents } from "@/lib/events";
 
-export const revalidate = 300; // ISR every 5 minutes
+export const revalidate = 300;
 
 export default async function HomePage() {
   const [listings, categoryStats, districts, events] = await Promise.all([
@@ -21,6 +20,7 @@ export default async function HomePage() {
 
   return (
     <>
+      {/* 1. Hero + SmartDispatcher */}
       <Hero
         listingsCount={listings.length}
         categoriesCount={categoriesWithListings || CATEGORIES.length}
@@ -28,11 +28,15 @@ export default async function HomePage() {
       />
       <SmartDispatcher />
 
-      <section className="max-w-5xl mx-auto px-6 py-16">
-        <FeaturedListings listings={featured} />
-      </section>
-
-      <HomeContent categoryStats={categoryStats} events={events} />
+      {/* 2-6. Categories, 18 Districts, Featured, Events, CTA */}
+      <HomeContent
+        categoryStats={categoryStats}
+        events={events}
+        featured={featured}
+        listingsCount={listings.length}
+        districtsCount={districts.length || 18}
+        categoriesCount={categoriesWithListings || CATEGORIES.length}
+      />
     </>
   );
 }

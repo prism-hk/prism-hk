@@ -1,7 +1,8 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useLanguage } from "@/lib/LanguageContext";
-import { t, ui, isZh } from "@/lib/i18n";
+import { isZh } from "@/lib/i18n";
 
 type HeroProps = {
   listingsCount: number;
@@ -9,90 +10,67 @@ type HeroProps = {
   districtsCount: number;
 };
 
+const CYCLING_TAGS = [
+  { en: "lgbtq-friendly", zh: "LGBTQ+ 友善" },
+  { en: "community", zh: "社區" },
+  { en: "healthcare", zh: "醫療" },
+  { en: "social", zh: "社交" },
+  { en: "professional", zh: "專業" },
+  { en: "education", zh: "教育" },
+  { en: "entertainment", zh: "娛樂" },
+  { en: "mental-health", zh: "精神健康" },
+  { en: "arts", zh: "藝術" },
+  { en: "volunteering", zh: "義工" },
+];
+
 export default function Hero({
   listingsCount,
   categoriesCount,
   districtsCount,
 }: HeroProps) {
   const { language } = useLanguage();
+  const [tagIndex, setTagIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTagIndex((prev) => (prev + 1) % CYCLING_TAGS.length);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <section className="relative overflow-hidden pt-28 pb-16 bg-[#FAFAFE]">
+    <section className="relative overflow-hidden pt-28 pb-8 bg-[#FAFAFE]">
       <div className="relative z-10 max-w-5xl mx-auto px-6">
-        <div className="flex flex-col md:flex-row items-start gap-8 md:gap-6">
-          {/* Left side — text */}
-          <div className="flex-1 max-w-lg pt-2">
-            <h1 className="text-4xl md:text-5xl lg:text-[3.4rem] font-bold leading-[1.15] bg-gradient-to-r from-[#7B68EE] via-[#E879F9] to-[#F472B6] bg-clip-text text-transparent">
-              Find your{"\n"}wavelength.
-            </h1>
-
-            <p className="mt-5 text-[#6B6890] text-sm leading-relaxed max-w-sm">
-              {isZh(language)
-                ? (language === "zh-Hans" ? ui["zh-Hans"].heroSubtitle : ui.zh.heroSubtitle)
-                : ui.en.heroSubtitle}
+        <div className="flex flex-col md:flex-row items-start gap-6 md:gap-10">
+          {/* Left — text */}
+          <div className="flex-1 pt-2">
+            <p className="text-sm font-semibold text-[#7B68EE] tracking-wide mb-2">
+              Find Your Wavelength
             </p>
+            <h1 className="text-3xl md:text-4xl font-bold leading-tight text-[#1E1B3A]">
+              {isZh(language)
+                ? "探索香港 LGBTQ+ 資源與活動"
+                : "Explore LGBTQ+ resources and events"}
+            </h1>
           </div>
 
-          {/* Right side — staggered stats + photos (desktop) */}
-          <div className="flex-shrink-0 relative w-[360px] h-[380px] hidden md:block">
-            {/* Row 1: Districts + Flag photo */}
-            <div className="absolute top-0 left-[40px]">
-              <StatCard value={districtsCount} label={t("districts", language)} />
-            </div>
-            <div className="absolute top-0 right-0 w-[180px] h-[150px] rounded-2xl overflow-hidden shadow-sm">
-              <img src="/hero-flags.png" alt="Pride flags" className="w-full h-full object-cover" />
-            </div>
-
-            {/* Row 2: Listings + Categories */}
-            <div className="absolute top-[120px] left-0">
-              <StatCard value={listingsCount} label={t("listings", language)} />
-            </div>
-            <div className="absolute top-[155px] left-[160px]">
-              <StatCard value={categoriesCount} label={t("categories", language)} />
-            </div>
-
-            {/* Row 3: Pride photo + 24/7 */}
-            <div className="absolute bottom-[10px] left-[20px] w-[150px] h-[130px] rounded-2xl overflow-hidden shadow-sm">
-              <img src="/hero-pride.png" alt="Pride celebration" className="w-full h-full object-cover" />
-            </div>
-            <div className="absolute bottom-[5px] right-[10px]">
-              <StatCard value="24/7" label={isZh(language) ? "全天候" : "Online"} />
-            </div>
-          </div>
-
-          {/* Mobile stats — compact row */}
-          <div className="flex flex-wrap gap-3 md:hidden">
-            {[
-              { value: districtsCount, label: t("districts", language) },
-              { value: listingsCount, label: t("listings", language) },
-              { value: categoriesCount, label: t("categories", language) },
-              { value: "24/7", label: isZh(language) ? "全天候" : "Online" },
-            ].map((stat) => (
-              <div key={stat.label} className="bg-[#E8DFFF]/60 rounded-xl px-4 py-2.5 text-center">
-                <div className="text-lg font-bold text-[#7B68EE] tabular-nums">
-                  {typeof stat.value === "number" ? stat.value.toLocaleString() : stat.value}
-                </div>
-                <div className="text-[9px] uppercase tracking-[0.15em] text-[#6B6890] font-semibold mt-0.5">
-                  {stat.label}
-                </div>
-              </div>
+          {/* Right — cycling tag pills */}
+          <div className="flex-shrink-0 hidden md:flex items-center gap-2 pt-8 flex-wrap max-w-[300px]">
+            {CYCLING_TAGS.slice(0, 8).map((tag, i) => (
+              <span
+                key={tag.en}
+                className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-700 ${
+                  i === tagIndex % 8
+                    ? "bg-[#7B68EE] text-white border-[#7B68EE] shadow-md shadow-[#7B68EE]/20"
+                    : "bg-white text-[#6B6890] border-[#E8E6F0]"
+                }`}
+              >
+                {isZh(language) ? tag.zh : tag.en}
+              </span>
             ))}
           </div>
         </div>
       </div>
     </section>
-  );
-}
-
-function StatCard({ value, label }: { value: number | string; label: string }) {
-  return (
-    <div className="bg-[#E8DFFF]/50 rounded-2xl px-7 py-4 text-center shadow-sm">
-      <div className="text-3xl font-bold text-[#7B68EE] tabular-nums">
-        {typeof value === "number" ? value.toLocaleString() : value}
-      </div>
-      <div className="text-[9px] uppercase tracking-[0.2em] text-[#6B6890] font-semibold mt-1">
-        {label}
-      </div>
-    </div>
   );
 }
