@@ -16,7 +16,9 @@ export default function ListingPanel({
   onClose: () => void;
 }) {
   const { language } = useLanguage();
-  const categoryInfo = getCategoryInfo(listing.category);
+  const categories = listing.category.split(",").map((c) => c.trim()).filter(Boolean);
+  const categoryInfos = categories.map((c) => getCategoryInfo(c));
+  const categoryInfo = categoryInfos[0];
   const name = bilingualText(listing.name_en, listing.name_zh, language);
   const description = bilingualText(
     listing.description_en,
@@ -78,16 +80,19 @@ export default function ListingPanel({
 
           {/* Category + District pills */}
           <div className="flex flex-wrap gap-1.5 mt-3">
-            <span
-              className={`inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full bg-gradient-to-r ${categoryInfo.gradient} text-white`}
-            >
-              {categoryInfo.emoji}{" "}
-              {language === "zh-Hans"
-                ? (categoryInfo.zhHans || categoryInfo.zh)
-                : language === "zh"
-                  ? categoryInfo.zh
-                  : categoryInfo.en}
-            </span>
+            {categoryInfos.map((catInfo, i) => (
+              <span
+                key={i}
+                className={`inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full bg-gradient-to-r ${catInfo.gradient} text-white`}
+              >
+                {catInfo.emoji}{" "}
+                {language === "zh-Hans"
+                  ? (catInfo.zhHans || catInfo.zh)
+                  : language === "zh"
+                    ? catInfo.zh
+                    : catInfo.en}
+              </span>
+            ))}
             {listing.district_en && (
               <span className="inline-flex items-center text-xs font-medium px-2.5 py-1 rounded-full bg-[#F0EEFF] text-[#7B68EE]">
                 {isZh(language)

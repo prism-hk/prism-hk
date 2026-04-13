@@ -38,9 +38,16 @@ const CATEGORY_MAP: Record<string, string> = {
   "embassy / consulate": "Government",
 };
 
-function parseFirstCategory(value: string): string {
-  const first = value.split(",")[0].trim().toLowerCase();
-  return CATEGORY_MAP[first] || value.split(",")[0].trim() || "Other";
+function parseCategories(value: string): string {
+  return value
+    .split(",")
+    .map((c) => {
+      const key = c.trim().toLowerCase();
+      return CATEGORY_MAP[key] || c.trim() || "";
+    })
+    .filter(Boolean)
+    .filter((v, i, a) => a.indexOf(v) === i) // dedupe
+    .join(", ") || "Other";
 }
 
 function parseBoolean(value: string): boolean {
@@ -53,7 +60,7 @@ function transformRow(row: SheetRow, rowIndex: number) {
     status: row.status || "Published",
     name_en: row.name_en || "",
     name_zh: row.name_zh || null,
-    category: parseFirstCategory(row.category || "Other"),
+    category: parseCategories(row.category || "Other"),
     tags: parseTags(row.tags || ""),
     price: row.price || null,
     district_en: row.district_en || null,
