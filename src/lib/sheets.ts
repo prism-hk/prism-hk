@@ -63,6 +63,9 @@ const COLUMN_MAP: Record<string, string> = {
   "languages": "languages",
   "service hours": "hours",
   "telephone": "phone",
+  "logo": "logo",
+  "logo url": "logo",
+  "logo/image": "logo",
 };
 
 function normalizeHeader(header: string): string {

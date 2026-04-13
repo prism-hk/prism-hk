@@ -27,9 +27,17 @@ export default function ListingCard({ listing, onSelect }: { listing: Listing; o
       className="listing-card block bg-white border border-[#E8E6F0] rounded-xl p-4 transition-all duration-200 cursor-pointer"
     >
       <div className="flex gap-3">
-        {/* Avatar */}
+        {/* Avatar / Logo */}
+        {listing.logo ? (
+          <img
+            src={listing.logo}
+            alt={listing.name_en}
+            className="w-12 h-12 min-w-[48px] rounded-xl object-cover bg-[#F5F4FA]"
+            onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.nextElementSibling?.classList.remove("hidden"); }}
+          />
+        ) : null}
         <div
-          className={`w-12 h-12 min-w-[48px] rounded-xl bg-gradient-to-br ${avatarGradient} flex items-center justify-center text-white font-semibold text-sm`}
+          className={`w-12 h-12 min-w-[48px] rounded-xl bg-gradient-to-br ${avatarGradient} flex items-center justify-center text-white font-semibold text-sm ${listing.logo ? "hidden" : ""}`}
         >
           {initials}
         </div>

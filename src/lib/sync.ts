@@ -50,6 +50,18 @@ function parseCategories(value: string): string {
     .join(", ") || "Other";
 }
 
+function parseLogo(value: string): string | null {
+  if (!value) return null;
+  // Convert Google Drive share links to direct image URLs
+  const driveMatch = value.match(/(?:id=|\/d\/)([a-zA-Z0-9_-]+)/);
+  if (driveMatch) {
+    return `https://drive.google.com/uc?export=view&id=${driveMatch[1]}`;
+  }
+  // Already a direct URL
+  if (value.startsWith("http")) return value;
+  return null;
+}
+
 function parseBoolean(value: string): boolean {
   return ["yes", "true", "1", "verified"].includes(value.toLowerCase().trim());
 }
@@ -79,6 +91,7 @@ function transformRow(row: SheetRow, rowIndex: number) {
     email: row.email || null,
     description_en: row.description_en || null,
     description_zh: row.description_zh || null,
+    logo: parseLogo(row.logo || ""),
     verified: parseBoolean(row.verified || ""),
     last_checked: row.last_checked || null,
     synced_at: new Date().toISOString(),

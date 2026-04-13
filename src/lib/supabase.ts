@@ -41,6 +41,7 @@ export type Listing = {
   email: string | null;
   description_en: string | null;
   description_zh: string | null;
+  logo: string | null;
   verified: boolean;
   last_checked: string | null;
   synced_at: string;

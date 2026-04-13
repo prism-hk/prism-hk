@@ -66,6 +66,13 @@ export default function ListingPanel({
           style={{ background: `linear-gradient(135deg, ${categoryInfo.gradient.includes("pink") ? "#F0EEFF" : "#F0FFF8"} 0%, #FAFAFE 100%)` }}
         >
           <div className="pr-10">
+            {listing.logo && (
+              <img
+                src={listing.logo}
+                alt={listing.name_en}
+                className="w-16 h-16 rounded-xl object-cover bg-white shadow-sm mb-3"
+              />
+            )}
             <h2 className="text-xl font-bold text-[#1E1B3A] leading-snug whitespace-pre-line">
               {name}
             </h2>
