@@ -1,5 +1,4 @@
 import Hero from "@/components/Hero";
-import SmartDispatcher from "@/components/SmartDispatcher";
 import { getPublishedListings, getCategoryStats, getDistinctDistricts } from "@/lib/supabase";
 import { CATEGORIES } from "@/lib/categories";
 import HomeContent from "@/components/HomeContent";
@@ -26,8 +25,6 @@ export default async function HomePage() {
         categoriesCount={categoriesWithListings || CATEGORIES.length}
         districtsCount={districts.length || 18}
       />
-      <SmartDispatcher />
-
       {/* 2-6. Categories, 18 Districts, Featured, Events, CTA */}
       <HomeContent
         categoryStats={categoryStats}

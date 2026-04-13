@@ -81,7 +81,7 @@ export default function HomeContent({
                 href={`/directory?category=${cat.id}`}
                 className="flex flex-col items-center gap-2 group active:scale-[0.98]"
               >
-                <div className="w-14 h-14 rounded-2xl bg-[#F5F4FA] flex items-center justify-center shadow-sm group-hover:shadow-md group-hover:scale-105 transition-[transform,box-shadow]">
+                <div className="w-16 h-16 rounded-full border-2 border-[#1E1B3A]/15 flex items-center justify-center group-hover:border-[#7B68EE] group-hover:scale-105 transition-[transform,border-color]">
                   <img src={cat.icon} alt="" className="w-7 h-7 object-contain" />
                 </div>
                 <span className="text-xs font-medium text-[#6B6890] group-hover:text-[#7B68EE] transition-colors text-center max-w-[80px]">

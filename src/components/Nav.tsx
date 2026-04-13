@@ -5,7 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useLanguage } from "@/lib/LanguageContext";
-import { t, isZh } from "@/lib/i18n";
+import { t, isZh, type Language } from "@/lib/i18n";
+import { useAccessibility } from "@/lib/AccessibilityContext";
 
 type NavLink = {
   href: string;
@@ -41,7 +42,8 @@ const navLinks: NavLink[] = [
 ];
 
 export default function Nav() {
-  const { language } = useLanguage();
+  const { language, setLanguage } = useLanguage();
+  const { darkMode, setDarkMode } = useAccessibility();
   const pathname = usePathname();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -146,6 +148,44 @@ export default function Nav() {
               </Link>
             );
           })}
+
+          {/* Language dropdown */}
+          <div className="relative group">
+            <button className="flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium text-[#1E1B3A] hover:text-[#7B68EE] transition-colors">
+              {language === "zh" ? "繁中" : language === "zh-Hans" ? "简中" : "ENG"}
+              <svg className="w-3.5 h-3.5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div className="absolute top-full right-0 pt-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-[opacity,visibility] duration-150">
+              <div className="bg-white rounded-lg shadow-lg border border-[#E8E6F0] py-1 min-w-[80px]">
+                {([["en", "ENG"], ["zh", "繁中"], ["zh-Hans", "简中"]] as [Language, string][]).map(([val, label]) => (
+                  <button
+                    key={val}
+                    onClick={() => setLanguage(val)}
+                    className={`block w-full text-left px-4 py-2 text-sm font-medium transition-colors ${
+                      language === val ? "text-[#7B68EE] bg-[#7B68EE]/10" : "text-[#1E1B3A] hover:text-[#7B68EE] hover:bg-[#7B68EE]/5"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Dark mode toggle */}
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className="p-2 rounded-lg text-[#6B6890] hover:text-[#7B68EE] transition-colors"
+            aria-label="Toggle dark mode"
+          >
+            {darkMode ? (
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+            ) : (
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+            )}
+          </button>
         </div>
 
         {/* Mobile: search + hamburger */}

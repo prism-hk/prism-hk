@@ -106,7 +106,7 @@ const ROUTE_MATRIX: Record<string, Record<string, Route | null>> = {
   },
 };
 
-export default function SmartDispatcher() {
+export default function SmartDispatcher({ inline }: { inline?: boolean } = {}) {
   const { language } = useLanguage();
   const router = useRouter();
   const [userType, setUserType] = useState("exploring");
@@ -149,8 +149,8 @@ export default function SmartDispatcher() {
   }
 
   return (
-    <div className="relative z-20 max-w-5xl mx-auto px-6 -mt-4 mb-8">
-      <div className="max-w-lg">
+    <div className={inline ? "" : "relative z-20 max-w-5xl mx-auto px-6 -mt-4 mb-8"}>
+      <div className={inline ? "" : "max-w-lg"}>
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 flex-wrap text-[#1E1B3A]">
           {/* "I am" */}
           <span className="text-base font-medium whitespace-nowrap">{iAmLabel}</span>
