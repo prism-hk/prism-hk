@@ -189,7 +189,7 @@ export default function SmartDispatcher() {
         <div className="mt-5">
           <button
             onClick={handleExplore}
-            className="px-8 py-2.5 rounded-full bg-gradient-to-r from-[#7B68EE] to-[#E879F9] text-white font-semibold text-sm shadow-md hover:shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98]"
+            className="px-8 py-2.5 rounded-full bg-gradient-to-r from-[#7B68EE] to-[#E879F9] text-white font-semibold text-sm shadow-md hover:shadow-lg transition-[transform,box-shadow] hover:scale-[1.02] active:scale-[0.96]"
           >
             {exploreLabel}
           </button>

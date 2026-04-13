@@ -24,7 +24,7 @@ export default function ListingCard({ listing, onSelect }: { listing: Listing; o
   return (
     <div
       onClick={() => onSelect?.(listing)}
-      className="listing-card block bg-white border border-[#E8E6F0] rounded-xl p-4 transition-all duration-200 cursor-pointer"
+      className="listing-card block bg-white border border-[#E8E6F0] rounded-xl p-4 transition-[border-color,box-shadow] duration-200 cursor-pointer active:scale-[0.98]"
     >
       <div className="flex gap-3">
         {/* Avatar / Logo */}
@@ -229,7 +229,7 @@ function ContactIcon({
       rel="noopener noreferrer"
       aria-label={label}
       onClick={(e) => e.stopPropagation()}
-      className="text-[#6B6890] hover:text-[#7B68EE] transition-colors"
+      className="relative text-[#6B6890] hover:text-[#7B68EE] transition-colors p-1.5 -m-1.5"
     >
       {icon}
     </a>

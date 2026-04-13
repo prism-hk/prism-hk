@@ -237,7 +237,7 @@ export default function ListingPanel({
               href={listing.website}
               target="_blank"
               rel="noopener noreferrer"
-              className="block w-full text-center px-6 py-3 rounded-xl bg-gradient-to-r from-[#7B68EE] to-[#F5C55A] text-white font-semibold text-sm shadow-md hover:shadow-lg transition-all hover:scale-[1.01] active:scale-[0.99]"
+              className="block w-full text-center px-6 py-3 rounded-xl bg-gradient-to-r from-[#7B68EE] to-[#F5C55A] text-white font-semibold text-sm shadow-md hover:shadow-lg transition-[transform,box-shadow] hover:scale-[1.01] active:scale-[0.96]"
             >
               {isZh(language) ? "訪問網站" : "Visit Website"} →
             </a>
