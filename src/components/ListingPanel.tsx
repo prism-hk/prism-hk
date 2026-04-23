@@ -22,18 +22,18 @@ export default function ListingPanel({
   const categories = listing.category.split(",").map((c) => c.trim()).filter(Boolean);
   const categoryInfos = categories.map((c) => getCategoryInfo(c));
   const categoryInfo = categoryInfos[0];
-  const name = bilingualText(listing.name_en, listing.name_zh, language, listing.name_zhHans);
+  const name = bilingualText(listing.name_en, listing.name_zh, language, listing.name_zh_hans);
   const description = bilingualText(
     listing.description_en,
     listing.description_zh,
     language,
-    listing.description_zhHans
+    listing.description_zh_hans
   );
   const address = bilingualText(
     listing.address,
     listing.address_zh,
     language,
-    listing.address_zhHans
+    listing.address_zh_hans
   );
 
   // Close on Escape
@@ -226,7 +226,7 @@ export default function ListingPanel({
           {/* Upcoming events hosted by this org */}
           {(() => {
             const today = new Date(new Date().toDateString());
-            const orgNames = [listing.name_en, listing.name_zh, listing.name_zhHans]
+            const orgNames = [listing.name_en, listing.name_zh, listing.name_zh_hans]
               .filter(Boolean)
               .map((n) => (n as string).toLowerCase().trim());
             const upcoming = events

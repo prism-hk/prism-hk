@@ -95,10 +95,10 @@ export default function DirectoryClient({
         const q = search.toLowerCase();
         const qNorm = normalize(search);
         const searchable = [
-          listing.name_en, listing.name_zh, listing.name_zhHans,
-          listing.description_en, listing.description_zh, listing.description_zhHans,
+          listing.name_en, listing.name_zh, listing.name_zh_hans,
+          listing.description_en, listing.description_zh, listing.description_zh_hans,
           listing.district_en, listing.district_zh,
-          listing.address, listing.address_zh, listing.address_zhHans,
+          listing.address, listing.address_zh, listing.address_zh_hans,
           listing.category, ...(listing.tags || []),
         ].filter(Boolean).join(" ").toLowerCase();
         const searchableNorm = normalize(searchable);
