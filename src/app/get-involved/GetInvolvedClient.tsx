@@ -13,36 +13,6 @@ function tx(en: string, zh: string, zhHans: string, language: Language): string 
 
 const CARDS = [
   {
-    emoji: "🏪",
-    gradient: "from-[#7B68EE] to-[#A78BFA]",
-    btnColor: "bg-[#7B68EE] hover:bg-[#6B5CE7]",
-    titleEn: "Submit an Organization",
-    titleZh: "提交機構",
-    titleZhHans: "提交机构",
-    descEn: "Know an LGBTQ+-friendly business, healthcare provider, or community group? Submit it for review.",
-    descZh: "認識 LGBTQ+ 友善的商戶、醫療服務或社區組織？提交以供審核。",
-    descZhHans: "认识 LGBTQ+ 友善的商户、医疗服务或社区组织？提交以供审核。",
-    btnEn: "Submit Organization",
-    btnZh: "提交機構",
-    btnZhHans: "提交机构",
-    url: "https://forms.gle/feTGk1BpQVCY4woSA",
-  },
-  {
-    emoji: "📅",
-    gradient: "from-[#E879F9] to-[#F472B6]",
-    btnColor: "bg-[#E879F9] hover:bg-[#D865E5]",
-    titleEn: "Submit an Event",
-    titleZh: "提交活動",
-    titleZhHans: "提交活动",
-    descEn: "Organizing or know about an upcoming LGBTQ+ event in Hong Kong? Let us know.",
-    descZh: "正在籌辦或知道即將舉行的香港 LGBTQ+ 活動？告訴我們。",
-    descZhHans: "正在筹办或知道即将举行的香港 LGBTQ+ 活动？告诉我们。",
-    btnEn: "Submit Event",
-    btnZh: "提交活動",
-    btnZhHans: "提交活动",
-    url: "https://forms.gle/XyjEMGrbT7baWZen7",
-  },
-  {
     emoji: "📝",
     gradient: "from-[#22C55E] to-[#16A34A]",
     btnColor: "bg-[#22C55E] hover:bg-[#1DB954]",
@@ -101,6 +71,36 @@ export default function GetInvolvedClient() {
             </div>
           </div>
         ))}
+
+        {/* Submit an Organization (Tally) */}
+        <FormEmbed
+          title={tx("Submit an Organization", "提交機構", "提交机构", language)}
+          desc={tx(
+            "Know an LGBTQ+-friendly business, healthcare provider, or community group? Submit it for review.",
+            "認識 LGBTQ+ 友善的商戶、醫療服務或社區組織？提交以供審核。",
+            "认识 LGBTQ+ 友善的商户、医疗服务或社区组织？提交以供审核。",
+            language
+          )}
+          emoji="🏪"
+          gradient="from-[#7B68EE] to-[#A78BFA]"
+          formUrl="https://tally.so/embed/pb4loy?alignLeft=1&hideTitle=1&dynamicHeight=1"
+          language={language}
+        />
+
+        {/* Submit an Event (Tally) */}
+        <FormEmbed
+          title={tx("Submit an Event", "提交活動", "提交活动", language)}
+          desc={tx(
+            "Organizing or know about an upcoming LGBTQ+ event in Hong Kong? Let us know.",
+            "正在籌辦或知道即將舉行的香港 LGBTQ+ 活動？告訴我們。",
+            "正在筹办或知道即将举行的香港 LGBTQ+ 活动？告诉我们。",
+            language
+          )}
+          emoji="📅"
+          gradient="from-[#E879F9] to-[#F472B6]"
+          formUrl="https://tally.so/embed/9q2zbQ?alignLeft=1&hideTitle=1&dynamicHeight=1"
+          language={language}
+        />
 
         {/* Volunteer with PRISM */}
         <FormEmbed

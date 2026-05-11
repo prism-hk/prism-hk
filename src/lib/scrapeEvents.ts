@@ -1,7 +1,7 @@
 import { getSheetsClient } from "./sheets-auth";
 
 const SHEET_ID = process.env.GOOGLE_SHEET_ID || "1zKolQNmY8g_oDPBPiiQLmFeNC6KFmz7xXCNgBvAtWhY";
-const API_KEY = "AIzaSyAruoZCvwELngTPpym_qncSAOmIv_S3pNk";
+const API_KEY = process.env.GOOGLE_SHEETS_API_KEY!;
 
 const JS_RENDERED_HOSTS = [
   "yourtessera.com",
