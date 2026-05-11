@@ -19,12 +19,12 @@ const COMMUNITY_ORGS: { name: string; url: string; logo: string }[] = [
   {
     name: "Pink Alliance",
     url: "https://www.pinkalliance.hk",
-    logo: "https://static.wixstatic.com/media/afab4e_b469c7b78dd84f8292b26e6bcd7ee981~mv2.jpg/v1/fill/w_400,h_400,al_c,q_80/Pink%20Alliance%20Logo_Horizontal_20240310.jpg",
+    logo: "/community-orgs/pink-alliance.jpg",
   },
   {
     name: "AIDS Concern",
     url: "https://aidsconcern.org.hk",
-    logo: "https://aidsconcern.org.hk/wp-content/uploads/2018/02/aids-concern-logo.png",
+    logo: "/community-orgs/aids-concern.jpg",
   },
   {
     name: "Les Peches",

@@ -439,13 +439,13 @@ export default function EventsClient({
                     rel="noopener noreferrer"
                     className="flex flex-col items-center gap-3 group"
                   >
-                    <div className="w-20 h-20 rounded-full bg-white border border-[#E8E6F0] overflow-hidden flex items-center justify-center group-hover:border-[#A78BFA] group-hover:shadow-md transition-[border-color,box-shadow]">
+                    <div className="w-20 h-20 rounded-full bg-white border border-[#E8E6F0] overflow-hidden flex items-center justify-center p-3 group-hover:border-[#A78BFA] group-hover:shadow-md transition-[border-color,box-shadow]">
                       {org.logo ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={org.logo}
                           alt={org.name}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-contain"
                           loading="lazy"
                         />
                       ) : (

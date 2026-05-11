@@ -289,7 +289,7 @@ export default function HomeContent({
                 { name: "Pink Alliance", url: "https://www.pinkalliance.hk" },
                 { name: "AIDS Concern", url: "https://aidsconcern.org.hk" },
                 { name: "Les Peches", url: "https://www.instagram.com/lespeches.hk" },
-                { name: "Out in HK", url: "https://www.outinhk.com" },
+                { name: "Out in HK", url: "https://www.instagram.com/out_in_hk" },
               ].map((org) => (
                 <a
                   key={org.name}
