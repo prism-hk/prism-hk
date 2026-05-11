@@ -412,9 +412,21 @@ export default function EventsClient({
                           <button
                             key={j}
                             onClick={() => setSelectedEvent(ev)}
-                            className="block w-full text-left text-[9px] md:text-[10px] leading-tight bg-gradient-to-r from-[#7B68EE] to-[#E879F9] text-white rounded px-1 py-0.5 mb-0.5 truncate hover:opacity-80 transition-opacity cursor-pointer"
+                            title={name}
+                            className="flex items-center gap-1 w-full text-left text-[9px] md:text-[10px] leading-tight bg-[#F0EEFF] hover:bg-[#E0D9FF] text-[#5746C7] rounded px-1 py-0.5 mb-0.5 transition-colors cursor-pointer"
                           >
-                            {name}
+                            {ev.image && (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
+                                src={ev.image}
+                                alt=""
+                                aria-hidden
+                                className="w-3.5 h-3.5 rounded-sm object-cover shrink-0"
+                                loading="lazy"
+                                onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+                              />
+                            )}
+                            <span className="truncate min-w-0">{name}</span>
                           </button>
                         );
                       })}

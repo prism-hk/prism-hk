@@ -37,6 +37,7 @@ export default function HealthClient({
   const [showTags, setShowTags] = useState(false);
   const [showPrices, setShowPrices] = useState(false);
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   function toggleTag(tag: string) {
     setActiveTags((prev) =>
@@ -44,9 +45,15 @@ export default function HealthClient({
     );
   }
 
+  const activeCount =
+    (filters.search ? 1 : 0) +
+    (filters.category ? 1 : 0) +
+    (filters.district ? 1 : 0) +
+    activeTags.length +
+    (activePrice ? 1 : 0);
+
   const filtered = useMemo(() => {
     return listings.filter((listing) => {
-      // AND logic — listing must have ALL selected tags
       if (activeTags.length > 0) {
         const listingTags = listing.tags || [];
         if (!activeTags.every((t) => listingTags.includes(t))) return false;
@@ -71,31 +78,21 @@ export default function HealthClient({
     });
   }, [listings, filters, activeTags, activePrice]);
 
-  return (
-    <div className="max-w-5xl mx-auto px-6 pt-32 pb-20">
-      <h1 className="text-3xl font-bold mb-1">
-        {t("health", language)}
-      </h1>
-      <p className="text-[#6B6890] text-sm mb-6">
-        {filtered.length} / {listings.length} {isZh(language) ? "LGBTQ+ 友善醫療服務提供者及支援組織" : "LGBTQ+-affirming healthcare providers and support organizations"}
-      </p>
-
+  const filterPanel = (
+    <div className="space-y-4">
       <FilterBar
         categories={["Healthcare & Support", "NGOs"]}
         districts={districts}
         onFilter={setFilters}
       />
 
-      {/* Tag filter — multi-select */}
-      <div className="mt-3">
+      {/* Tag filter */}
+      <div>
         <button
           onClick={() => setShowTags(!showTags)}
           className="flex items-center gap-2 text-sm font-medium text-[#6B6890] hover:text-[#7B68EE] transition-colors"
         >
-          <svg
-            className={`w-4 h-4 transition-transform ${showTags ? "rotate-180" : ""}`}
-            fill="none" stroke="currentColor" viewBox="0 0 24 24"
-          >
+          <svg className={`w-4 h-4 transition-transform ${showTags ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
           {activeTags.length > 0
@@ -137,7 +134,6 @@ export default function HealthClient({
                 </div>
               );
             })}
-            {/* Ungrouped tags */}
             {(() => {
               const groupedTags = TAG_GROUPS.flatMap((g) => g.tags);
               const ungrouped = tags.filter((t) => !groupedTags.includes(t));
@@ -169,15 +165,12 @@ export default function HealthClient({
 
       {/* Price filter */}
       {prices.length > 0 && (
-        <div className="mt-3">
+        <div>
           <button
             onClick={() => setShowPrices(!showPrices)}
             className="flex items-center gap-2 text-sm font-medium text-[#6B6890] hover:text-[#7B68EE] transition-colors"
           >
-            <svg
-              className={`w-4 h-4 transition-transform ${showPrices ? "rotate-180" : ""}`}
-              fill="none" stroke="currentColor" viewBox="0 0 24 24"
-            >
+            <svg className={`w-4 h-4 transition-transform ${showPrices ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
             </svg>
             {activePrice
@@ -212,8 +205,52 @@ export default function HealthClient({
         </div>
       )}
 
-      <div className="mt-6">
-        <ListingGrid listings={filtered} onSelect={setSelectedListing} />
+    </div>
+  );
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 md:px-6 pt-28 pb-20">
+      {/* Header */}
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-[#1E1B3A]">{t("health", language)}</h1>
+        <p className="text-[#6B6890] text-sm mt-1">
+          {filtered.length} / {listings.length} {isZh(language) ? "LGBTQ+ 友善醫療服務提供者及支援組織" : "LGBTQ+-affirming healthcare providers and support organizations"}
+        </p>
+      </div>
+
+      <div className="flex gap-6">
+        {/* Desktop sidebar */}
+        <aside className="hidden lg:block w-[260px] shrink-0">
+          <div className="sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto pr-2 pb-8">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-sm font-bold text-[#1E1B3A]">{isZh(language) ? "篩選" : "Filter"}</h2>
+            </div>
+            {filterPanel}
+          </div>
+        </aside>
+
+        {/* Main */}
+        <main className="flex-1 min-w-0">
+          {/* Mobile filter toggle */}
+          <button
+            onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
+            className="lg:hidden flex items-center gap-2 mb-4 px-3 py-2 rounded-lg border border-[#E8E6F0] text-sm text-[#6B6890] hover:border-[#A78BFA]"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+            </svg>
+            {isZh(language) ? "篩選" : "Filters"}
+            {activeCount > 0 && <span className="text-[10px] bg-[#7B68EE] text-white rounded-full px-1.5 py-0.5">{activeCount}</span>}
+          </button>
+
+          {mobileFiltersOpen && (
+            <div className="lg:hidden mb-6 p-4 bg-[#FAFAFE] rounded-xl border border-[#E8E6F0]">
+              {filterPanel}
+            </div>
+          )}
+
+          <ListingGrid listings={filtered} onSelect={setSelectedListing} />
+        </main>
       </div>
 
       {selectedListing && (
