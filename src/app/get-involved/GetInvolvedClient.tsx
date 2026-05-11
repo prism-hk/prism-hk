@@ -20,12 +20,8 @@ type Contribute = {
 
 const CONTRIBUTE: Contribute[] = [
   {
-    icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-      </svg>
-    ),
-    iconBg: "bg-[#EDEAFF] text-[#7B68EE]",
+    icon: <img src="/icon-org.png" alt="" aria-hidden className="w-7 h-7 object-contain" />,
+    iconBg: "bg-[#EDEAFF]",
     titleEn: "Organization", titleZh: "提交機構", titleZhHans: "提交机构",
     descEn: "Know an LGBTQ+-friendly business, healthcare provider, or community group? Submit it for review.",
     descZh: "認識 LGBTQ+ 友善的商戶、醫療服務或社區組織？提交以供審核。",
@@ -33,12 +29,8 @@ const CONTRIBUTE: Contribute[] = [
     url: "https://tally.so/r/pb4loy",
   },
   {
-    icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M8 7V3m8 4V3m-9 4h10a2 2 0 012 2v10a2 2 0 01-2 2H7a2 2 0 01-2-2V9a2 2 0 012-2z" />
-      </svg>
-    ),
-    iconBg: "bg-[#E0F2FE] text-[#0EA5E9]",
+    icon: <img src="/icon-event.png" alt="" aria-hidden className="w-7 h-7 object-contain" />,
+    iconBg: "bg-[#E0F2FE]",
     titleEn: "Event", titleZh: "提交活動", titleZhHans: "提交活动",
     descEn: "Organizing or know about an upcoming LGBTQ+ event in Hong Kong? Let us know.",
     descZh: "正在籌辦或知道即將舉行的香港 LGBTQ+ 活動？告訴我們。",
@@ -46,12 +38,8 @@ const CONTRIBUTE: Contribute[] = [
     url: "https://tally.so/r/9q2zbQ",
   },
   {
-    icon: (
-      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-      </svg>
-    ),
-    iconBg: "bg-[#FFEDD5] text-[#F97316]",
+    icon: <img src="/icon-article.png" alt="" aria-hidden className="w-7 h-7 object-contain" />,
+    iconBg: "bg-[#FFEDD5]",
     titleEn: "Article", titleZh: "提交文章", titleZhHans: "提交文章",
     descEn: "Have a story, resource, or piece of writing relevant to Hong Kong's LGBTQ+ community? Share it with us.",
     descZh: "有與香港 LGBTQ+ 社區相關的故事、資源或文章？歡迎與我們分享。",
