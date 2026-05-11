@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { type PrismEvent } from "@/lib/events";
 import { useLanguage } from "@/lib/LanguageContext";
 import { isZh, type Language } from "@/lib/i18n";
@@ -376,6 +376,8 @@ export default function EventPanel({
               </button>
             </div>
           )}
+
+          <ShareEventButton event={event} name={name} language={language} />
         </div>
       </div>
 
@@ -390,6 +392,36 @@ export default function EventPanel({
         }
       `}</style>
     </div>
+  );
+}
+
+function ShareEventButton({ event, name, language }: { event: PrismEvent; name: string; language: Language }) {
+  const [copied, setCopied] = useState(false);
+  const shareUrl = typeof window !== "undefined"
+    ? `${window.location.origin}/events?event=${encodeURIComponent(`${event.name_en}|${event.date}`)}`
+    : "";
+  const onShare = async () => {
+    try {
+      if (typeof navigator !== "undefined" && navigator.share) {
+        await navigator.share({ title: name, url: shareUrl });
+        return;
+      }
+    } catch {}
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch {}
+  };
+  return (
+    <button
+      onClick={onShare}
+      className="mt-2 w-full text-center px-3 py-3 rounded-xl bg-white border border-[#E8E6F0] text-[#1E1B3A] font-semibold text-xs hover:border-[#A78BFA] hover:shadow-sm transition-[border-color,box-shadow]"
+    >
+      {copied
+        ? (isZh(language) ? "已複製連結 ✓" : "Link copied ✓")
+        : (isZh(language) ? "🔗 分享活動" : "🔗 Share event")}
+    </button>
   );
 }
 

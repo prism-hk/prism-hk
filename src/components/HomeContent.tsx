@@ -67,6 +67,8 @@ export default function HomeContent({
       return !d || d >= today;
     })
     .sort((a, b) => {
+      // Featured events float to the top
+      if (a.featured !== b.featured) return a.featured ? -1 : 1;
       const da = parseDate(a.date);
       const db = parseDate(b.date);
       if (!da) return 1;

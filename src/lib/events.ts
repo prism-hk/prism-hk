@@ -30,6 +30,7 @@ export type PrismEvent = {
   linkedin: string | null;
   email: string | null;
   tags: string[];
+  featured: boolean;
 };
 
 // Keep backward-compatible alias
@@ -37,8 +38,11 @@ export type { PrismEvent as PrismEventLegacy };
 
 function parseLogoUrl(value: string | null): string | null {
   if (!value) return null;
+  if (/^https?:\/\/(res\.cloudinary\.com|lh\d\.googleusercontent\.com)\//.test(value)) {
+    return value;
+  }
   const driveMatch = value.match(/(?:id=|\/d\/)([a-zA-Z0-9_-]+)/);
-  if (driveMatch) return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w600`;
+  if (driveMatch) return `https://lh3.googleusercontent.com/d/${driveMatch[1]}=w600`;
   if (value.startsWith("http")) return value;
   return null;
 }
@@ -86,7 +90,49 @@ function expandRecurring(event: PrismEvent): PrismEvent[] {
       d = new Date(d.getFullYear(), d.getMonth() + 1, d.getDate());
     }
   } else {
-    return [event];
+    // Patterns like "second tuesday of every month", "1st friday monthly",
+    // "third sunday" — pick the Nth weekday of each month from seed onwards
+    const nthMatch = rule.match(
+      /(first|second|third|fourth|fifth|1st|2nd|3rd|4th|5th|last)\s+(monday|tuesday|wednesday|thursday|friday|saturday|sunday)/
+    );
+    if (nthMatch) {
+      const ordinals: Record<string, number> = {
+        first: 1, "1st": 1, second: 2, "2nd": 2, third: 3, "3rd": 3,
+        fourth: 4, "4th": 4, fifth: 5, "5th": 5, last: -1,
+      };
+      const weekdays: Record<string, number> = {
+        sunday: 0, monday: 1, tuesday: 2, wednesday: 3,
+        thursday: 4, friday: 5, saturday: 6,
+      };
+      const n = ordinals[nthMatch[1]];
+      const targetDow = weekdays[nthMatch[2]];
+
+      const pickNth = (year: number, month: number): Date | null => {
+        if (n === -1) {
+          // last occurrence of weekday in the month
+          const last = new Date(year, month + 1, 0);
+          const offset = (last.getDay() - targetDow + 7) % 7;
+          return new Date(year, month, last.getDate() - offset);
+        }
+        const first = new Date(year, month, 1);
+        const offset = (targetDow - first.getDay() + 7) % 7;
+        const day = 1 + offset + (n - 1) * 7;
+        const d = new Date(year, month, day);
+        return d.getMonth() === month ? d : null;
+      };
+
+      const start = seed < today ? today : seed;
+      const cursor = new Date(start.getFullYear(), start.getMonth(), 1);
+      while (cursor <= horizon) {
+        const d = pickNth(cursor.getFullYear(), cursor.getMonth());
+        if (d && d >= today && d <= horizon && d >= seed) {
+          occurrences.push({ ...event, date: formatDateDMY(d) });
+        }
+        cursor.setMonth(cursor.getMonth() + 1);
+      }
+    } else {
+      return [event];
+    }
   }
 
   return occurrences.length ? occurrences : [event];
@@ -146,6 +192,7 @@ export async function getEvents(): Promise<PrismEvent[]> {
         linkedin: get("linkedin") || null,
         email: get("email") || null,
         tags: (get("tags") || "").split(",").map((t: string) => t.trim()).filter(Boolean),
+        featured: ["yes", "true", "1", "✓", "x"].includes((get("featured") || "").toLowerCase().trim()),
       });
     }
 

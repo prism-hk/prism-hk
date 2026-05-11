@@ -62,7 +62,8 @@ export default function DirectoryClient({
 
   const [search, setSearch] = useState(initialSearch);
   const [category, setCategory] = useState(initialCategory);
-  const [district, setDistrict] = useState("");
+  const [activeDistricts, setActiveDistricts] = useState<string[]>([]);
+  const [districtMode, setDistrictMode] = useState<"and" | "or">("or");
   const [activeTags, setActiveTags] = useState<string[]>(allInitialTags);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 4]);
   const [tagMode, setTagMode] = useState<"and" | "or">(allInitialTags.length > 1 ? "or" : "and");
@@ -78,10 +79,17 @@ export default function DirectoryClient({
     setPage(1);
   }
 
+  function toggleDistrict(d: string) {
+    setActiveDistricts((prev) =>
+      prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d]
+    );
+    setPage(1);
+  }
+
   function resetFilters() {
     setSearch("");
     setCategory("");
-    setDistrict("");
+    setActiveDistricts([]);
     setActiveTags([]);
     setPriceRange([0, 4]);
     setPage(1);
@@ -99,16 +107,20 @@ export default function DirectoryClient({
       }
       if (priceRange[0] !== 0 || priceRange[1] !== 4) {
         const tier = priceToTier(listing.price);
-        if (tier === null) {
-          // null/Various — only show when slider is at full range (unfiltered)
-        } else if (tier < priceRange[0] || tier > priceRange[1]) {
+        // Listings without a known price (null/"Various") stay visible — the
+        // slider only excludes listings whose price falls outside the range
+        if (tier !== null && (tier < priceRange[0] || tier > priceRange[1])) {
           return false;
         }
       }
       if (category && !listing.category?.includes(category)) return false;
-      if (district) {
+      if (activeDistricts.length > 0) {
         const listingDistricts = listing.district_en?.split(",").map((d) => d.trim()) || [];
-        if (!listingDistricts.includes(district)) return false;
+        if (districtMode === "or") {
+          if (!activeDistricts.some((d) => listingDistricts.includes(d))) return false;
+        } else {
+          if (!activeDistricts.every((d) => listingDistricts.includes(d))) return false;
+        }
       }
       if (search) {
         const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9一-鿿]+/g, "");
@@ -132,12 +144,12 @@ export default function DirectoryClient({
       if (a.featured !== b.featured) return a.featured ? -1 : 1;
       return (a.name_en || "").localeCompare(b.name_en || "");
     });
-  }, [listings, search, category, district, activeTags, priceRange, tagMode]);
+  }, [listings, search, category, activeDistricts, districtMode, activeTags, priceRange, tagMode]);
 
   const totalPages = Math.ceil(filtered.length / itemsPerPage);
   const paged = filtered.slice((page - 1) * itemsPerPage, page * itemsPerPage);
 
-  const hasActiveFilters = search || category || district || activeTags.length > 0 || priceRange[0] !== 0 || priceRange[1] !== 4;
+  const hasActiveFilters = search || category || activeDistricts.length > 0 || activeTags.length > 0 || priceRange[0] !== 0 || priceRange[1] !== 4;
 
   const filterSidebar = (
     <div className="space-y-5">
@@ -156,26 +168,56 @@ export default function DirectoryClient({
       <div>
         <div className="flex items-center justify-between mb-2">
           <p className="text-xs font-semibold text-[#1E1B3A]">{isZh(language) ? "地區" : "District"}</p>
-          {district && (
-            <button onClick={() => { setDistrict(""); setPage(1); }} className="text-[10px] text-[#7B68EE] hover:underline">
-              {isZh(language) ? "清除" : "Clear"}
-            </button>
-          )}
+          <div className="flex items-center gap-2">
+            {activeDistricts.length > 1 && (
+              <div
+                className="inline-flex bg-[#F5F4FA] rounded-md p-0.5"
+                title={isZh(language)
+                  ? "AND：必須屬於全部地區；OR：只需屬於任一地區"
+                  : "AND: must match all districts; OR: match any"}
+              >
+                <button
+                  onClick={() => setDistrictMode("and")}
+                  className={`px-1.5 py-0.5 text-[9px] font-semibold rounded ${
+                    districtMode === "and" ? "bg-white shadow-sm text-[#7B68EE]" : "text-[#6B6890]"
+                  }`}
+                >
+                  AND
+                </button>
+                <button
+                  onClick={() => setDistrictMode("or")}
+                  className={`px-1.5 py-0.5 text-[9px] font-semibold rounded ${
+                    districtMode === "or" ? "bg-white shadow-sm text-[#7B68EE]" : "text-[#6B6890]"
+                  }`}
+                >
+                  OR
+                </button>
+              </div>
+            )}
+            {activeDistricts.length > 0 && (
+              <button onClick={() => { setActiveDistricts([]); setPage(1); }} className="text-[10px] text-[#7B68EE] hover:underline">
+                {isZh(language) ? "清除" : "Clear"}
+              </button>
+            )}
+          </div>
         </div>
         <div className="flex flex-wrap gap-1.5">
-          {districts.map((d) => (
-            <button
-              key={d}
-              onClick={() => { setDistrict(district === d ? "" : d); setPage(1); }}
-              className={`px-2 py-1 rounded-lg text-xs font-medium border transition-colors ${
-                district === d
-                  ? "bg-[#7B68EE] text-white border-[#7B68EE]"
-                  : "bg-white border-[#E8E6F0] text-[#6B6890] hover:border-[#A78BFA]"
-              }`}
-            >
-              {isZh(language) ? translateDistrict(d, language) : d}
-            </button>
-          ))}
+          {districts.map((d) => {
+            const active = activeDistricts.includes(d);
+            return (
+              <button
+                key={d}
+                onClick={() => toggleDistrict(d)}
+                className={`px-2 py-1 rounded-lg text-xs font-medium border transition-colors ${
+                  active
+                    ? "bg-[#7B68EE] text-white border-[#7B68EE]"
+                    : "bg-white border-[#E8E6F0] text-[#6B6890] hover:border-[#A78BFA]"
+                }`}
+              >
+                {isZh(language) ? translateDistrict(d, language) : d}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -357,7 +399,7 @@ export default function DirectoryClient({
             </div>
           )}
 
-          {/* Cross-surface search results (events + articles) */}
+          {/* Cross-surface search results (events + articles + form/info pages) */}
           {search && (() => {
             const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9一-鿿]+/g, "");
             const q = search.toLowerCase();
@@ -374,7 +416,20 @@ export default function DirectoryClient({
               const bag = [a.title_en, a.title_zh, a.title_zhHans, a.topic, ...a.tags].filter(Boolean).join(" ");
               return bag && matchesText(bag);
             }).slice(0, 3);
-            if (matchedEvents.length === 0 && matchedArticles.length === 0) return null;
+
+            // Form / utility pages — surface when the user searches for these intents
+            const PAGE_HITS = [
+              { url: "/get-involved", titleEn: "Get Involved", titleZh: "參與我們", emoji: "🙌", keywords: "get involved volunteer volunteering help join contribute participate 義工 義務 加入 參與 参与 志愿 投身" },
+              { url: "/get-involved#partner", titleEn: "Partner With Us", titleZh: "成為合作夥伴", emoji: "🤝", keywords: "partner partnership organization submit add listing org collaborate 合作 夥伴 伙伴 提交 加入" },
+              { url: "/get-involved#donate", titleEn: "Buy Us a Coffee / Donate", titleZh: "贊助我們", emoji: "☕", keywords: "donate donation support fund payme money give contribute 捐 贊助 资助 支持" },
+              { url: "/contact", titleEn: "Contact Us", titleZh: "聯絡我們", emoji: "📬", keywords: "contact email feedback message question reach out 聯絡 联系 反饋 意見 意见" },
+              { url: "/contact#feedback", titleEn: "Send Feedback", titleZh: "提交意見", emoji: "💬", keywords: "feedback bug issue complaint suggestion idea 意見 反饋 反馈 建議 建议" },
+              { url: "/learn", titleEn: "About Us", titleZh: "關於我們", emoji: "ℹ️", keywords: "about pledge mission team objectives prism 關於 关于 使命 團隊 团队 承諾 承诺" },
+              { url: "/learn/resources", titleEn: "Educational Resources", titleZh: "教育資源", emoji: "📚", keywords: "education educational learn resources article reading rights know your rights 教育 資源 资源 文章 權利 权利" },
+            ];
+            const matchedPages = PAGE_HITS.filter((p) => matchesText(`${p.titleEn} ${p.titleZh} ${p.keywords}`)).slice(0, 4);
+
+            if (matchedEvents.length === 0 && matchedArticles.length === 0 && matchedPages.length === 0) return null;
             return (
               <div className="mb-4 space-y-3">
                 {matchedEvents.length > 0 && (
@@ -408,6 +463,20 @@ export default function DirectoryClient({
                           </a>
                         );
                       })}
+                    </div>
+                  </div>
+                )}
+                {matchedPages.length > 0 && (
+                  <div className="p-3 rounded-xl border border-[#E8E6F0] bg-white">
+                    <p className="text-[10px] uppercase tracking-wider font-semibold text-[#6B6890] mb-2">
+                      {isZh(language) ? "頁面" : "On this site"}
+                    </p>
+                    <div className="flex flex-col gap-1.5">
+                      {matchedPages.map((p, i) => (
+                        <a key={i} href={p.url} className="text-sm text-[#1E1B3A] hover:text-[#7B68EE] transition-colors">
+                          {p.emoji} {isZh(language) ? p.titleZh : p.titleEn}
+                        </a>
+                      ))}
                     </div>
                   </div>
                 )}

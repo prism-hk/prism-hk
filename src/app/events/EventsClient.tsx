@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useLanguage } from "@/lib/LanguageContext";
 import { t, isZh, type Language } from "@/lib/i18n";
 import { type PrismEvent } from "@/lib/events";
@@ -62,13 +62,24 @@ function getEventVenue(event: PrismEvent, language: Language): string | null {
   return event.venue_en;
 }
 
-const WEEKDAYS_EN = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const WEEKDAYS_ZH = ["日", "一", "二", "三", "四", "五", "六"];
+// Monday-first week
+const WEEKDAYS_EN = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const WEEKDAYS_ZH = ["一", "二", "三", "四", "五", "六", "日"];
 
 export default function EventsClient({ events = [] }: { events?: PrismEvent[] }) {
   const { language } = useLanguage();
   const [view, setView] = useState<"list" | "calendar">("list");
   const [selectedEvent, setSelectedEvent] = useState<PrismEvent | null>(null);
+
+  // Deep-link: ?event=<name_en>|<date> opens the matching event panel
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const param = new URLSearchParams(window.location.search).get("event");
+    if (!param) return;
+    const [name, date] = decodeURIComponent(param).split("|");
+    const match = events.find((e) => e.name_en === name && e.date === date);
+    if (match) setSelectedEvent(match);
+  }, [events]);
   const [calMonth, setCalMonth] = useState(() => {
     const now = new Date();
     return { year: now.getFullYear(), month: now.getMonth() };
@@ -76,7 +87,10 @@ export default function EventsClient({ events = [] }: { events?: PrismEvent[] })
 
   const [search, setSearch] = useState("");
   const [activeTag, setActiveTag] = useState<string>("");
-  const [activeDistrict, setActiveDistrict] = useState<string>("");
+  const [activeDistricts, setActiveDistricts] = useState<string[]>([]);
+  const [districtMode, setDistrictMode] = useState<"and" | "or">("or");
+  const toggleDistrict = (d: string) =>
+    setActiveDistricts((prev) => (prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d]));
   const [pageSize, setPageSize] = useState<number>(20);
 
   const today = new Date(new Date().toDateString());
@@ -98,7 +112,14 @@ export default function EventsClient({ events = [] }: { events?: PrismEvent[] })
     const normalizedQ = q.replace(/[^a-z0-9一-鿿]+/g, "");
     return events.filter((e) => {
       if (activeTag && !e.tags.includes(activeTag)) return false;
-      if (activeDistrict && e.district !== activeDistrict) return false;
+      if (activeDistricts.length > 0) {
+        const listingDistricts = (e.district || "").split(",").map((x) => x.trim()).filter(Boolean);
+        if (districtMode === "or") {
+          if (!activeDistricts.some((d) => listingDistricts.includes(d))) return false;
+        } else {
+          if (!activeDistricts.every((d) => listingDistricts.includes(d))) return false;
+        }
+      }
       if (q) {
         const bag = [
           e.name_en, e.name_zh, e.name_zhHans,
@@ -112,7 +133,7 @@ export default function EventsClient({ events = [] }: { events?: PrismEvent[] })
       }
       return true;
     });
-  }, [events, search, activeTag, activeDistrict]);
+  }, [events, search, activeTag, activeDistricts, districtMode]);
 
   const upcomingEvents = useMemo(() =>
     filteredEvents.filter((e) => {
@@ -131,7 +152,9 @@ export default function EventsClient({ events = [] }: { events?: PrismEvent[] })
   // Calendar helpers
   const calendarDays = useMemo(() => {
     const { year, month } = calMonth;
-    const firstDay = new Date(year, month, 1).getDay();
+    // getDay(): Sun=0..Sat=6. Shift so Mon=0..Sun=6.
+    const rawDay = new Date(year, month, 1).getDay();
+    const firstDay = (rawDay + 6) % 7;
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const days: (number | null)[] = [];
     for (let i = 0; i < firstDay; i++) days.push(null);
@@ -227,29 +250,59 @@ export default function EventsClient({ events = [] }: { events?: PrismEvent[] })
         )}
         {allDistricts.length > 0 && (
           <div>
-            <p className="text-[10px] uppercase tracking-wider font-semibold text-[#6B6890] mb-1.5">
-              {isZh(language) ? "地區" : "District"}
-            </p>
+            <div className="flex items-center justify-between mb-1.5">
+              <p className="text-[10px] uppercase tracking-wider font-semibold text-[#6B6890]">
+                {isZh(language) ? "地區" : "District"}
+              </p>
+              {activeDistricts.length > 1 && (
+                <div
+                  className="inline-flex bg-[#F5F4FA] rounded-md p-0.5"
+                  title={isZh(language)
+                    ? "AND：必須屬於全部地區；OR：只需屬於任一地區"
+                    : "AND: must match all districts; OR: match any"}
+                >
+                  <button
+                    onClick={() => setDistrictMode("and")}
+                    className={`px-1.5 py-0.5 text-[9px] font-semibold rounded ${
+                      districtMode === "and" ? "bg-white shadow-sm text-[#7B68EE]" : "text-[#6B6890]"
+                    }`}
+                  >
+                    AND
+                  </button>
+                  <button
+                    onClick={() => setDistrictMode("or")}
+                    className={`px-1.5 py-0.5 text-[9px] font-semibold rounded ${
+                      districtMode === "or" ? "bg-white shadow-sm text-[#7B68EE]" : "text-[#6B6890]"
+                    }`}
+                  >
+                    OR
+                  </button>
+                </div>
+              )}
+            </div>
             <div className="flex flex-wrap gap-1.5">
               <button
-                onClick={() => setActiveDistrict("")}
+                onClick={() => setActiveDistricts([])}
                 className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors ${
-                  !activeDistrict ? "bg-[#7B68EE] text-white border-[#7B68EE]" : "bg-white border-[#E8E6F0] text-[#6B6890] hover:border-[#A78BFA]"
+                  activeDistricts.length === 0 ? "bg-[#7B68EE] text-white border-[#7B68EE]" : "bg-white border-[#E8E6F0] text-[#6B6890] hover:border-[#A78BFA]"
                 }`}
               >
                 {isZh(language) ? "全部" : "All"}
               </button>
-              {allDistricts.map((d) => (
-                <button
-                  key={d}
-                  onClick={() => setActiveDistrict(activeDistrict === d ? "" : d)}
-                  className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors ${
-                    activeDistrict === d ? "bg-[#7B68EE] text-white border-[#7B68EE]" : "bg-white border-[#E8E6F0] text-[#6B6890] hover:border-[#A78BFA]"
-                  }`}
-                >
-                  {isZh(language) ? translateDistrict(d, language) : d}
-                </button>
-              ))}
+              {allDistricts.map((d) => {
+                const active = activeDistricts.includes(d);
+                return (
+                  <button
+                    key={d}
+                    onClick={() => toggleDistrict(d)}
+                    className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-colors ${
+                      active ? "bg-[#7B68EE] text-white border-[#7B68EE]" : "bg-white border-[#E8E6F0] text-[#6B6890] hover:border-[#A78BFA]"
+                    }`}
+                  >
+                    {isZh(language) ? translateDistrict(d, language) : d}
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}

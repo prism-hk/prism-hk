@@ -95,24 +95,13 @@ export default function LearnClient() {
 
         {/* Mission Statement */}
         <section>
-          <h2 className="text-xl font-bold mb-3">
-            {tx("Mission Statement", "使命宣言", "使命宣言", language)}
-          </h2>
-          <p className="text-[#1E1B3A] leading-relaxed">
-            {tx(
-              "PRISM is building Hong Kong's go-to platform for queer resources, connecting people to healthcare, community, culture, events and employment with full visibility across all 18 districts. We're here to make it easier for everyone in the LGBTQ+ community to find support, belonging, and opportunity.",
-              "PRISM 正在建設香港首選的酷兒資源平台，連接人們至醫療、社區、文化、活動和就業資源，覆蓋全港十八區。我們致力讓 LGBTQ+ 社區中的每個人都能更容易地找到支持、歸屬感和機會。",
-              "PRISM 正在建设香港首选的酷儿资源平台，连接人们至医疗、社区、文化、活动和就业资源，覆盖全港十八区。我们致力让 LGBTQ+ 社区中的每个人都能更容易地找到支持、归属感和机会。",
-              language
-            )}
-          </p>
+          <h2 className="text-xl font-bold mb-3">{t("learn_missionTitle", language)}</h2>
+          <p className="text-[#1E1B3A] leading-relaxed">{t("learn_missionBody", language)}</p>
         </section>
 
         {/* Our Objectives */}
         <section>
-          <h2 className="text-xl font-bold mb-3">
-            {tx("Our Objectives", "我們的目標", "我们的目标", language)}
-          </h2>
+          <h2 className="text-xl font-bold mb-3">{t("learn_objectivesTitle", language)}</h2>
           <div className="grid gap-4">
             {OBJECTIVES.map((item) => (
               <div
@@ -135,17 +124,8 @@ export default function LearnClient() {
 
         {/* How does this work? — PRISM Pledge */}
         <section>
-          <h2 className="text-xl font-bold mb-3">
-            {tx("How does this work?", "這是如何運作的？", "这是如何运作的？", language)}
-          </h2>
-          <p className="text-[#1E1B3A] leading-relaxed text-sm">
-            {tx(
-              "PRISM lists partner organizations and events sourced from those led by or catering to LGBTQ+ community members. Initial listings, including government entities and emergency listings (which may be exempt from signing), have not signed the PRISM Pledge for practical reasons but will have 60 days after PRISM's official launch to align where applicable. Going forward, new additions will sign the Pledge before listing, ensuring all partners affirm:",
-              "PRISM 列出由 LGBTQ+ 社群成員主導或服務社群的合作機構和活動。初始上架的機構（包括政府機構和緊急服務，它們可能獲豁免簽署）因實際原因尚未簽署 PRISM 承諾，但將在 PRISM 正式推出後 60 天內按適用情況達成一致。往後，新加入的機構將在上架前簽署承諾，確認所有合作夥伴肯定以下原則：",
-              "PRISM 列出由 LGBTQ+ 社群成员主导或服务社群的合作机构和活动。初始上架的机构（包括政府机构和紧急服务，它们可能获豁免签署）因实际原因尚未签署 PRISM 承诺，但将在 PRISM 正式推出后 60 天内按适用情况达成一致。往后，新加入的机构将在上架前签署承诺，确认所有合作伙伴肯定以下原则：",
-              language
-            )}
-          </p>
+          <h2 className="text-xl font-bold mb-3">{t("learn_pledgeTitle", language)}</h2>
+          <p className="text-[#1E1B3A] leading-relaxed text-sm">{t("learn_pledgeBody1", language)}</p>
           <ul className="mt-3 space-y-2 text-sm text-[#1E1B3A]">
             <li className="flex gap-2">
               <span className="shrink-0">•</span>
@@ -168,21 +148,12 @@ export default function LearnClient() {
               {tx("Equivalent benefits like parental leave for same-sex marriages", "同性婚姻享有同等福利（如育嬰假）", "同性婚姻享有同等福利（如育婴假）", language)}
             </li>
           </ul>
-          <p className="mt-4 text-sm text-[#6B6890] leading-relaxed">
-            {tx(
-              "We encourage organizations to submit their Equal Opportunity Policy, Code of Conduct or similar documents. We may delist partners at our discretion based on credible complaints to protect the community. This fosters authentic, lasting collaborations.",
-              "我們鼓勵機構提交其平等機會政策、行為準則或類似文件。我們可能根據可信投訴酌情將合作夥伴除名，以保護社區。這有助促進真實、持久的合作關係。",
-              "我们鼓励机构提交其平等机会政策、行为准则或类似文件。我们可能根据可信投诉酌情将合作伙伴除名，以保护社区。这有助促进真实、持久的合作关系。",
-              language
-            )}
-          </p>
+          <p className="mt-4 text-sm text-[#6B6890] leading-relaxed">{t("learn_pledgeBody2", language)}</p>
         </section>
 
         {/* Meet Our Team */}
         <section>
-          <h2 className="text-xl font-bold mb-4">
-            {tx("Meet Our Team", "認識我們的團隊", "认识我们的团队", language)}
-          </h2>
+          <h2 className="text-xl font-bold mb-4">{t("learn_teamTitle", language)}</h2>
           <div className="grid gap-6">
             {TEAM.map((member) => (
               <div

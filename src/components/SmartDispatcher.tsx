@@ -64,9 +64,9 @@ const ROUTE_MATRIX: Record<string, Record<string, Route | null>> = {
   },
   "new-to-hk": {
     "support-svc": { path: "/directory", category: "Healthcare & Support" },
-    community: { path: "/directory", category: "Community & Student Group", tags: ["social", "english", "multilingual"] },
-    hangouts: { path: "/directory", category: "Businesses", tags: ["bar", "cafe", "non-alcoholic", "sports", "hobby", "english", "multilingual"] },
-    activities: { path: "/events", tags: ["english", "multilingual"] },
+    community: { path: "/directory", category: "Community & Student Group", tags: ["social", "english", "mandarin", "multilingual"] },
+    hangouts: { path: "/directory", category: "Businesses", tags: ["bar", "cafe", "non-alcoholic", "sports", "hobby", "english", "mandarin", "multilingual"] },
+    activities: { path: "/events", tags: ["english", "mandarin", "multilingual"] },
     learning: { path: "/learn/resources" },
   },
   professional: {

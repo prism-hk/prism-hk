@@ -52,11 +52,14 @@ function parseCategories(value: string): string {
 
 function parseLogo(value: string): string | null {
   if (!value) return null;
-  // Convert Google Drive share links to thumbnail URLs (hotlink-reliable,
-  // unlike uc?export=view which 403s against many browsers)
+  // Pass through direct image CDNs as-is — they're cache-hot and don't 302
+  if (/^https?:\/\/(res\.cloudinary\.com|lh\d\.googleusercontent\.com)\//.test(value)) {
+    return value;
+  }
+  // Google Drive share links → lh3 direct image URL (CDN-cached, no redirect)
   const driveMatch = value.match(/(?:id=|\/d\/)([a-zA-Z0-9_-]+)/);
   if (driveMatch) {
-    return `https://drive.google.com/thumbnail?id=${driveMatch[1]}&sz=w400`;
+    return `https://lh3.googleusercontent.com/d/${driveMatch[1]}=w400`;
   }
   if (value.startsWith("http")) return value;
   return null;
