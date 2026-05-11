@@ -131,7 +131,7 @@ const TEAM = [
   {
     name: "Blake Chan",
     pronouns: "he/him/his",
-    photo: null,
+    photo: "/team-blake.jpg",
     initials: "BC",
     gradient: "from-[#7B68EE] to-[#A78BFA]",
     bioEn: "Born and raised in Hong Kong, Blake is an LGBTQ+ advocate and DEI professional passionate about creating spaces of equity and belonging. He previously worked at Community Business, where he led the 2025 LGBTQ+ Inclusion Index for Hong Kong and Singapore, helping organizations build more inclusive workplaces. Grounded in both community and corporate advocacy, Blake is committed to amplifying diverse voices and driving meaningful progress across Asia.",
