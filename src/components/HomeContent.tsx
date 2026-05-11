@@ -115,29 +115,72 @@ export default function HomeContent({
           </p>
         </div>
 
-        {/* Photo row — sample from event/listing image pool with fallback */}
+        {/* Photo row — sample from event pool with hover detail + click handler */}
         {(() => {
           const defaults = ["/hero-2.png", "/hero-3.png", "/hero-4.png", "/hero-6.png"];
-          const pool = [
-            ...events.map((e) => e.image).filter((u): u is string => !!u),
-            ...featured.map((l) => l.logo).filter((u): u is string => !!u),
-          ];
+          type Tile =
+            | { kind: "event"; src: string; event: PrismEvent }
+            | { kind: "listing"; src: string; listing: Listing }
+            | { kind: "default"; src: string };
+          const eventTiles: Tile[] = events
+            .filter((e) => !!e.image)
+            .map((e) => ({ kind: "event" as const, src: e.image!, event: e }));
+          const listingTiles: Tile[] = featured
+            .filter((l) => !!l.logo)
+            .map((l) => ({ kind: "listing" as const, src: l.logo!, listing: l }));
+          const pool = [...eventTiles, ...listingTiles];
           const shuffled = [...pool].sort(() => 0.5 - Math.random()).slice(0, 4);
-          const images = shuffled.length >= 4 ? shuffled : [...shuffled, ...defaults].slice(0, 4);
+          const defaultTiles: Tile[] = defaults.map((src) => ({ kind: "default" as const, src }));
+          const tiles: Tile[] = shuffled.length >= 4 ? shuffled : [...shuffled, ...defaultTiles].slice(0, 4);
           return (
             <div className="flex justify-center gap-3 md:gap-4 mb-10">
-              {images.map((src, i) => (
-                <div key={i} className="w-[140px] md:w-[180px] h-[100px] md:h-[130px] rounded-2xl overflow-hidden shadow-sm outline outline-1 outline-black/5 bg-[#F5F4FA]">
-                  <img
-                    src={src}
-                    alt=""
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.currentTarget.src = defaults[i % defaults.length];
-                    }}
-                  />
-                </div>
-              ))}
+              {tiles.map((tile, i) => {
+                const title = tile.kind === "event"
+                  ? (language === "zh-Hans" ? (tile.event.name_zhHans || tile.event.name_zh || tile.event.name_en)
+                    : language === "zh" ? (tile.event.name_zh || tile.event.name_en) : tile.event.name_en)
+                  : tile.kind === "listing"
+                  ? (language === "zh-Hans" ? (tile.listing.name_zh_hans || tile.listing.name_zh || tile.listing.name_en)
+                    : language === "zh" ? (tile.listing.name_zh || tile.listing.name_en) : tile.listing.name_en)
+                  : null;
+                const subtitle = tile.kind === "event"
+                  ? (() => {
+                      const d = parseDate(tile.event.date);
+                      const org = language === "zh-Hans" ? (tile.event.org_zhHans || tile.event.org_zh || tile.event.org_en)
+                        : language === "zh" ? (tile.event.org_zh || tile.event.org_en) : tile.event.org_en;
+                      return d ? `${d.toLocaleDateString(isZh(language) ? "zh-HK" : "en", { month: "short", day: "numeric" })} · ${org}` : org;
+                    })()
+                  : tile.kind === "listing" ? tile.listing.category : null;
+                const clickable = tile.kind !== "default";
+                const onClick = () => {
+                  if (tile.kind === "event") setSelectedEvent(tile.event);
+                  else if (tile.kind === "listing") setSelectedListing(tile.listing);
+                };
+                return (
+                  <div
+                    key={i}
+                    onClick={clickable ? onClick : undefined}
+                    role={clickable ? "button" : undefined}
+                    tabIndex={clickable ? 0 : undefined}
+                    onKeyDown={clickable ? (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); } } : undefined}
+                    className={`group relative w-[140px] md:w-[180px] h-[100px] md:h-[130px] rounded-2xl overflow-hidden shadow-sm outline outline-1 outline-black/5 bg-[#F5F4FA] ${clickable ? "cursor-pointer hover:shadow-md transition-shadow" : ""}`}
+                  >
+                    <img
+                      src={tile.src}
+                      alt={title || ""}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = defaults[i % defaults.length];
+                      }}
+                    />
+                    {clickable && title && (
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3 text-white">
+                        <p className="text-xs font-bold leading-tight line-clamp-2">{title}</p>
+                        {subtitle && <p className="text-[10px] opacity-90 mt-1 line-clamp-1">{subtitle}</p>}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           );
         })()}
