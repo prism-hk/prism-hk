@@ -71,7 +71,7 @@ export default function ResourcesClient({ groups = [] }: { groups?: ArticleGroup
   const { language } = useLanguage();
 
   return (
-    <div className="max-w-3xl mx-auto px-6 pt-32 pb-20">
+    <div className="max-w-5xl mx-auto px-6 pt-32 pb-20">
       <h1 className="text-4xl font-bold mb-2">
         {t("resourcesTitle", language)}
       </h1>
@@ -80,7 +80,7 @@ export default function ResourcesClient({ groups = [] }: { groups?: ArticleGroup
       </p>
 
       {groups.length > 0 ? (
-        <div className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {groups.map((group) => {
             const relevantArticles = group.articles.filter((a) => isArticleRelevant(a, language));
             // Show all articles as fallback if none match the current language
@@ -134,16 +134,25 @@ export default function ResourcesClient({ groups = [] }: { groups?: ArticleGroup
         <FallbackResources language={language} />
       )}
 
-      <div className="mt-10 bg-gradient-to-r from-[#F0EEFF] to-[#FCE4EC] rounded-2xl p-6 text-center">
-        <p className="text-sm text-[#6B6890] mb-3">
-          {language === "zh-Hans" ? "知道应该列于此处的资源吗？" : language === "zh" ? "知道應該列於此處的資源嗎？" : "Know a resource that should be listed here?"}
-        </p>
-        <a
-          href="/get-involved"
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#7B68EE] text-white rounded-xl font-semibold text-sm hover:bg-[#6B5CE7] transition-colors"
-        >
-          {t("suggestResource", language)}
-        </a>
+      <div className="mt-12 bg-gradient-to-r from-[#F0EEFF] to-[#FCE4EC] rounded-2xl px-8 py-10 md:px-12 md:py-12 flex flex-col md:flex-row items-center gap-8 md:gap-12">
+        <div className="flex-1 text-center md:text-left">
+          <h2 className="text-xl md:text-2xl font-bold text-[#1E1B3A] mb-4">
+            {language === "zh-Hans" ? "知道应该列于此处的资源吗？" : language === "zh" ? "知道應該列於此處的資源嗎？" : "Know a resource that should be listed here?"}
+          </h2>
+          <a
+            href="/get-involved"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#7B68EE] text-white rounded-xl font-semibold text-sm hover:bg-[#6B5CE7] transition-colors"
+          >
+            {t("suggestResource", language)}
+          </a>
+        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/lightbulb-box.png"
+          alt=""
+          aria-hidden="true"
+          className="w-40 h-40 md:w-48 md:h-48 object-contain shrink-0"
+        />
       </div>
     </div>
   );
