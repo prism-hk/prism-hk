@@ -236,7 +236,7 @@ export default function EventsClient({
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-6 pt-32 pb-20">
+    <div className="max-w-7xl mx-auto px-6 pt-32 pb-28 md:pb-20">
       {/* Header + view toggle */}
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
         <div>

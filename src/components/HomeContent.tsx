@@ -133,7 +133,7 @@ export default function HomeContent({
           const defaultTiles: Tile[] = defaults.map((src) => ({ kind: "default" as const, src }));
           const tiles: Tile[] = shuffled.length >= 4 ? shuffled : [...shuffled, ...defaultTiles].slice(0, 4);
           return (
-            <div className="flex justify-center gap-3 md:gap-4 mb-10">
+            <div className="grid grid-cols-2 md:flex md:justify-center gap-3 md:gap-4 mb-10 max-w-md md:max-w-none mx-auto">
               {tiles.map((tile, i) => {
                 const title = tile.kind === "event"
                   ? (language === "zh-Hans" ? (tile.event.name_zhHans || tile.event.name_zh || tile.event.name_en)
@@ -162,7 +162,7 @@ export default function HomeContent({
                     role={clickable ? "button" : undefined}
                     tabIndex={clickable ? 0 : undefined}
                     onKeyDown={clickable ? (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onClick(); } } : undefined}
-                    className={`group relative w-[140px] md:w-[180px] h-[100px] md:h-[130px] rounded-2xl overflow-hidden shadow-sm outline outline-1 outline-black/5 bg-[#F5F4FA] ${clickable ? "cursor-pointer hover:shadow-md transition-shadow" : ""}`}
+                    className={`group relative w-full md:w-[180px] aspect-[14/10] md:aspect-auto md:h-[130px] rounded-2xl overflow-hidden shadow-sm outline outline-1 outline-black/5 bg-[#F5F4FA] ${clickable ? "cursor-pointer hover:shadow-md transition-shadow" : ""}`}
                   >
                     <img
                       src={tile.src}

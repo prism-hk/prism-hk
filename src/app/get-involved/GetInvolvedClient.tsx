@@ -252,9 +252,9 @@ function SupportRow({
   ctaLabel: string; ctaHref: string; ctaColor: string;
 }) {
   return (
-    <div className="flex items-start gap-5">
+    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-5 text-center sm:text-left">
       {illustration}
-      <div className="flex-1 min-w-0 pt-2">
+      <div className="flex-1 min-w-0 pt-0 sm:pt-2">
         <h3 className="text-base font-bold text-[#1E1B3A] mb-1">{title}</h3>
         <p className="text-sm text-[#6B6890] mb-3">{desc}</p>
         <a
@@ -276,10 +276,10 @@ function IllustratedRow({
   src: string; title: string; desc: string; ctaLabel: string; ctaHref: string;
 }) {
   return (
-    <div className="flex items-start gap-5">
+    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-5 text-center sm:text-left">
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={src} alt="" aria-hidden className="w-32 h-32 object-contain shrink-0" />
-      <div className="flex-1 min-w-0 pt-2">
+      <img src={src} alt="" aria-hidden className="w-28 h-28 sm:w-32 sm:h-32 object-contain shrink-0" />
+      <div className="flex-1 min-w-0 pt-0 sm:pt-2">
         <h3 className="text-lg font-bold text-[#1E1B3A] mb-1.5">{title}</h3>
         <p className="text-sm text-[#6B6890] mb-4">{desc}</p>
         <a
