@@ -402,12 +402,6 @@ function ShareEventButton({ event, name, language }: { event: PrismEvent; name: 
     : "";
   const onShare = async () => {
     try {
-      if (typeof navigator !== "undefined" && navigator.share) {
-        await navigator.share({ title: name, url: shareUrl });
-        return;
-      }
-    } catch {}
-    try {
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 1800);
