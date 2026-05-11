@@ -47,9 +47,11 @@ function formatTime(time: string | null): string {
 }
 
 function formatShortDate(d: Date, language: Language): string {
-  const dd = String(d.getDate()).padStart(2, "0");
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  return isZh(language) ? `${mm}/${dd}` : `${mm}/${dd}`;
+  if (isZh(language)) {
+    return `${d.getMonth() + 1}月${d.getDate()}日`;
+  }
+  const month = d.toLocaleDateString("en", { month: "short" }).toUpperCase();
+  return `${d.getDate()} ${month}`;
 }
 
 function priceBadgeClasses(price: string | null): string {
@@ -706,10 +708,10 @@ function EventCard({
           </p>
         )}
         {description && (
-          <p className="text-xs text-[#6B6890] mt-2 whitespace-pre-line line-clamp-3">{description}</p>
+          <p className="text-xs text-[#6B6890] mt-2 whitespace-pre-line line-clamp-2">{description}</p>
         )}
 
-        <div className="mt-3 space-y-1.5 text-xs text-[#6B6890]">
+        <div className="mt-3 space-y-1.5 text-xs text-[#1E1B3A]">
           {eventDate && (
             <div className="flex items-center gap-1.5">
               <span aria-hidden>🕐</span>
