@@ -192,7 +192,7 @@ export default function EventPanel({
               src={event.image}
               alt={name}
               loading="lazy"
-              className="w-full aspect-video object-cover rounded-xl mb-4 opacity-0 transition-opacity duration-300"
+              className="w-full aspect-video object-cover rounded-xl mb-4 opacity-0 transition-opacity duration-300 ring-1 ring-inset ring-black/[0.06]"
               onLoad={(e) => { e.currentTarget.style.opacity = "1"; }}
               onError={(e) => { e.currentTarget.remove(); }}
             />

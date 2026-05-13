@@ -39,6 +39,20 @@ p { text-wrap: pretty; }
 /* Tabular numbers for stats */
 .tabular-nums { font-variant-numeric: tabular-nums; }
 
+/* Staggered fade-up for panel children */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-up {
+  opacity: 0;
+  animation: fadeUp 0.36s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  will-change: opacity, transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .fade-up { animation: none; opacity: 1; }
+}
+
 /* Dark mode */
 .dark body,
 .dark {

@@ -442,11 +442,11 @@ export default function EventsClient({
                       key={day}
                       type="button"
                       onClick={() => setSelectedDay(dayDate)}
-                      className={`flex flex-col items-stretch justify-start text-left bg-white min-h-[80px] md:min-h-[100px] p-1.5 hover:bg-[#FAFAFE] transition-colors ${
+                      className={`flex flex-col items-stretch justify-start text-left bg-white min-h-[80px] md:min-h-[100px] p-1.5 hover:bg-[#FAFAFE] active:scale-[0.97] transition-[colors,transform] duration-150 ${
                         isToday ? "ring-2 ring-inset ring-[#7B68EE]" : ""
                       }`}
                     >
-                      <div className={`text-xs font-medium mb-1 ${
+                      <div className={`text-xs font-medium mb-1 tabular-nums ${
                         isToday ? "text-[#7B68EE] font-bold" : "text-[#6B6890]"
                       }`}>
                         {day}
@@ -601,9 +601,9 @@ function DayPanel({
         }`}
       >
         <div className="sticky top-0 bg-white border-b border-[#E8E6F0] px-6 py-4 flex items-start justify-between gap-4">
-          <div>
+          <div className="fade-up" style={{ animationDelay: "120ms" }}>
             <h2 className="text-xl font-bold text-[#1E1B3A]">{weekday}</h2>
-            <p className="text-sm text-[#6B6890]">{dateStr} · {events.length} {isZh(language) ? "個活動" : events.length === 1 ? "event" : "events"}</p>
+            <p className="text-sm text-[#6B6890]">{dateStr} · <span className="tabular-nums">{events.length}</span> {isZh(language) ? "個活動" : events.length === 1 ? "event" : "events"}</p>
           </div>
           <button
             onClick={handleClose}
@@ -628,15 +628,15 @@ function DayPanel({
                 const org = getEventOrg(ev, language);
                 const venue = getEventVenue(ev, language);
                 return (
-                  <li key={i}>
+                  <li key={i} className="fade-up" style={{ animationDelay: `${180 + i * 60}ms` }}>
                     <button
                       onClick={() => {
                         setEntered(false);
                         setTimeout(() => onSelectEvent(ev), 280);
                       }}
-                      className="w-full text-left flex gap-3 p-3 rounded-xl border border-[#E8E6F0] hover:border-[#A78BFA] hover:shadow-md transition-[border-color,box-shadow]"
+                      className="w-full text-left flex gap-3 p-3 rounded-xl border border-[#E8E6F0] hover:border-[#A78BFA] hover:shadow-md active:scale-[0.99] transition-[border-color,box-shadow,transform] duration-150"
                     >
-                      <div className={`w-14 h-14 rounded-lg overflow-hidden shrink-0 flex items-center justify-center ${
+                      <div className={`w-14 h-14 rounded-lg overflow-hidden shrink-0 flex items-center justify-center ring-1 ring-inset ring-black/[0.04] ${
                         ev.imageIsLogo ? "bg-gradient-to-br from-[#F5F1FF] to-[#FCE4EC] p-1.5" : "bg-[#F5F4FA]"
                       }`}>
                         {ev.image ? (
@@ -844,10 +844,10 @@ function EventCard({
   return (
     <div
       onClick={onClick}
-      className="bg-white border border-[#E8E6F0] rounded-2xl overflow-hidden hover:border-[#A78BFA] hover:shadow-md transition-[border-color,box-shadow] cursor-pointer flex flex-col"
+      className="bg-white border border-[#E8E6F0] rounded-2xl overflow-hidden hover:border-[#A78BFA] hover:shadow-md active:scale-[0.98] transition-[border-color,box-shadow,transform] duration-150 cursor-pointer flex flex-col"
     >
       {/* Image */}
-      <div className={`aspect-[16/10] flex items-center justify-center text-[11px] text-[#A29FB8] overflow-hidden ${
+      <div className={`aspect-[16/10] flex items-center justify-center text-[11px] text-[#A29FB8] overflow-hidden ring-1 ring-inset ring-black/[0.04] ${
         event.imageIsLogo ? "bg-gradient-to-br from-[#F5F1FF] to-[#FCE4EC] p-6" : "bg-[#F5F4FA]"
       }`}>
         {event.image ? (

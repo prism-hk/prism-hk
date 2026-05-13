@@ -87,7 +87,7 @@ export default function GetInvolvedClient() {
                 href={c.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="self-start inline-flex items-center gap-1.5 px-5 py-2 bg-[#7B68EE] hover:bg-[#6B5CE7] text-white rounded-lg font-semibold text-sm transition-colors"
+                className="self-start inline-flex items-center gap-1.5 px-5 py-2 bg-[#7B68EE] hover:bg-[#6B5CE7] active:scale-[0.96] text-white rounded-lg font-semibold text-sm transition-[colors,transform] duration-150"
               >
                 {tx("Submit", "提交", "提交", language)} →
               </a>
@@ -172,7 +172,7 @@ export default function GetInvolvedClient() {
             </p>
             <a
               href="/directory?tag=volunteering"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#F59E0B] hover:bg-[#D97706] text-white rounded-lg font-semibold text-sm transition-colors"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#F59E0B] hover:bg-[#D97706] active:scale-[0.96] text-white rounded-lg font-semibold text-sm transition-[colors,transform] duration-150"
             >
               {tx("View Organizations", "查看機構", "查看机构", language)} →
             </a>
@@ -230,7 +230,7 @@ export default function GetInvolvedClient() {
             href="https://forms.gle/G2J1u9rupXvdydBs8"
             target="_blank"
             rel="noopener noreferrer"
-            className="shrink-0 inline-flex items-center gap-1.5 px-5 py-2 bg-[#7B68EE] hover:bg-[#6B5CE7] text-white rounded-lg font-semibold text-sm transition-colors"
+            className="shrink-0 inline-flex items-center gap-1.5 px-5 py-2 bg-[#7B68EE] hover:bg-[#6B5CE7] active:scale-[0.96] text-white rounded-lg font-semibold text-sm transition-[colors,transform] duration-150"
           >
             {tx("Submit Feedback", "提交意見", "提交意见", language)} →
           </a>
@@ -255,7 +255,7 @@ function SupportRow({
         href={ctaHref}
         target={ctaHref.startsWith("http") ? "_blank" : undefined}
         rel={ctaHref.startsWith("http") ? "noopener noreferrer" : undefined}
-        className={`self-start inline-flex items-center gap-1.5 px-5 py-2 ${ctaColor} text-white rounded-lg font-semibold text-sm transition-colors`}
+        className={`self-start inline-flex items-center gap-1.5 px-5 py-2 ${ctaColor} active:scale-[0.96] text-white rounded-lg font-semibold text-sm transition-[colors,transform] duration-150`}
       >
         {ctaLabel} →
       </a>
