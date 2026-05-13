@@ -36,6 +36,8 @@ export type PrismEvent = {
 // Keep backward-compatible alias
 export type { PrismEvent as PrismEventLegacy };
 
+import { decodeHtmlEntities } from "./htmlEntities";
+
 function parseLogoUrl(value: string | null): string | null {
   if (!value) return null;
   if (/^https?:\/\/(res\.cloudinary\.com|lh\d\.googleusercontent\.com)\//.test(value)) {
@@ -157,7 +159,7 @@ export async function getEvents(): Promise<PrismEvent[]> {
       const row = rows[i];
       const get = (col: string) => {
         const idx = headers.findIndex((h: string) => h.includes(col));
-        return idx >= 0 ? (row[idx] || "").trim() : "";
+        return idx >= 0 ? decodeHtmlEntities((row[idx] || "").trim()) : "";
       };
 
       const name = get("event name (english)") || get("event name");

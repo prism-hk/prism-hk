@@ -8,12 +8,6 @@ import { translateTag } from "@/lib/tagTranslations";
 import { translateDistrict } from "@/lib/districtTranslations";
 import EventPanel from "@/components/EventPanel";
 
-export type CommunityOrg = {
-  name: string;
-  logo: string | null;
-  url: string;
-};
-
 type EventWithFallback = PrismEvent & { imageIsLogo?: boolean };
 
 function parseDate(dateStr: string): Date | null {
@@ -91,17 +85,51 @@ function getEventVenue(event: PrismEvent, language: Language): string | null {
 
 const WEEKDAYS_EN = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const WEEKDAYS_ZH = ["一", "二", "三", "四", "五", "六", "日"];
+const WEEKDAYS_FULL_EN = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const WEEKDAYS_FULL_ZH = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+
+type EventGroup = { key: string; date: Date | null; events: EventWithFallback[] };
+
+function groupByDate(events: EventWithFallback[]): EventGroup[] {
+  const map = new Map<string, EventGroup>();
+  for (const e of events) {
+    const d = parseDate(e.date);
+    const key = d ? `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}` : "tbd";
+    if (!map.has(key)) map.set(key, { key, date: d, events: [] });
+    map.get(key)!.events.push(e);
+  }
+  return Array.from(map.values());
+}
+
+function formatGroupHeader(date: Date | null, language: Language): { primary: string; secondary: string } {
+  if (!date) {
+    return {
+      primary: isZh(language) ? "日期待定" : "Date TBD",
+      secondary: "",
+    };
+  }
+  const weekday = isZh(language)
+    ? WEEKDAYS_FULL_ZH[date.getDay()]
+    : WEEKDAYS_FULL_EN[date.getDay()];
+  let secondary: string;
+  if (isZh(language)) {
+    secondary = `${date.getMonth() + 1}月${date.getDate()}日`;
+  } else {
+    const month = date.toLocaleDateString("en", { month: "long" });
+    secondary = `${date.getDate()} ${month}`;
+  }
+  return { primary: weekday, secondary };
+}
 
 export default function EventsClient({
   events = [],
-  communityOrgs = [],
 }: {
   events?: EventWithFallback[];
-  communityOrgs?: CommunityOrg[];
 }) {
   const { language } = useLanguage();
   const [view, setView] = useState<"list" | "calendar">("list");
   const [selectedEvent, setSelectedEvent] = useState<PrismEvent | null>(null);
+  const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [filterOpen, setFilterOpen] = useState(false);
 
   useEffect(() => {
@@ -318,14 +346,28 @@ export default function EventsClient({
                       </select>
                     </label>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 mb-12">
-                    {upcomingEvents.slice(0, pageSize).map((event, i) => (
-                      <EventCard
-                        key={i}
-                        event={event}
-                        language={language}
-                        onClick={() => setSelectedEvent(event)}
-                      />
+                  <div className="mb-12">
+                    {groupByDate(upcomingEvents.slice(0, pageSize)).map(({ key, date, events: groupEvents }) => (
+                      <div key={key} className="mb-10 last:mb-0">
+                        <div className="flex items-baseline gap-3 mb-4 pb-2 border-b border-[#E8E6F0]">
+                          <h2 className="text-lg font-bold text-[#1E1B3A]">
+                            {formatGroupHeader(date, language).primary}
+                          </h2>
+                          <span className="text-sm text-[#6B6890]">
+                            {formatGroupHeader(date, language).secondary}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+                          {groupEvents.map((event, i) => (
+                            <EventCard
+                              key={`${key}-${i}`}
+                              event={event}
+                              language={language}
+                              onClick={() => setSelectedEvent(event)}
+                            />
+                          ))}
+                        </div>
+                      </div>
                     ))}
                   </div>
                   {upcomingEvents.length > pageSize && (
@@ -394,10 +436,13 @@ export default function EventsClient({
                     today.getMonth() === calMonth.month &&
                     today.getDate() === day;
 
+                  const dayDate = new Date(calMonth.year, calMonth.month, day);
                   return (
-                    <div
+                    <button
                       key={day}
-                      className={`bg-white min-h-[80px] md:min-h-[100px] p-1.5 ${
+                      type="button"
+                      onClick={() => setSelectedDay(dayDate)}
+                      className={`flex flex-col items-stretch justify-start text-left bg-white min-h-[80px] md:min-h-[100px] p-1.5 hover:bg-[#FAFAFE] transition-colors ${
                         isToday ? "ring-2 ring-inset ring-[#7B68EE]" : ""
                       }`}
                     >
@@ -409,10 +454,19 @@ export default function EventsClient({
                       {dayEvents.map((ev, j) => {
                         const name = getEventName(ev, language);
                         return (
-                          <button
+                          <span
                             key={j}
-                            onClick={() => setSelectedEvent(ev)}
+                            onClick={(e) => { e.stopPropagation(); setSelectedEvent(ev); }}
                             title={name}
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                setSelectedEvent(ev);
+                              }
+                            }}
                             className="flex items-center gap-1 w-full text-left text-[9px] md:text-[10px] leading-tight bg-[#F0EEFF] hover:bg-[#E0D9FF] text-[#5746C7] rounded px-1 py-0.5 mb-0.5 transition-colors cursor-pointer"
                           >
                             {ev.image && (
@@ -427,57 +481,16 @@ export default function EventsClient({
                               />
                             )}
                             <span className="truncate min-w-0">{name}</span>
-                          </button>
+                          </span>
                         );
                       })}
-                    </div>
+                    </button>
                   );
                 })}
               </div>
             </div>
           )}
 
-          {/* Community Organizations */}
-          {communityOrgs.length > 0 && (
-            <section className="mt-16 mb-8">
-              <h2 className="text-2xl font-bold text-[#1E1B3A] mb-1">
-                {isZh(language) ? "社區組織" : "Community Organizations"}
-              </h2>
-              <p className="text-sm text-[#6B6890] mb-6">
-                {isZh(language) ? "關注這些組織以了解更多活動" : "Follow these organizations for more events"}
-              </p>
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-6">
-                {communityOrgs.map((org) => (
-                  <a
-                    key={org.name}
-                    href={org.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex flex-col items-center gap-3 group"
-                  >
-                    <div className="w-20 h-20 rounded-full bg-white border border-[#E8E6F0] overflow-hidden flex items-center justify-center group-hover:border-[#A78BFA] group-hover:shadow-md transition-[border-color,box-shadow]">
-                      {org.logo ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={org.logo}
-                          alt={org.name}
-                          className="w-full h-full object-cover"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <span className="text-2xl font-bold text-[#7B68EE]">
-                          {org.name.charAt(0)}
-                        </span>
-                      )}
-                    </div>
-                    <span className="text-xs font-semibold text-[#1E1B3A] text-center group-hover:text-[#7B68EE] transition-colors">
-                      {org.name}
-                    </span>
-                  </a>
-                ))}
-              </div>
-            </section>
-          )}
         </div>
       </div>
 
@@ -521,6 +534,149 @@ export default function EventsClient({
       {selectedEvent && (
         <EventPanel event={selectedEvent} onClose={() => setSelectedEvent(null)} />
       )}
+
+      {selectedDay && (
+        <DayPanel
+          day={selectedDay}
+          events={filteredEvents.filter((e) => {
+            const d = parseDate(e.date);
+            return d &&
+              d.getFullYear() === selectedDay.getFullYear() &&
+              d.getMonth() === selectedDay.getMonth() &&
+              d.getDate() === selectedDay.getDate();
+          })}
+          language={language}
+          onClose={() => setSelectedDay(null)}
+          onSelectEvent={(ev) => { setSelectedDay(null); setSelectedEvent(ev); }}
+        />
+      )}
+    </div>
+  );
+}
+
+function DayPanel({
+  day, events, language, onClose, onSelectEvent,
+}: {
+  day: Date;
+  events: EventWithFallback[];
+  language: Language;
+  onClose: () => void;
+  onSelectEvent: (e: EventWithFallback) => void;
+}) {
+  const [entered, setEntered] = useState(false);
+
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setEntered(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
+
+  const handleClose = () => {
+    setEntered(false);
+    setTimeout(onClose, 280);
+  };
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") handleClose(); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const weekday = isZh(language) ? WEEKDAYS_FULL_ZH[day.getDay()] : WEEKDAYS_FULL_EN[day.getDay()];
+  const dateStr = isZh(language)
+    ? `${day.getMonth() + 1}月${day.getDate()}日`
+    : `${day.getDate()} ${day.toLocaleDateString("en", { month: "long" })}`;
+
+  return (
+    <div className="fixed inset-0 z-50 flex justify-end">
+      <div
+        className={`absolute inset-0 bg-black/30 transition-opacity duration-300 ease-out ${
+          entered ? "opacity-100" : "opacity-0"
+        }`}
+        onClick={handleClose}
+      />
+      <div
+        className={`relative w-full sm:w-[440px] max-w-full h-full bg-white overflow-y-auto shadow-xl transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform ${
+          entered ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <div className="sticky top-0 bg-white border-b border-[#E8E6F0] px-6 py-4 flex items-start justify-between gap-4">
+          <div>
+            <h2 className="text-xl font-bold text-[#1E1B3A]">{weekday}</h2>
+            <p className="text-sm text-[#6B6890]">{dateStr} · {events.length} {isZh(language) ? "個活動" : events.length === 1 ? "event" : "events"}</p>
+          </div>
+          <button
+            onClick={handleClose}
+            className="p-1 text-[#6B6890] hover:text-[#7B68EE]"
+            aria-label="Close"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="px-6 py-5">
+          {events.length === 0 ? (
+            <p className="text-sm text-[#6B6890] text-center py-12">
+              {isZh(language) ? "這天暫無活動" : "No events on this day"}
+            </p>
+          ) : (
+            <ul className="space-y-3">
+              {events.map((ev, i) => {
+                const name = getEventName(ev, language);
+                const org = getEventOrg(ev, language);
+                const venue = getEventVenue(ev, language);
+                return (
+                  <li key={i}>
+                    <button
+                      onClick={() => {
+                        setEntered(false);
+                        setTimeout(() => onSelectEvent(ev), 280);
+                      }}
+                      className="w-full text-left flex gap-3 p-3 rounded-xl border border-[#E8E6F0] hover:border-[#A78BFA] hover:shadow-md transition-[border-color,box-shadow]"
+                    >
+                      <div className={`w-14 h-14 rounded-lg overflow-hidden shrink-0 flex items-center justify-center ${
+                        ev.imageIsLogo ? "bg-gradient-to-br from-[#F5F1FF] to-[#FCE4EC] p-1.5" : "bg-[#F5F4FA]"
+                      }`}>
+                        {ev.image ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={ev.image}
+                            alt=""
+                            aria-hidden
+                            className={`w-full h-full ${ev.imageIsLogo ? "object-contain" : "object-cover"}`}
+                            loading="lazy"
+                            onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+                          />
+                        ) : (
+                          <span className="text-[10px] text-[#A29FB8]">{isZh(language) ? "圖片" : "image"}</span>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-sm font-bold text-[#1E1B3A] line-clamp-2">{name}</h3>
+                        {org && (
+                          <p className="text-xs text-[#7B68EE] font-medium mt-0.5 truncate">
+                            {isZh(language) ? "主辦：" : "by "}{org}
+                          </p>
+                        )}
+                        <div className="mt-1 text-xs text-[#6B6890] space-y-0.5">
+                          {ev.start_time && (
+                            <div>🕐 {formatTime(ev.start_time)}{ev.end_time && ` – ${formatTime(ev.end_time)}`}</div>
+                          )}
+                          {(venue || ev.district) && (
+                            <div className="truncate">📍 {venue || ev.district}</div>
+                          )}
+                        </div>
+                      </div>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

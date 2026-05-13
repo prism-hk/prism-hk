@@ -207,7 +207,10 @@ export default function EventPanel({
                     {eventDate.toLocaleDateString(isZh(language) ? "zh-HK" : "en", { month: "long" })}
                   </div>
                   <div className="text-[10px] opacity-70">
-                    {eventDate.toLocaleDateString(isZh(language) ? "zh-HK" : "en", { weekday: "long", year: "numeric" })}
+                    {eventDate.toLocaleDateString(isZh(language) ? "zh-HK" : "en", { weekday: "long" })}
+                    {eventDate.getFullYear() !== new Date().getFullYear() && (
+                      <> · {eventDate.getFullYear()}</>
+                    )}
                   </div>
                 </div>
               </div>

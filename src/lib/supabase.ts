@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { decodeStrings } from "./htmlEntities";
 
 // Server-side client with service key (for sync operations)
 export function getServiceClient() {
@@ -67,7 +68,7 @@ export async function getPublishedListings(): Promise<Listing[]> {
     console.error("Error fetching listings:", error);
     return [];
   }
-  return data || [];
+  return decodeStrings(data || []);
 }
 
 export async function getListingsByCategory(category: string): Promise<Listing[]> {
@@ -83,7 +84,7 @@ export async function getListingsByCategory(category: string): Promise<Listing[]
     console.error("Error fetching listings:", error);
     return [];
   }
-  return data || [];
+  return decodeStrings(data || []);
 }
 
 export async function getListingsCount(): Promise<number> {
