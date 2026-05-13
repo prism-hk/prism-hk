@@ -68,7 +68,7 @@ export default function GetInvolvedClient() {
 
       {/* Contribute Content */}
       <section className="max-w-5xl mx-auto px-6 mb-16">
-        <h2 className="text-sm font-bold text-[#1E1B3A] mb-5">
+        <h2 className="text-2xl font-bold text-[#1E1B3A] mb-5">
           {tx("Contribute Content", "貢獻內容", "贡献内容", language)}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -98,10 +98,10 @@ export default function GetInvolvedClient() {
 
       {/* Support */}
       <section className="max-w-5xl mx-auto px-6 mb-20">
-        <h2 className="text-sm font-bold text-[#1E1B3A] mb-5">
-          {tx("Support", "支持", "支持", language)}
+        <h2 className="text-2xl font-bold text-[#1E1B3A] mb-5">
+          {tx("Support PRISM", "支持 PRISM", "支持 PRISM", language)}
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <SupportRow
             illustration={
               <div className="w-28 h-28 rounded-full bg-white border border-[#E8E6F0] flex items-center justify-center shrink-0">
@@ -122,96 +122,64 @@ export default function GetInvolvedClient() {
           />
           <SupportRow
             illustration={
-              <div className="w-28 h-28 rounded-full bg-white border border-[#E8E6F0] flex items-center justify-center text-center text-sm font-bold text-[#1E1B3A] shrink-0 px-4">
-                {tx("Partner Orgs", "合作機構", "合作机构", language)}
-              </div>
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src="/donation.png" alt="" aria-hidden className="w-28 h-28 object-contain shrink-0" />
             }
-            title={tx("Support Partner Orgs", "支持合作機構", "支持合作机构", language)}
+            title={tx("Buy Us a Coffee", "請我們喝杯咖啡", "请我们喝杯咖啡", language)}
             desc={tx(
-              "Looking for more ways to give back? Donations or volunteer work",
-              "想以更多方式回饋？捐款或義工服務",
-              "想以更多方式回馈？捐款或义工服务",
+              "PRISM is volunteer-run. Your support helps keep the platform running and accessible to all.",
+              "PRISM 由義工運營。你的支持有助保持平台持續運作，向所有人開放。",
+              "PRISM 由义工运营。你的支持有助保持平台持续运作，向所有人开放。",
               language
             )}
-            ctaLabel={tx("View Organizations", "查看機構", "查看机构", language)}
-            ctaHref="/directory?tag=volunteering"
-            ctaColor="bg-[#F59E0B] hover:bg-[#D97706]"
+            ctaLabel={tx("Donate via PayMe", "透過 PayMe 捐款", "通过 PayMe 捐款", language)}
+            ctaHref="https://payme.hsbc/03ac86ea2d804ce9964d878c722a975b"
+            ctaColor="bg-[#7B68EE] hover:bg-[#6B5CE7]"
+          />
+          <SupportRow
+            illustration={
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src="/partner.png" alt="" aria-hidden className="w-28 h-28 object-contain shrink-0" />
+            }
+            title={tx("Partner With Us", "成為合作夥伴", "成为合作伙伴", language)}
+            desc={tx(
+              "Organizations can partner with PRISM for events, visibility, and community impact. Fill out the form to get in touch.",
+              "機構可與 PRISM 合作舉辦活動、提高曝光率及促進社區影響。填寫表格與我們聯絡。",
+              "机构可与 PRISM 合作举办活动、提高曝光率及促进社区影响。填写表格与我们联络。",
+              language
+            )}
+            ctaLabel={tx("Open form", "開啟表格", "开启表格", language)}
+            ctaHref="https://forms.gle/XyjEMGrbT7baWZen7"
+            ctaColor="bg-[#7B68EE] hover:bg-[#6B5CE7]"
           />
         </div>
       </section>
 
-      {/* Help Us Do Better — Partner With Us + Submit Feedback */}
-      <section className="bg-[#F3F2F7] py-16 mb-0">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl font-bold text-[#1E1B3A] mb-2">
-              {tx("Help Us Do Better", "幫助我們做得更好", "帮助我们做得更好", language)}
-            </h2>
-            <p className="text-sm text-[#6B6890]">
-              {tx(
-                "Your voice shapes PRISM. Choose how you want to contribute.",
-                "你的聲音塑造 PRISM。選擇你想貢獻的方式。",
-                "你的声音塑造 PRISM。选择你想贡献的方式。",
-                language
-              )}
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            <IllustratedRow
-              src="/partner.png"
-              title={tx("Partner With Us", "成為合作夥伴", "成为合作伙伴", language)}
-              desc={tx(
-                "Organizations can partner with PRISM for events, visibility, and community impact. Fill out the form to get in touch.",
-                "機構可與 PRISM 合作舉辦活動、提高曝光率及促進社區影響。填寫表格與我們聯絡。",
-                "机构可与 PRISM 合作举办活动、提高曝光率及促进社区影响。填写表格与我们联络。",
-                language
-              )}
-              ctaLabel={tx("Open form", "開啟表格", "开启表格", language)}
-              ctaHref="https://forms.gle/XyjEMGrbT7baWZen7"
-            />
-            <IllustratedRow
-              src="/feedback.png"
-              title={tx("Submit Feedback", "提交意見", "提交意见", language)}
-              desc={tx(
-                "Help us improve PRISM. Share your thoughts, suggestions, or report issues.",
-                "幫助我們改進 PRISM。分享你的想法、建議或報告問題。",
-                "帮助我们改进 PRISM。分享你的想法、建议或报告问题。",
-                language
-              )}
-              ctaLabel={tx("Submit", "提交", "提交", language)}
-              ctaHref="https://forms.gle/G2J1u9rupXvdydBs8"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Buy Us a Coffee — donation */}
+      {/* Support Partner Organizations — full-width */}
       <section className="bg-white py-16">
         <div className="max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
           <div>
             <h2 className="text-2xl font-bold text-[#1E1B3A] mb-3">
-              {tx("Buy Us a Coffee", "請我們喝杯咖啡", "请我们喝杯咖啡", language)}
+              {tx("Support Partner Organizations", "支持合作機構", "支持合作机构", language)}
             </h2>
             <p className="text-sm text-[#6B6890] mb-5">
               {tx(
-                "PRISM is volunteer-run. Your support helps keep the platform running and accessible to all.",
-                "PRISM 由義工運營。你的支持有助保持平台持續運作，向所有人開放。",
-                "PRISM 由义工运营。你的支持有助保持平台持续运作，向所有人开放。",
+                "Looking for more ways to give back? Browse partner organizations open to donations or volunteer work.",
+                "想以更多方式回饋？瀏覽接受捐款或義工服務的合作機構。",
+                "想以更多方式回馈？浏览接受捐款或义工服务的合作机构。",
                 language
               )}
             </p>
             <a
-              href="https://payme.hsbc/03ac86ea2d804ce9964d878c722a975b"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#7B68EE] hover:bg-[#6B5CE7] text-white rounded-lg font-semibold text-sm transition-colors"
+              href="/directory?tag=volunteering"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#F59E0B] hover:bg-[#D97706] text-white rounded-lg font-semibold text-sm transition-colors"
             >
-              {tx("Donate via PayMe", "透過 PayMe 捐款", "通过 PayMe 捐款", language)} →
+              {tx("View Organizations", "查看機構", "查看机构", language)} →
             </a>
           </div>
           <div className="flex justify-center md:justify-end">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/donation.png" alt="" aria-hidden className="w-64 h-64 object-contain" />
+            <img src="/obj-welcome.png" alt="" aria-hidden className="w-64 h-64 object-contain" />
           </div>
         </div>
       </section>
@@ -241,6 +209,33 @@ export default function GetInvolvedClient() {
           </a>
         </div>
       </section>
+
+      {/* Submit Feedback — small footer block */}
+      <section className="bg-[#F3F2F7] py-10">
+        <div className="max-w-3xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+          <div>
+            <h3 className="text-base font-bold text-[#1E1B3A] mb-1">
+              {tx("Spotted something off?", "發現問題？", "发现问题？", language)}
+            </h3>
+            <p className="text-sm text-[#6B6890]">
+              {tx(
+                "Share thoughts, suggestions, or report issues — your feedback shapes PRISM.",
+                "分享想法、建議或報告問題 — 你的意見塑造 PRISM。",
+                "分享想法、建议或报告问题 — 你的意见塑造 PRISM。",
+                language
+              )}
+            </p>
+          </div>
+          <a
+            href="https://forms.gle/G2J1u9rupXvdydBs8"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 inline-flex items-center gap-1.5 px-5 py-2 bg-[#7B68EE] hover:bg-[#6B5CE7] text-white rounded-lg font-semibold text-sm transition-colors"
+          >
+            {tx("Submit Feedback", "提交意見", "提交意见", language)} →
+          </a>
+        </div>
+      </section>
     </div>
   );
 }
@@ -252,45 +247,19 @@ function SupportRow({
   ctaLabel: string; ctaHref: string; ctaColor: string;
 }) {
   return (
-    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-5 text-center sm:text-left">
-      {illustration}
-      <div className="flex-1 min-w-0 pt-0 sm:pt-2">
-        <h3 className="text-base font-bold text-[#1E1B3A] mb-1">{title}</h3>
-        <p className="text-sm text-[#6B6890] mb-3">{desc}</p>
-        <a
-          href={ctaHref}
-          target={ctaHref.startsWith("http") ? "_blank" : undefined}
-          rel={ctaHref.startsWith("http") ? "noopener noreferrer" : undefined}
-          className={`inline-flex items-center gap-1.5 px-4 py-2 ${ctaColor} text-white rounded-lg font-semibold text-sm transition-colors`}
-        >
-          {ctaLabel} →
-        </a>
-      </div>
+    <div className="flex flex-col">
+      <div className="mb-4">{illustration}</div>
+      <h3 className="text-lg font-bold text-[#1E1B3A] mb-1.5">{title}</h3>
+      <p className="text-sm text-[#6B6890] mb-4 flex-1">{desc}</p>
+      <a
+        href={ctaHref}
+        target={ctaHref.startsWith("http") ? "_blank" : undefined}
+        rel={ctaHref.startsWith("http") ? "noopener noreferrer" : undefined}
+        className={`self-start inline-flex items-center gap-1.5 px-5 py-2 ${ctaColor} text-white rounded-lg font-semibold text-sm transition-colors`}
+      >
+        {ctaLabel} →
+      </a>
     </div>
   );
 }
 
-function IllustratedRow({
-  src, title, desc, ctaLabel, ctaHref,
-}: {
-  src: string; title: string; desc: string; ctaLabel: string; ctaHref: string;
-}) {
-  return (
-    <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-5 text-center sm:text-left">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={src} alt="" aria-hidden className="w-28 h-28 sm:w-32 sm:h-32 object-contain shrink-0" />
-      <div className="flex-1 min-w-0 pt-0 sm:pt-2">
-        <h3 className="text-lg font-bold text-[#1E1B3A] mb-1.5">{title}</h3>
-        <p className="text-sm text-[#6B6890] mb-4">{desc}</p>
-        <a
-          href={ctaHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 px-5 py-2 bg-[#7B68EE] hover:bg-[#6B5CE7] text-white rounded-lg font-semibold text-sm transition-colors"
-        >
-          {ctaLabel} →
-        </a>
-      </div>
-    </div>
-  );
-}
