@@ -4,6 +4,25 @@ import { useLanguage } from "@/lib/LanguageContext";
 import { t, isZh, type Language } from "@/lib/i18n";
 import { type ArticleGroup, type Article, getTopicEmoji } from "@/lib/articles";
 
+// Topic heading labels for each language
+const TOPIC_LABELS: Record<string, { en: string; zh: string; zhHans: string }> = {
+  "LGBTQ+ Concepts": { en: "LGBTQ+ Concepts", zh: "LGBTQ+ 概念", zhHans: "LGBTQ+ 概念" },
+  "Know Your Rights": { en: "Know Your Rights", zh: "了解你的權利", zhHans: "了解你的权利" },
+  "Coming Out Resources": { en: "Coming Out Resources", zh: "出櫃資源", zhHans: "出柜资源" },
+  "Sexual Health": { en: "Sexual Health", zh: "性健康", zhHans: "性健康" },
+  "Mental Health & Wellbeing": { en: "Mental Health & Wellbeing", zh: "精神健康及身心健康", zhHans: "精神健康及身心健康" },
+  "Transgender Resources": { en: "Transgender Resources", zh: "跨性別資源", zhHans: "跨性别资源" },
+  "For Allies & Families": { en: "For Allies & Families", zh: "支持者及家庭", zhHans: "支持者及家庭" },
+  "Workplace Inclusion": { en: "Workplace Inclusion", zh: "職場共融", zhHans: "职场共融" },
+  "Family Planning": { en: "Family Planning", zh: "家庭計劃", zhHans: "家庭计划" },
+};
+
+function getTopicLabel(topic: string, language: Language): string {
+  const label = TOPIC_LABELS[topic];
+  if (!label) return topic;
+  return language === "zh-Hans" ? label.zhHans : language === "zh" ? label.zh : label.en;
+}
+
 // Topic descriptions for each language
 const TOPIC_DESCRIPTIONS: Record<string, { en: string; zh: string; zhHans: string }> = {
   "LGBTQ+ Concepts": {
@@ -93,7 +112,7 @@ export default function ResourcesClient({ groups = [] }: { groups?: ArticleGroup
                 <div className="flex items-start gap-3 mb-3">
                   <span className="text-2xl">{emoji}</span>
                   <div>
-                    <h3 className="font-bold text-[#1E1B3A]">{group.topic}</h3>
+                    <h3 className="font-bold text-[#1E1B3A]">{getTopicLabel(group.topic, language)}</h3>
                     {desc && (
                       <p className="text-xs text-[#6B6890] mt-0.5">
                         {language === "zh-Hans" ? desc.zhHans : language === "zh" ? desc.zh : desc.en}

@@ -199,7 +199,23 @@ export async function getEvents(): Promise<PrismEvent[]> {
     }
 
     // Expand recurring events into their upcoming occurrences
-    return events.flatMap(expandRecurring);
+    const expanded = events.flatMap(expandRecurring);
+
+    // Dedupe exact duplicates (same name + same date). Recurring events keep
+    // their distinct dates, so genuine repeats on different days survive.
+    const seen = new Set<string>();
+    const deduped: PrismEvent[] = [];
+    for (const e of expanded) {
+      const nameKey = (e.name_en || "")
+        .toLowerCase()
+        .replace(/\s+/g, " ")
+        .trim();
+      const key = `${nameKey}|${(e.date || "").trim()}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      deduped.push(e);
+    }
+    return deduped;
   } catch (e) {
     console.error("Error fetching events:", e);
     return [];

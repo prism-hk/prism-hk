@@ -32,6 +32,27 @@ export function getTopicEmoji(topic: string): string {
   return TOPIC_EMOJIS[topic] || "📚";
 }
 
+// Canonical display order for Educational Resources sections, regardless of
+// sheet row order. Workplace Inclusion is pinned last per Blake's request.
+const TOPIC_ORDER = [
+  "LGBTQ+ Concepts",
+  "Know Your Rights",
+  "Coming Out Resources",
+  "Sexual Health",
+  "Mental Health & Wellbeing",
+  "Transgender Resources",
+  "For Allies & Families",
+  "Family Planning",
+  "Workplace Inclusion",
+];
+
+function topicRank(topic: string): number {
+  const i = TOPIC_ORDER.indexOf(topic);
+  // Workplace Inclusion always sorts last. Unknown topics fall just before it.
+  if (i === -1) return TOPIC_ORDER.length - 0.5;
+  return i;
+}
+
 export async function getArticles(): Promise<ArticleGroup[]> {
   if (!API_KEY) return [];
 
@@ -82,6 +103,8 @@ export async function getArticles(): Promise<ArticleGroup[]> {
       }
       group.articles.push(article);
     }
+
+    groups.sort((a, b) => topicRank(a.topic) - topicRank(b.topic));
 
     return groups;
   } catch (e) {

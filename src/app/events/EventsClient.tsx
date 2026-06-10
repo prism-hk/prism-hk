@@ -847,8 +847,8 @@ function EventCard({
       className="bg-white border border-[#E8E6F0] rounded-2xl overflow-hidden hover:border-[#A78BFA] hover:shadow-md active:scale-[0.98] transition-[border-color,box-shadow,transform] duration-150 cursor-pointer flex flex-col"
     >
       {/* Image */}
-      <div className={`aspect-[16/10] flex items-center justify-center text-[11px] text-[#A29FB8] overflow-hidden ring-1 ring-inset ring-black/[0.04] ${
-        event.imageIsLogo ? "bg-gradient-to-br from-[#F5F1FF] to-[#FCE4EC] p-6" : "bg-[#F5F4FA]"
+      <div className={`aspect-[4/3] flex items-center justify-center text-[11px] text-[#A29FB8] overflow-hidden ring-1 ring-inset ring-black/[0.04] ${
+        event.imageIsLogo ? "bg-gradient-to-br from-[#F5F1FF] to-[#FCE4EC] p-5" : "bg-[#F5F4FA]"
       }`}>
         {event.image ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -856,9 +856,7 @@ function EventCard({
             src={event.image}
             alt={name}
             loading="lazy"
-            className={`w-full h-full opacity-0 transition-opacity duration-300 ${
-              event.imageIsLogo ? "object-contain" : "object-cover"
-            }`}
+            className="w-full h-full object-contain opacity-0 transition-opacity duration-300"
             onLoad={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "1"; }}
             onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
           />
