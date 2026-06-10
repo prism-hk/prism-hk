@@ -121,6 +121,15 @@ export default function ResourcesClient({ groups = [] }: { groups?: ArticleGroup
                   </div>
                 </div>
                 <div className="space-y-2 ml-9">
+                  {articlesToShow.length === 0 && (
+                    <p className="text-sm text-[#A29FB8] italic">
+                      {language === "zh-Hans"
+                        ? "资源即将推出"
+                        : language === "zh"
+                        ? "資源即將推出"
+                        : "Resources coming soon"}
+                    </p>
+                  )}
                   {articlesToShow.map((article, i) => (
                     <a
                       key={i}

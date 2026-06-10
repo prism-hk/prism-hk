@@ -66,7 +66,12 @@ export async function getArticles(): Promise<ArticleGroup[]> {
     if (rows.length < 2) return [];
 
     const headers = rows[0].map((h: string) => h.toLowerCase().trim());
-    const articles: Article[] = [];
+
+    // Group by topic, preserving order of first appearance. A topic row with no
+    // URL still registers an (empty) group so the section renders with a
+    // "coming soon" note rather than disappearing entirely.
+    const groups: ArticleGroup[] = [];
+    const seen = new Map<string, ArticleGroup>();
 
     for (let i = 1; i < rows.length; i++) {
       const row = rows[i];
@@ -76,10 +81,19 @@ export async function getArticles(): Promise<ArticleGroup[]> {
       };
 
       const topic = get("topic");
-      const url = get("url");
-      if (!topic || !url) continue;
+      if (!topic) continue;
 
-      articles.push({
+      let group = seen.get(topic);
+      if (!group) {
+        group = { topic, articles: [] };
+        seen.set(topic, group);
+        groups.push(group);
+      }
+
+      const url = get("url");
+      if (!url) continue;
+
+      group.articles.push({
         topic,
         title_en: get("title (english)") || get("title"),
         title_zh: get("title (traditional chinese)") || null,
@@ -88,20 +102,6 @@ export async function getArticles(): Promise<ArticleGroup[]> {
         url,
         tags: (get("tags") || "").split(",").map((t: string) => t.trim()).filter(Boolean),
       });
-    }
-
-    // Group by topic, preserving order of first appearance
-    const groups: ArticleGroup[] = [];
-    const seen = new Map<string, ArticleGroup>();
-
-    for (const article of articles) {
-      let group = seen.get(article.topic);
-      if (!group) {
-        group = { topic: article.topic, articles: [] };
-        seen.set(article.topic, group);
-        groups.push(group);
-      }
-      group.articles.push(article);
     }
 
     groups.sort((a, b) => topicRank(a.topic) - topicRank(b.topic));
