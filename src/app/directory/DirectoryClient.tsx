@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { type Listing } from "@/lib/supabase";
 import { type PrismEvent } from "@/lib/events";
@@ -59,18 +59,55 @@ export default function DirectoryClient({
   const initialTags = searchParams.get("tags")?.split(",").filter(Boolean) || [];
   const allInitialTags = initialTag ? [initialTag] : initialTags;
   const initialSearch = searchParams.get("search") || "";
+  const initialDistricts = searchParams.get("districts")?.split(",").filter(Boolean) || [];
+  const initialPriceRange: [number, number] = (() => {
+    const p = searchParams.get("price");
+    if (!p) return [0, 4];
+    const [a, b] = p.split("-").map((n) => parseInt(n, 10));
+    if (Number.isInteger(a) && Number.isInteger(b) && a >= 0 && b <= 4 && a <= b) return [a, b];
+    return [0, 4];
+  })();
+  const initialDistrictMode = searchParams.get("districtMode") === "and" ? "and" : "or";
+  const initialTagMode = searchParams.get("tagMode") === "and"
+    ? "and"
+    : searchParams.get("tagMode") === "or"
+    ? "or"
+    : allInitialTags.length > 1 ? "or" : "and";
 
   const [search, setSearch] = useState(initialSearch);
   const [category, setCategory] = useState(initialCategory);
-  const [activeDistricts, setActiveDistricts] = useState<string[]>([]);
-  const [districtMode, setDistrictMode] = useState<"and" | "or">("or");
+  const [activeDistricts, setActiveDistricts] = useState<string[]>(initialDistricts);
+  const [districtMode, setDistrictMode] = useState<"and" | "or">(initialDistrictMode);
   const [activeTags, setActiveTags] = useState<string[]>(allInitialTags);
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 4]);
-  const [tagMode, setTagMode] = useState<"and" | "or">(allInitialTags.length > 1 ? "or" : "and");
+  const [priceRange, setPriceRange] = useState<[number, number]>(initialPriceRange);
+  const [tagMode, setTagMode] = useState<"and" | "or">(initialTagMode);
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
   const [page, setPage] = useState(1);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(30);
+  const [shareCopied, setShareCopied] = useState(false);
+
+  // Keep the URL in sync with the active filters so the page is shareable.
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (search) params.set("search", search);
+    if (category) params.set("category", category);
+    if (activeTags.length) params.set("tags", activeTags.join(","));
+    if (activeTags.length > 1) params.set("tagMode", tagMode);
+    if (activeDistricts.length) params.set("districts", activeDistricts.join(","));
+    if (activeDistricts.length > 1) params.set("districtMode", districtMode);
+    if (priceRange[0] !== 0 || priceRange[1] !== 4) params.set("price", `${priceRange[0]}-${priceRange[1]}`);
+    const qs = params.toString();
+    window.history.replaceState(null, "", qs ? `${window.location.pathname}?${qs}` : window.location.pathname);
+  }, [search, category, activeTags, tagMode, activeDistricts, districtMode, priceRange]);
+
+  async function shareFilters() {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 1800);
+    } catch {}
+  }
 
   function toggleTag(tag: string) {
     setActiveTags((prev) =>
@@ -486,9 +523,20 @@ export default function DirectoryClient({
 
           {/* Results count + page size */}
           <div className="flex items-center justify-between mb-3 text-xs text-[#6B6890]">
-            <span className="tabular-nums">
-              {filtered.length} {isZh(language) ? "個結果" : "Results"}
-            </span>
+            <div className="flex items-center gap-3">
+              <span className="tabular-nums">
+                {filtered.length} {isZh(language) ? "個結果" : "Results"}
+              </span>
+              <button
+                onClick={shareFilters}
+                title={isZh(language) ? "複製連結（含目前篩選）" : "Copy a link to these filters"}
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white border border-[#E8E6F0] font-semibold text-[#7B68EE] hover:border-[#A78BFA] hover:shadow-sm transition-[border-color,box-shadow] whitespace-nowrap"
+              >
+                {shareCopied
+                  ? (isZh(language) ? "已複製連結 ✓" : "Link copied ✓")
+                  : (isZh(language) ? "🔗 分享篩選結果" : "🔗 Share filters")}
+              </button>
+            </div>
             <label className="flex items-center gap-2">
               <span>{isZh(language) ? "顯示" : "Show"}</span>
               <select

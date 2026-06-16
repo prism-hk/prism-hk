@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useLanguage } from "@/lib/LanguageContext";
 import { t, isZh, type Language } from "@/lib/i18n";
 import { type PrismEvent } from "@/lib/events";
@@ -153,6 +153,46 @@ export default function EventsClient({
   const toggleDistrict = (d: string) =>
     setActiveDistricts((prev) => (prev.includes(d) ? prev.filter((x) => x !== d) : [...prev, d]));
   const [pageSize, setPageSize] = useState<number>(12);
+  const [shareCopied, setShareCopied] = useState(false);
+
+  // Read filters from the URL once on mount, so shared links restore them.
+  const didInit = useRef(false);
+  useEffect(() => {
+    const sp = new URLSearchParams(window.location.search);
+    const tag = sp.get("tag");
+    if (tag) setActiveTag(tag);
+    const ds = sp.get("districts")?.split(",").filter(Boolean);
+    if (ds?.length) setActiveDistricts(ds);
+    if (sp.get("districtMode") === "and") setDistrictMode("and");
+    const q = sp.get("search");
+    if (q) setSearch(q);
+    if (sp.get("view") === "calendar") setView("calendar");
+    didInit.current = true;
+  }, []);
+
+  // Keep the URL in sync with the active filters so the page is shareable.
+  useEffect(() => {
+    if (!didInit.current) return;
+    const params = new URLSearchParams();
+    if (search) params.set("search", search);
+    if (activeTag) params.set("tag", activeTag);
+    if (activeDistricts.length) params.set("districts", activeDistricts.join(","));
+    if (activeDistricts.length > 1) params.set("districtMode", districtMode);
+    if (view === "calendar") params.set("view", view);
+    // Preserve a deep-linked event panel param if one is present.
+    const ev = new URLSearchParams(window.location.search).get("event");
+    if (ev) params.set("event", ev);
+    const qs = params.toString();
+    window.history.replaceState(null, "", qs ? `${window.location.pathname}?${qs}` : window.location.pathname);
+  }, [search, activeTag, activeDistricts, districtMode, view]);
+
+  async function shareFilters() {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 1800);
+    } catch {}
+  }
 
   const today = new Date(new Date().toDateString());
 
@@ -293,6 +333,17 @@ export default function EventsClient({
                 {activeFilterCount}
               </span>
             )}
+          </button>
+
+          {/* Share current filters */}
+          <button
+            onClick={shareFilters}
+            title={isZh(language) ? "複製連結（含目前篩選）" : "Copy a link to these filters"}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E8E6F0] bg-white text-xs font-semibold text-[#7B68EE] hover:border-[#A78BFA] transition-colors whitespace-nowrap"
+          >
+            {shareCopied
+              ? (isZh(language) ? "已複製 ✓" : "Copied ✓")
+              : (isZh(language) ? "🔗 分享" : "🔗 Share")}
           </button>
 
           <div className="flex items-center gap-1 bg-[#F5F4FA] rounded-lg p-1">

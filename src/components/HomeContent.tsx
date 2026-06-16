@@ -122,16 +122,33 @@ export default function HomeContent({
             | { kind: "event"; src: string; event: PrismEvent }
             | { kind: "listing"; src: string; listing: Listing }
             | { kind: "default"; src: string };
-          const eventTiles: Tile[] = events
-            .filter((e) => !!e.image)
-            .map((e) => ({ kind: "event" as const, src: e.image!, event: e }));
-          const listingTiles: Tile[] = featured
-            .filter((l) => !!l.logo)
+          const shuffle = <T,>(arr: T[]): T[] => [...arr].sort(() => 0.5 - Math.random());
+          // Showcase real photos from PAST events first — these are the images
+          // uploaded to Cloudinary. Picked at random on each load.
+          const pastEventTiles: Tile[] = shuffle(
+            events.filter((e) => {
+              if (!e.image) return false;
+              const d = parseDate(e.date);
+              return d ? d < today : false;
+            })
+          ).map((e) => ({ kind: "event" as const, src: e.image!, event: e }));
+          // Fallbacks, in order, if there aren't yet four past-event photos.
+          const upcomingEventTiles: Tile[] = shuffle(
+            events.filter((e) => {
+              if (!e.image) return false;
+              const d = parseDate(e.date);
+              return d ? d >= today : true;
+            })
+          ).map((e) => ({ kind: "event" as const, src: e.image!, event: e }));
+          const listingTiles: Tile[] = shuffle(featured.filter((l) => !!l.logo))
             .map((l) => ({ kind: "listing" as const, src: l.logo!, listing: l }));
-          const pool = [...eventTiles, ...listingTiles];
-          const shuffled = [...pool].sort(() => 0.5 - Math.random()).slice(0, 4);
           const defaultTiles: Tile[] = defaults.map((src) => ({ kind: "default" as const, src }));
-          const tiles: Tile[] = shuffled.length >= 4 ? shuffled : [...shuffled, ...defaultTiles].slice(0, 4);
+          const tiles: Tile[] = [
+            ...pastEventTiles,
+            ...upcomingEventTiles,
+            ...listingTiles,
+            ...defaultTiles,
+          ].slice(0, 4);
           return (
             <div className="grid grid-cols-2 md:flex md:justify-center gap-3 md:gap-4 mb-10 max-w-md md:max-w-none mx-auto">
               {tiles.map((tile, i) => {
