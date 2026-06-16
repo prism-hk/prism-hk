@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { type Listing } from "@/lib/supabase";
 import FilterBar from "@/components/FilterBar";
 import ListingGrid from "@/components/ListingGrid";
@@ -27,22 +28,48 @@ export default function HealthClient({
   prices: string[];
 }) {
   const { language } = useLanguage();
-  const [filters, setFilters] = useState({
-    search: "",
-    category: "",
-    district: "",
-  });
-  const [activeTags, setActiveTags] = useState<string[]>([]);
-  const [activePrice, setActivePrice] = useState("");
-  const [showTags, setShowTags] = useState(false);
-  const [showPrices, setShowPrices] = useState(false);
+  const searchParams = useSearchParams();
+  const initialFilters = {
+    search: searchParams.get("search") || "",
+    category: searchParams.get("category") || "",
+    district: searchParams.get("district") || "",
+  };
+  const initialTags = searchParams.get("tags")?.split(",").filter(Boolean) || [];
+  const initialPrice = searchParams.get("price") || "";
+
+  const [filters, setFilters] = useState(initialFilters);
+  const [activeTags, setActiveTags] = useState<string[]>(initialTags);
+  const [activePrice, setActivePrice] = useState(initialPrice);
+  const [showTags, setShowTags] = useState(initialTags.length > 0);
+  const [showPrices, setShowPrices] = useState(!!initialPrice);
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [shareCopied, setShareCopied] = useState(false);
 
   function toggleTag(tag: string) {
     setActiveTags((prev) =>
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
     );
+  }
+
+  // Keep the URL in sync with the active filters so the page is shareable.
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (filters.search) params.set("search", filters.search);
+    if (filters.category) params.set("category", filters.category);
+    if (filters.district) params.set("district", filters.district);
+    if (activeTags.length) params.set("tags", activeTags.join(","));
+    if (activePrice) params.set("price", activePrice);
+    const qs = params.toString();
+    window.history.replaceState(null, "", qs ? `${window.location.pathname}?${qs}` : window.location.pathname);
+  }, [filters, activeTags, activePrice]);
+
+  async function shareFilters() {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 1800);
+    } catch {}
   }
 
   const activeCount =
@@ -84,6 +111,9 @@ export default function HealthClient({
         categories={["Healthcare & Support", "NGOs"]}
         districts={districts}
         onFilter={setFilters}
+        initialSearch={initialFilters.search}
+        initialCategory={initialFilters.category}
+        initialDistrict={initialFilters.district}
       />
 
       {/* Tag filter */}
@@ -231,6 +261,22 @@ export default function HealthClient({
 
         {/* Main */}
         <main className="flex-1 min-w-0">
+          {/* Results count + share */}
+          <div className="flex items-center justify-between mb-3 text-xs text-[#6B6890]">
+            <span className="tabular-nums">
+              {filtered.length} {isZh(language) ? "個結果" : "Results"}
+            </span>
+            <button
+              onClick={shareFilters}
+              title={isZh(language) ? "複製連結（含目前篩選）" : "Copy a link to these filters"}
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white border border-[#E8E6F0] font-semibold text-[#7B68EE] hover:border-[#A78BFA] hover:shadow-sm transition-[border-color,box-shadow] whitespace-nowrap"
+            >
+              {shareCopied
+                ? (isZh(language) ? "已複製連結 ✓" : "Link copied ✓")
+                : (isZh(language) ? "🔗 分享篩選結果" : "🔗 Share filters")}
+            </button>
+          </div>
+
           {/* Mobile filter toggle */}
           <button
             onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}

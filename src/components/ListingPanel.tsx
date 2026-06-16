@@ -82,6 +82,7 @@ export default function ListingPanel({
                 alt={listing.name_en}
                 loading="lazy"
                 className="w-16 h-16 rounded-xl object-cover mb-3 opacity-0 transition-opacity duration-300"
+                ref={(el) => { if (el && el.complete && el.naturalWidth > 0) el.style.opacity = "1"; }}
                 onLoad={(e) => { e.currentTarget.style.opacity = "1"; }}
                 onError={(e) => { e.currentTarget.remove(); }}
               />

@@ -193,6 +193,7 @@ export default function EventPanel({
               alt={name}
               loading="lazy"
               className="w-full max-h-[60vh] object-contain rounded-xl mb-4 bg-white opacity-0 transition-opacity duration-300 ring-1 ring-inset ring-black/[0.06]"
+              ref={(el) => { if (el && el.complete && el.naturalWidth > 0) el.style.opacity = "1"; }}
               onLoad={(e) => { e.currentTarget.style.opacity = "1"; }}
               onError={(e) => { e.currentTarget.remove(); }}
             />

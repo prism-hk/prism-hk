@@ -15,6 +15,7 @@ type FilterBarProps = {
   }) => void;
   initialCategory?: string;
   initialSearch?: string;
+  initialDistrict?: string;
 };
 
 export default function FilterBar({
@@ -23,11 +24,12 @@ export default function FilterBar({
   onFilter,
   initialCategory = "",
   initialSearch = "",
+  initialDistrict = "",
 }: FilterBarProps) {
   const { language } = useLanguage();
   const [search, setSearch] = useState(initialSearch);
   const [activeCategory, setActiveCategory] = useState(initialCategory);
-  const [activeDistrict, setActiveDistrict] = useState("");
+  const [activeDistrict, setActiveDistrict] = useState(initialDistrict);
   const [showDistricts, setShowDistricts] = useState(false);
 
   const notify = useCallback(

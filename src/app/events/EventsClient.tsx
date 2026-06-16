@@ -908,6 +908,7 @@ function EventCard({
             alt={name}
             loading="lazy"
             className="w-full h-full object-contain opacity-0 transition-opacity duration-300"
+            ref={(el) => { if (el && el.complete && el.naturalWidth > 0) el.style.opacity = "1"; }}
             onLoad={(e) => { (e.currentTarget as HTMLImageElement).style.opacity = "1"; }}
             onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
           />

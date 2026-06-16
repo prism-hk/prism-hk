@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { getPublishedListings, getDistinctDistricts } from "@/lib/supabase";
 import HealthClient from "./HealthClient";
 
@@ -24,11 +25,13 @@ export default async function HealthPage() {
   const prices = [...new Set(healthListings.map((l) => l.price).filter(Boolean))] as string[];
 
   return (
-    <HealthClient
-      listings={healthListings}
-      districts={districts}
-      tags={tags}
-      prices={prices.sort()}
-    />
+    <Suspense>
+      <HealthClient
+        listings={healthListings}
+        districts={districts}
+        tags={tags}
+        prices={prices.sort()}
+      />
+    </Suspense>
   );
 }
