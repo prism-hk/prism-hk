@@ -3,15 +3,15 @@ import { decodeHtmlEntities } from "./htmlEntities";
 const SHEET_ID = process.env.GOOGLE_SHEET_ID || "1zKolQNmY8g_oDPBPiiQLmFeNC6KFmz7xXCNgBvAtWhY";
 const API_KEY = process.env.GOOGLE_SHEETS_API_KEY;
 
-// Name of the tab in the PRISM Google Sheet. See marketplace-sheet-setup.md.
-const TAB = "Marketplace";
+// Name of the tab in the PRISM Google Sheet. See board-sheet-setup.md.
+const TAB = "Board";
 
 // Listings with no "Expires" date drop off this many days after "Posted".
 const DEFAULT_LIFETIME_DAYS = 60;
 
-export type MarketplaceKind = "ask" | "offer";
+export type BoardKind = "ask" | "offer";
 
-export type MarketplaceCategory =
+export type BoardCategory =
   | "space"
   | "speaker"
   | "reach"
@@ -20,10 +20,10 @@ export type MarketplaceCategory =
   | "participants"
   | "other";
 
-export type MarketplacePost = {
+export type BoardPost = {
   id: string;
-  kind: MarketplaceKind;
-  category: MarketplaceCategory;
+  kind: BoardKind;
+  category: BoardCategory;
   org: string;
   title_en: string;
   title_zh: string | null;
@@ -38,7 +38,7 @@ export type MarketplacePost = {
   link: string | null;
 };
 
-const CATEGORY_ALIASES: Record<string, MarketplaceCategory> = {
+const CATEGORY_ALIASES: Record<string, BoardCategory> = {
   space: "space", spaces: "space", venue: "space", venues: "space",
   speaker: "speaker", speakers: "speaker",
   reach: "reach", audience: "reach", promotion: "reach", "audience/reach": "reach", "reach & promotion": "reach",
@@ -47,11 +47,11 @@ const CATEGORY_ALIASES: Record<string, MarketplaceCategory> = {
   participant: "participants", participants: "participants", players: "participants", members: "participants",
 };
 
-function parseCategory(value: string): MarketplaceCategory {
+function parseCategory(value: string): BoardCategory {
   return CATEGORY_ALIASES[value.toLowerCase().trim()] || "other";
 }
 
-function parseKind(value: string): MarketplaceKind | null {
+function parseKind(value: string): BoardKind | null {
   const v = value.toLowerCase().trim();
   if (["ask", "asks", "request", "need", "looking for", "seeking"].includes(v)) return "ask";
   if (["offer", "offers", "offering", "available"].includes(v)) return "offer";
@@ -82,7 +82,7 @@ function toIso(d: Date | null): string | null {
   return `${d.getFullYear()}-${mm}-${dd}`;
 }
 
-export async function getMarketplacePosts(): Promise<MarketplacePost[]> {
+export async function getBoardPosts(): Promise<BoardPost[]> {
   if (!API_KEY) return [];
 
   try {
@@ -96,7 +96,7 @@ export async function getMarketplacePosts(): Promise<MarketplacePost[]> {
 
     const headers = rows[0].map((h: string) => h.toLowerCase().trim());
     const today = new Date(new Date().toDateString());
-    const posts: MarketplacePost[] = [];
+    const posts: BoardPost[] = [];
 
     for (let i = 1; i < rows.length; i++) {
       const row = rows[i];
@@ -154,7 +154,7 @@ export async function getMarketplacePosts(): Promise<MarketplacePost[]> {
     // Newest first; undated posts after dated ones.
     return posts.sort((a, b) => (b.posted || "").localeCompare(a.posted || ""));
   } catch (e) {
-    console.error("Error fetching marketplace posts:", e);
+    console.error("Error fetching board posts:", e);
     return [];
   }
 }

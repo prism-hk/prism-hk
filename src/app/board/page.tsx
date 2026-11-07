@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { getMarketplacePosts } from "@/lib/marketplace";
+import { getBoardPosts } from "@/lib/board";
 import { getPublishedListings } from "@/lib/supabase";
-import MarketplaceClient, { type OrgInfo } from "./MarketplaceClient";
+import BoardClient, { type OrgInfo } from "./BoardClient";
 
 export const revalidate = 300;
 
@@ -11,8 +11,8 @@ export const metadata: Metadata = {
     "Spaces, speakers, reach, sponsorship, volunteers and participants: what Hong Kong's LGBTQ+ community groups are looking for and offering. 香港 LGBTQ+ 社區組織的需求與提供。",
 };
 
-export default async function MarketplacePage() {
-  const [posts, listings] = await Promise.all([getMarketplacePosts(), getPublishedListings()]);
+export default async function BoardPage() {
+  const [posts, listings] = await Promise.all([getBoardPosts(), getPublishedListings()]);
 
   // Link each post to its organisation's directory entry (and logo) when the names match.
   const orgs: Record<string, OrgInfo> = {};
@@ -25,5 +25,5 @@ export default async function MarketplacePage() {
     };
   }
 
-  return <MarketplaceClient posts={posts} orgs={orgs} />;
+  return <BoardClient posts={posts} orgs={orgs} />;
 }

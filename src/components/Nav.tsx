@@ -32,7 +32,7 @@ const navLinks: NavLink[] = [
     key: "more",
     label: { en: "More", zh: "更多", zhHans: "更多" },
     children: [
-      { href: "/marketplace", label: { en: "Community Board", zh: "社區交流板", zhHans: "社区交流板" } },
+      { href: "/board", label: { en: "Community Board", zh: "社區交流板", zhHans: "社区交流板" } },
       { href: "/learn/resources", label: { en: "Educational Resources", zh: "教育資源", zhHans: "教育资源" } },
       { href: "/get-involved", label: { en: "Get Involved", zh: "參與", zhHans: "参与" } },
       { href: "/learn", label: { en: "About PRISM", zh: "關於 PRISM", zhHans: "关于 PRISM" } },

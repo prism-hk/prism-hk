@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useLanguage } from "@/lib/LanguageContext";
 import { bilingualText, type Language } from "@/lib/i18n";
-import type { MarketplaceCategory, MarketplaceKind, MarketplacePost } from "@/lib/marketplace";
+import type { BoardCategory, BoardKind, BoardPost } from "@/lib/board";
 
 // Paste the Tally form link here once it exists. Until then the button points to the contact page.
 const SUBMIT_FORM_URL = "";
@@ -25,7 +25,7 @@ function tx(en: string, zh: string, zhHans: string, language: Language): string 
 
 type Label = { en: string; zh: string; zhHans: string };
 
-const CATEGORIES: { id: MarketplaceCategory; label: Label }[] = [
+const CATEGORIES: { id: BoardCategory; label: Label }[] = [
   { id: "space", label: { en: "Spaces", zh: "場地", zhHans: "场地" } },
   { id: "speaker", label: { en: "Speakers", zh: "講者", zhHans: "讲者" } },
   { id: "reach", label: { en: "Reach & Promotion", zh: "宣傳推廣", zhHans: "宣传推广" } },
@@ -35,7 +35,7 @@ const CATEGORIES: { id: MarketplaceCategory; label: Label }[] = [
   { id: "other", label: { en: "Other", zh: "其他", zhHans: "其他" } },
 ];
 
-const KINDS: { id: MarketplaceKind | ""; label: Label }[] = [
+const KINDS: { id: BoardKind | ""; label: Label }[] = [
   { id: "", label: { en: "All", zh: "全部", zhHans: "全部" } },
   { id: "ask", label: { en: "Looking for", zh: "尋找中", zhHans: "寻找中" } },
   { id: "offer", label: { en: "Offering", zh: "提供中", zhHans: "提供中" } },
@@ -64,23 +64,23 @@ function contactHref(contact: string): string | null {
   return null;
 }
 
-export default function MarketplaceClient({
+export default function BoardClient({
   posts,
   orgs,
 }: {
-  posts: MarketplacePost[];
+  posts: BoardPost[];
   orgs: Record<string, OrgInfo>;
 }) {
   const { language } = useLanguage();
-  const [kind, setKind] = useState<MarketplaceKind | "">("");
-  const [category, setCategory] = useState<MarketplaceCategory | "">("");
+  const [kind, setKind] = useState<BoardKind | "">("");
+  const [category, setCategory] = useState<BoardCategory | "">("");
 
   const byKind = useMemo(() => posts.filter((p) => !kind || p.kind === kind), [posts, kind]);
   const visible = useMemo(() => byKind.filter((p) => !category || p.category === category), [byKind, category]);
 
   // Only show category chips that have something in them.
   const counts = useMemo(() => {
-    const c: Partial<Record<MarketplaceCategory, number>> = {};
+    const c: Partial<Record<BoardCategory, number>> = {};
     for (const p of byKind) c[p.category] = (c[p.category] || 0) + 1;
     return c;
   }, [byKind]);
@@ -191,7 +191,7 @@ function Chip({ active, onClick, children }: { active: boolean; onClick: () => v
   );
 }
 
-function PostCard({ post, org, language }: { post: MarketplacePost; org?: OrgInfo; language: Language }) {
+function PostCard({ post, org, language }: { post: BoardPost; org?: OrgInfo; language: Language }) {
   const [expanded, setExpanded] = useState(false);
   const title = bilingualText(post.title_en, post.title_zh, language, post.title_zhHans);
   const description = bilingualText(post.description_en, post.description_zh, language, post.description_zhHans);
