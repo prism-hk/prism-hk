@@ -59,8 +59,9 @@ function parseCategory(value: string): BoardCategory {
 
 function parseKind(value: string): BoardKind | null {
   const v = englishPart(value);
-  if (["ask", "asks", "request", "need", "looking for", "seeking"].includes(v)) return "ask";
-  if (["offer", "offers", "offering", "available"].includes(v)) return "offer";
+  // Accepts "Looking", "Looking for", "Ask", "Seeking", "Need"... and "Offer", "Offering", "Providing"...
+  if (/^(ask|look|seek|need|request|want)/.test(v)) return "ask";
+  if (/^(offer|provid|availab|giv)/.test(v)) return "offer";
   return null;
 }
 
