@@ -47,12 +47,17 @@ const CATEGORY_ALIASES: Record<string, BoardCategory> = {
   participant: "participants", participants: "participants", players: "participants", members: "participants",
 };
 
+// Tally options are trilingual ("Spaces / 場地 / 场地"), so keep only the English part before matching.
+function englishPart(value: string): string {
+  return value.replace(/[^\x00-\x7F]/g, "").replace(/[\/|]+/g, " ").replace(/\s+/g, " ").trim().toLowerCase();
+}
+
 function parseCategory(value: string): BoardCategory {
-  return CATEGORY_ALIASES[value.toLowerCase().trim()] || "other";
+  return CATEGORY_ALIASES[englishPart(value)] || "other";
 }
 
 function parseKind(value: string): BoardKind | null {
-  const v = value.toLowerCase().trim();
+  const v = englishPart(value);
   if (["ask", "asks", "request", "need", "looking for", "seeking"].includes(v)) return "ask";
   if (["offer", "offers", "offering", "available"].includes(v)) return "offer";
   return null;
