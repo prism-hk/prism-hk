@@ -24,6 +24,7 @@ Put these headers in row 1. Order doesn't matter and headers aren't case-sensiti
 | Contact | No | Email, a link, or a phone number (phone numbers open WhatsApp; 8-digit numbers get +852). |
 | Link | No | An optional page with more detail. |
 | Region | No | Shown as a label on the card. Trilingual answers like `Kowloon / 九龍 / 九龙` show in the visitor's language. |
+| Featured | No | `Yes` to show it under ⭐ Featured on the homepage. |
 | Submitted at | No | Written by Tally; used as the Posted date. |
 
 Dates can be `d/m/yyyy` (like the Events tab) or `yyyy-mm-dd` (what Tally and Make.com usually write).

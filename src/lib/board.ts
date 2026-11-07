@@ -37,6 +37,7 @@ export type BoardPost = {
   contact: string | null;
   link: string | null;
   region: string | null;
+  featured: boolean;
 };
 
 const CATEGORY_ALIASES: Record<string, BoardCategory> = {
@@ -160,6 +161,7 @@ export async function getBoardPosts(): Promise<BoardPost[]> {
         contact: get("contact", "email") || null,
         link: link && /^https?:\/\//.test(link) ? link : null,
         region: get("region") || null,
+        featured: ["yes", "true", "1", "✓", "x"].includes(get("featured", "pin", "pinned").toLowerCase()),
       });
     }
 

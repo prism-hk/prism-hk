@@ -7,7 +7,7 @@ import { bilingualText, type Language } from "@/lib/i18n";
 import type { BoardCategory, BoardKind, BoardPost } from "@/lib/board";
 
 // Tally form for new asks and offers (Make.com adds them to the Board tab as Pending).
-const SUBMIT_FORM_URL = "https://tally.so/r/KpePGX";
+export const SUBMIT_FORM_URL = "https://tally.so/r/KpePGX";
 
 export type OrgInfo = {
   name_en: string;
@@ -201,7 +201,7 @@ function Chip({ active, onClick, children }: { active: boolean; onClick: () => v
   );
 }
 
-function PostCard({ post, org, language }: { post: BoardPost; org?: OrgInfo; language: Language }) {
+export function PostCard({ post, org, language }: { post: BoardPost; org?: OrgInfo; language: Language }) {
   const [expanded, setExpanded] = useState(false);
   const title = bilingualText(post.title_en, post.title_zh, language, post.title_zhHans);
   const description = bilingualText(post.description_en, post.description_zh, language, post.description_zhHans);
