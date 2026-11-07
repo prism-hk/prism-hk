@@ -36,6 +36,7 @@ export type BoardPost = {
   expires: string | null; // ISO date
   contact: string | null;
   link: string | null;
+  region: string | null;
 };
 
 const CATEGORY_ALIASES: Record<string, BoardCategory> = {
@@ -120,7 +121,11 @@ export async function getBoardPosts(): Promise<BoardPost[]> {
 
       const kind = parseKind(get("type", "kind"));
       const title = get("title (english)", "title");
-      const org = get("organisation", "organization", "org");
+      const org = get(
+        "organization name (english)", "organisation name (english)",
+        "organization name", "organisation name",
+        "organisation", "organization", "org"
+      );
       if (!kind || !title || !org) continue;
 
       const posted = parseDate(get("posted", "date posted", "submitted at"));
@@ -131,7 +136,7 @@ export async function getBoardPosts(): Promise<BoardPost[]> {
       }
       if (expires && expires < today) continue;
 
-      const neededBy = parseDate(get("needed by", "date needed"));
+      const neededBy = parseDate(get("needed by", "date needed", "date"));
       // Asks for a date that has already passed are no longer useful.
       if (kind === "ask" && neededBy && neededBy < today) continue;
 
@@ -153,6 +158,7 @@ export async function getBoardPosts(): Promise<BoardPost[]> {
         expires: toIso(expires),
         contact: get("contact", "email") || null,
         link: link && /^https?:\/\//.test(link) ? link : null,
+        region: get("region") || null,
       });
     }
 

@@ -11,18 +11,20 @@ Put these headers in row 1. Order doesn't matter and headers aren't case-sensiti
 | Status | Yes | `Published` to show it. Anything else (blank, `Pending`, `Draft`) keeps it hidden. |
 | Type | Yes | `Ask` (the group is looking for something) or `Offer` (the group can provide it). |
 | Category | Yes | `Space`, `Speaker`, `Reach`, `Sponsorship`, `Volunteers`, `Participants`. Anything else shows as Other. |
-| Organisation | Yes | The group's name. If it matches a Directory listing's English name exactly, the card links to that listing and shows its logo. |
+| Organisation (or Organization Name (English)) | Yes | The group's name. If it matches a Directory listing's English name exactly, the card links to that listing and shows its logo. |
 | Title (English) | Yes | One line, e.g. "Venue for 80 people in March". |
 | Title (Traditional Chinese) | No | |
 | Title (Simplified Chinese) | No | |
 | Description (English) | No | Details: dates, size, requirements. |
 | Description (Traditional Chinese) | No | |
 | Description (Simplified Chinese) | No | |
-| Needed By | No | For an Ask, the date it's needed; for an Offer, when it's available until. Past dates on Asks hide the post. |
+| Needed By (or Date) | No | For an Ask, the date it's needed; for an Offer, when it's available until. Past dates on Asks hide the post. |
 | Posted | No | Date submitted. Used for sorting and default expiry. |
 | Expires | No | Hide after this date. If blank, posts hide 60 days after Posted. |
 | Contact | No | Email, a link, or a phone number (phone numbers open WhatsApp; 8-digit numbers get +852). |
 | Link | No | An optional page with more detail. |
+| Region | No | Shown as a label on the card. Trilingual answers like `Kowloon / 九龍 / 九龙` show in the visitor's language. |
+| Submitted at | No | Written by Tally; used as the Posted date. |
 
 Dates can be `d/m/yyyy` (like the Events tab) or `yyyy-mm-dd` (what Tally and Make.com usually write).
 
