@@ -45,6 +45,16 @@ function label(l: Label, language: Language) {
   return tx(l.en, l.zh, l.zhHans, language);
 }
 
+// Tally answers arrive as "Kowloon / 九龍 / 九龙"; show the part for the current language.
+function pickLanguage(value: string, language: Language): string {
+  const parts = value.split("/").map((p) => p.trim()).filter(Boolean);
+  if (parts.length < 2) return value;
+  if (language === "zh") return parts[1];
+  if (language === "zh-Hans") return parts[2] || parts[1];
+  if (language === "both") return `${parts[0]} ${parts[1]}`;
+  return parts[0];
+}
+
 function formatDate(iso: string, language: Language): string {
   const [y, m, d] = iso.split("-").map(Number);
   const date = new Date(y, m - 1, d);
@@ -213,6 +223,15 @@ function PostCard({ post, org, language }: { post: BoardPost; org?: OrgInfo; lan
         <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-[#F0EEFF] text-[#7B68EE]">
           {label(cat.label, language)}
         </span>
+        {post.region && (
+          <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#6B6890]">
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 21s-7-6.2-7-11a7 7 0 1114 0c0 4.8-7 11-7 11z" />
+              <circle cx="12" cy="10" r="2.5" />
+            </svg>
+            {pickLanguage(post.region, language)}
+          </span>
+        )}
       </div>
 
       <h2 className="text-lg font-bold text-[#1E1B3A] mb-1.5 whitespace-pre-line">{title}</h2>
