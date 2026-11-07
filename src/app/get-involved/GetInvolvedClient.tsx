@@ -46,6 +46,21 @@ const CONTRIBUTE: Contribute[] = [
     descZhHans: "有与香港 LGBTQ+ 社区相关的故事、资源或文章？欢迎与我们分享。",
     url: "https://forms.gle/MxWPavkHaGV25z8c6",
   },
+  {
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden className="w-7 h-7">
+        <rect x="3" y="4" width="18" height="16" rx="2" />
+        <path d="M7 9h6M7 13h10M7 17h4" />
+        <circle cx="17" cy="8.5" r="1.5" fill="#10B981" />
+      </svg>
+    ),
+    iconBg: "bg-[#DCFCE7]",
+    titleEn: "Community Board", titleZh: "社區交流板", titleZhHans: "社区交流板",
+    descEn: "Is your group looking for a space, speakers, volunteers or participants, or able to offer them? Post it on the Community Board.",
+    descZh: "你的組織正在尋找場地、講者、義工或參加者，或可以提供這些？在社區交流板發佈。",
+    descZhHans: "你的组织正在寻找场地、讲者、义工或参加者，或可以提供这些？在社区交流板发布。",
+    url: "https://tally.so/r/KpePGX",
+  },
 ];
 
 export default function GetInvolvedClient() {
@@ -58,9 +73,9 @@ export default function GetInvolvedClient() {
         <h1 className="text-4xl font-bold mb-2">{t("getInvolvedTitle", language)}</h1>
         <p className="text-[#6B6890]">
           {tx(
-            "Help grow Hong Kong's LGBTQ+ directory. Submit an organization, event, or article.",
-            "協助擴展香港 LGBTQ+ 資料庫。提交機構、活動或文章。",
-            "协助扩展香港 LGBTQ+ 资料库。提交机构、活动或文章。",
+            "Help grow Hong Kong's LGBTQ+ directory. Submit an organization, event or article, or post on the Community Board.",
+            "協助擴展香港 LGBTQ+ 資料庫。提交機構、活動或文章，或在社區交流板發佈。",
+            "协助扩展香港 LGBTQ+ 资料库。提交机构、活动或文章，或在社区交流板发布。",
             language
           )}
         </p>
@@ -71,7 +86,7 @@ export default function GetInvolvedClient() {
         <h2 className="text-2xl font-bold text-[#1E1B3A] mb-5">
           {tx("Contribute Content", "貢獻內容", "贡献内容", language)}
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {CONTRIBUTE.map((c) => (
             <div key={c.titleEn} className="flex flex-col">
               <div className={`w-12 h-12 rounded-xl ${c.iconBg} flex items-center justify-center mb-4`}>

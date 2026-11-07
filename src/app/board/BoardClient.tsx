@@ -6,8 +6,8 @@ import { useLanguage } from "@/lib/LanguageContext";
 import { bilingualText, type Language } from "@/lib/i18n";
 import type { BoardCategory, BoardKind, BoardPost } from "@/lib/board";
 
-// Paste the Tally form link here once it exists. Until then the button points to the contact page.
-const SUBMIT_FORM_URL = "";
+// Tally form for new asks and offers (Make.com adds them to the Board tab as Pending).
+const SUBMIT_FORM_URL = "https://tally.so/r/KpePGX";
 
 export type OrgInfo = {
   name_en: string;

@@ -30,4 +30,4 @@ Dates can be `d/m/yyyy` (like the Events tab) or `yyyy-mm-dd` (what Tally and Ma
 
 Point the Tally form (via Make.com) at this tab with Status left as `Pending`. To approve a post, change Status to `Published`. To take one down early, change it back or set Expires to a past date.
 
-Once the Tally form exists, paste its link into `SUBMIT_FORM_URL` at the top of `src/app/board/BoardClient.tsx`. Until then the "Post an ask or offer" button goes to the Contact page.
+The Tally form is https://tally.so/r/KpePGX. Its link is set in `SUBMIT_FORM_URL` at the top of `src/app/board/BoardClient.tsx` and on the Get Involved page.
