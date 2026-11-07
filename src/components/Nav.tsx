@@ -13,10 +13,19 @@ type NavLink = {
   key: string;
   label?: { en: string; zh: string; zhHans: string };
   children?: { href: string; label: { en: string; zh: string; zhHans: string } }[];
+  mobileOnly?: boolean; // shown in the mobile menu only; on desktop the logo links home
 };
 
+function navLabel(link: NavLink, language: Language): string {
+  if (!link.label) return t(link.key as any, language);
+  if (language === "zh-Hans") return link.label.zhHans;
+  if (language === "zh") return link.label.zh;
+  if (language === "both") return `${link.label.en} ${link.label.zh}`;
+  return link.label.en;
+}
+
 const navLinks: NavLink[] = [
-  { href: "/", key: "home" },
+  { href: "/", key: "home", mobileOnly: true },
   { href: "/directory", key: "directory" },
   {
     href: "/health",
@@ -27,6 +36,7 @@ const navLinks: NavLink[] = [
     ],
   },
   { href: "/events", key: "events" },
+  { href: "/board", key: "board", label: { en: "Community Board", zh: "社區交流板", zhHans: "社区交流板" } },
   {
     href: "/learn",
     key: "more",
@@ -92,7 +102,7 @@ export default function Nav() {
 
         {/* Desktop nav links — pushed to the right */}
         <div className="hidden md:flex items-center gap-1 ml-auto">
-          {navLinks.map((link) => {
+          {navLinks.filter((link) => !link.mobileOnly).map((link) => {
             const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
 
             if (link.children) {
@@ -104,7 +114,7 @@ export default function Nav() {
                       isActive ? "text-[#7B68EE]" : "text-[#1E1B3A] hover:text-[#7B68EE]"
                     }`}
                   >
-                    {t(link.key as any, language)}
+                    {navLabel(link, language)}
                     <svg className="w-3.5 h-3.5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
@@ -139,7 +149,7 @@ export default function Nav() {
                   isActive ? "text-[#7B68EE]" : "text-[#1E1B3A] hover:text-[#7B68EE]"
                 }`}
               >
-                {t(link.key as any, language)}
+                {navLabel(link, language)}
               </Link>
             );
           })}
@@ -236,7 +246,7 @@ export default function Nav() {
                       isActive ? "text-[#7B68EE] bg-[#7B68EE]/10" : "text-[#1E1B3A] hover:text-[#7B68EE] hover:bg-[#7B68EE]/5"
                     }`}
                   >
-                    {t(link.key as any, language)}
+                    {navLabel(link, language)}
                     <svg className={`w-4 h-4 transition-transform ${isExpanded ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                     </svg>
@@ -269,7 +279,7 @@ export default function Nav() {
                   isActive ? "text-[#7B68EE] bg-[#7B68EE]/10" : "text-[#1E1B3A] hover:text-[#7B68EE] hover:bg-[#7B68EE]/5"
                 }`}
               >
-                {t(link.key as any, language)}
+                {navLabel(link, language)}
               </Link>
             );
           })}

@@ -7,7 +7,7 @@ import DirectoryClient from "./DirectoryClient";
 export const revalidate = 300;
 
 export const metadata = {
-  title: "Explore — PRISM HK 探索",
+  title: "Directory — PRISM HK 資料庫",
   description: "Explore LGBTQ+-friendly spaces and support across Hong Kong. 探索香港各區 LGBTQ+ 友善空間及支援。",
 };
 
