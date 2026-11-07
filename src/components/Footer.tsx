@@ -9,6 +9,7 @@ const linkColumns = [
   { href: "/directory", key: "directory" as const },
   { href: "/health", key: "health" as const },
   { href: "/events", key: "events" as const },
+  { href: "/board", key: "board" as const },
   { href: "/learn", key: "learn" as const },
   { href: "/get-involved", key: "getInvolved" as const },
   { href: "/contact", key: "contact" as const },

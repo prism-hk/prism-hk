@@ -4,10 +4,11 @@ export const ui = {
   en: {
     // Nav
     home: "Home",
-    directory: "Explore",
+    directory: "Directory",
     health: "Healthcare & Support",
     emergencyServices: "Emergency Services",
     events: "Events",
+    board: "Community Board",
     learn: "Learn",
     more: "More",
     aboutUs: "About Us",
@@ -100,10 +101,11 @@ export const ui = {
   },
   zh: {
     home: "首頁",
-    directory: "探索",
+    directory: "目錄",
     health: "醫療及支援",
     emergencyServices: "緊急支援",
     events: "活動",
+    board: "社區交流板",
     learn: "了解更多",
     more: "更多",
     aboutUs: "關於我們",
@@ -186,10 +188,11 @@ export const ui = {
   },
   "zh-Hans": {
     home: "主页",
-    directory: "探索",
+    directory: "目录",
     health: "医疗及支援",
     emergencyServices: "紧急支援",
     events: "活动",
+    board: "社区交流板",
     learn: "了解更多",
     more: "更多",
     aboutUs: "关于我们",
