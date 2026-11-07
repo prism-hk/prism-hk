@@ -46,7 +46,8 @@ function formatTime(time: string | null): string {
 export default function HomeContent({
   categoryStats,
   events = [],
-  boardPosts = [],
+  boardFeatured = [],
+  boardNewest = [],
   boardOrgs = {},
   featured = [],
   newest = [],
@@ -56,7 +57,8 @@ export default function HomeContent({
 }: {
   categoryStats: { category: string; count: number }[];
   events?: PrismEvent[];
-  boardPosts?: BoardPost[];
+  boardFeatured?: BoardPost[];
+  boardNewest?: BoardPost[];
   boardOrgs?: Record<string, OrgInfo>;
   featured?: Listing[];
   newest?: Listing[];
@@ -69,6 +71,11 @@ export default function HomeContent({
   const [selectedEvent, setSelectedEvent] = useState<PrismEvent | null>(null);
   const [listingTab, setListingTab] = useState<"featured" | "new">("featured");
   const shownListings = listingTab === "featured" ? featured : newest;
+  // Open on Newly Listed until at least one board post is marked Featured
+  const [boardTab, setBoardTab] = useState<"featured" | "new">(boardFeatured.length > 0 ? "featured" : "new");
+  const shownBoardPosts = boardTab === "featured" ? boardFeatured : boardNewest;
+  const zh3 = (en: string, zh: string, zhHans: string) =>
+    language === "zh" ? zh : language === "zh-Hans" ? zhHans : language === "both" ? `${en} ${zh}` : en;
 
   const today = new Date(new Date().toDateString());
   const upcomingEvents = events
@@ -112,55 +119,82 @@ export default function HomeContent({
         </div>
       </section>
 
-      {/* ── Community Board: latest asks and offers ── */}
+      {/* ── Community Board: featured and latest asks and offers ── */}
       <section className="max-w-5xl mx-auto px-6 py-12">
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6">
-          <div>
-            <h2 className="text-2xl font-bold text-[#1E1B3A]">
-              {language === "zh" ? "社區交流板" : language === "zh-Hans" ? "社区交流板" : language === "both" ? "Community Board 社區交流板" : "Community Board"}
-            </h2>
-            <p className="text-[#6B6890] mt-2 text-sm">
-              {language === "zh"
-                ? "社區組織正在尋找及可以提供的資源"
-                : language === "zh-Hans"
-                ? "社区组织正在寻找及可以提供的资源"
-                : "What community groups are looking for, and what they can offer"}
-            </p>
-          </div>
-          <div className="flex items-center gap-4 shrink-0">
-            {boardPosts.length > 0 && (
-              <Link href="/board" className="text-sm font-semibold text-[#7B68EE] hover:underline">
-                {isZh(language) ? "查看全部" : "View all"} →
-              </Link>
+        <div className="text-center mb-8">
+          <h2 className="text-2xl font-bold text-[#1E1B3A]">
+            {zh3("Community Board", "社區交流板", "社区交流板")}
+          </h2>
+          <p className="text-[#6B6890] mt-2 text-sm">
+            {zh3(
+              "What community groups are looking for, and what they can offer",
+              "社區組織正在尋找及可以提供的資源",
+              "社区组织正在寻找及可以提供的资源"
             )}
-            <a
-              href={SUBMIT_FORM_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#7B68EE] hover:bg-[#6B5CE7] active:scale-[0.96] text-white rounded-lg font-semibold text-sm transition-[colors,transform] duration-150"
-            >
-              {language === "zh" ? "發佈需求或提供" : language === "zh-Hans" ? "发布需求或提供" : "Post an ask or offer"}
-            </a>
+          </p>
+          <div
+            role="tablist"
+            aria-label={zh3("Community Board posts", "社區交流板", "社区交流板")}
+            className="inline-flex mt-5 p-1 rounded-full bg-[#F0EEFF] border border-[#E8E6F0]"
+          >
+            {([
+              { key: "featured", label: isZh(language) ? "⭐ 精選" : "⭐ Featured" },
+              { key: "new", label: isZh(language) ? "✨ 最新加入" : "✨ Newly Listed" },
+            ] as const).map((tab) => (
+              <button
+                key={tab.key}
+                role="tab"
+                type="button"
+                aria-selected={boardTab === tab.key}
+                onClick={() => setBoardTab(tab.key)}
+                className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-colors ${
+                  boardTab === tab.key
+                    ? "bg-white text-[#5746C7] shadow-sm"
+                    : "text-[#6B6890] hover:text-[#1E1B3A]"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
           </div>
         </div>
 
-        {boardPosts.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {boardPosts.map((p) => (
+        {shownBoardPosts.length > 0 ? (
+          <div key={boardTab} className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {shownBoardPosts.map((p) => (
               <PostCard key={p.id} post={p} org={boardOrgs[p.org.toLowerCase().trim()]} language={language} />
             ))}
           </div>
         ) : (
-          <div className="rounded-2xl border border-dashed border-[#E8E6F0] bg-white px-6 py-10 text-center">
-            <p className="text-sm text-[#6B6890]">
-              {language === "zh"
-                ? "你的組織正在尋找場地、講者、義工或參加者，或可以提供這些？成為第一個發佈的組織。"
-                : language === "zh-Hans"
-                ? "你的组织正在寻找场地、讲者、义工或参加者，或可以提供这些？成为第一个发布的组织。"
-                : "Is your group looking for a space, speakers, volunteers or participants, or able to offer them? Be the first to post."}
+          <div className="bg-white rounded-2xl border border-[#E8E6F0] py-12 px-6 text-center">
+            <p className="text-[#6B6890] text-sm">
+              {boardTab === "featured"
+                ? zh3("No featured posts yet. Check back soon!", "暫無精選內容，請稍後再來！", "暂无精选内容，请稍后再来！")
+                : zh3(
+                    "Is your group looking for a space, speakers, volunteers or participants, or able to offer them? Be the first to post.",
+                    "你的組織正在尋找場地、講者、義工或參加者，或可以提供這些？成為第一個發佈的組織。",
+                    "你的组织正在寻找场地、讲者、义工或参加者，或可以提供这些？成为第一个发布的组织。"
+                  )}
             </p>
           </div>
         )}
+
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-5">
+          <Link
+            href="/board"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#5746C7] hover:text-[#1E1B3A] transition-colors"
+          >
+            {zh3("Browse the Community Board", "瀏覽社區交流板", "浏览社区交流板")} →
+          </Link>
+          <a
+            href={SUBMIT_FORM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#7B68EE] hover:bg-[#6B5CE7] active:scale-[0.96] text-white rounded-lg font-semibold text-sm transition-[colors,transform] duration-150"
+          >
+            {zh3("Post an ask or offer", "發佈需求或提供", "发布需求或提供")}
+          </a>
+        </div>
       </section>
 
       {/* ── 2. 18 Districts 1 Community ── */}

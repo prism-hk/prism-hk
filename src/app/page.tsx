@@ -18,11 +18,13 @@ export default async function HomePage() {
   ]);
 
   // Latest Community Board posts, with directory names/logos for their organisations
-  const latestBoardPosts = boardPosts.slice(0, 4);
+  const boardFeatured = boardPosts.filter((p) => p.featured).slice(0, 4);
+  const boardNewest = boardPosts.slice(0, 4); // already sorted newest first
+  const boardOrgNames = new Set([...boardFeatured, ...boardNewest].map((p) => p.org.toLowerCase().trim()));
   const boardOrgs: Record<string, OrgInfo> = {};
   for (const l of listings) {
     const key = l.name_en.toLowerCase().trim();
-    if (latestBoardPosts.some((p) => p.org.toLowerCase().trim() === key)) {
+    if (boardOrgNames.has(key)) {
       boardOrgs[key] = { name_en: l.name_en, name_zh: l.name_zh, name_zhHans: l.name_zh_hans, logo: l.logo };
     }
   }
@@ -52,7 +54,8 @@ export default async function HomePage() {
       <HomeContent
         categoryStats={categoryStats}
         events={events}
-        boardPosts={latestBoardPosts}
+        boardFeatured={boardFeatured}
+        boardNewest={boardNewest}
         boardOrgs={boardOrgs}
         featured={featured}
         newest={newest}
