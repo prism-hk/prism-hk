@@ -3,16 +3,29 @@ import { getPublishedListings, getCategoryStats, getDistinctDistricts } from "@/
 import { CATEGORIES } from "@/lib/categories";
 import HomeContent from "@/components/HomeContent";
 import { getEvents } from "@/lib/events";
+import { getBoardPosts } from "@/lib/board";
+import type { OrgInfo } from "@/app/board/BoardClient";
 
 export const revalidate = 300;
 
 export default async function HomePage() {
-  const [listings, categoryStats, districts, events] = await Promise.all([
+  const [listings, categoryStats, districts, events, boardPosts] = await Promise.all([
     getPublishedListings(),
     getCategoryStats(),
     getDistinctDistricts(),
     getEvents(),
+    getBoardPosts(),
   ]);
+
+  // Latest Community Board posts, with directory names/logos for their organisations
+  const latestBoardPosts = boardPosts.slice(0, 4);
+  const boardOrgs: Record<string, OrgInfo> = {};
+  for (const l of listings) {
+    const key = l.name_en.toLowerCase().trim();
+    if (latestBoardPosts.some((p) => p.org.toLowerCase().trim() === key)) {
+      boardOrgs[key] = { name_en: l.name_en, name_zh: l.name_zh, name_zhHans: l.name_zh_hans, logo: l.logo };
+    }
+  }
 
   const featured = (() => {
     const pinned = listings.filter((l) => l.featured);
@@ -39,6 +52,8 @@ export default async function HomePage() {
       <HomeContent
         categoryStats={categoryStats}
         events={events}
+        boardPosts={latestBoardPosts}
+        boardOrgs={boardOrgs}
         featured={featured}
         newest={newest}
         listingsCount={listings.length}

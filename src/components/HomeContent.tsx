@@ -10,6 +10,8 @@ import { type Listing } from "@/lib/supabase";
 import ListingCard from "./ListingCard";
 import ListingPanel from "./ListingPanel";
 import EventPanel from "./EventPanel";
+import { PostCard, SUBMIT_FORM_URL, type OrgInfo } from "@/app/board/BoardClient";
+import type { BoardPost } from "@/lib/board";
 
 function parseDate(dateStr: string): Date | null {
   if (!dateStr) return null;
@@ -44,6 +46,8 @@ function formatTime(time: string | null): string {
 export default function HomeContent({
   categoryStats,
   events = [],
+  boardPosts = [],
+  boardOrgs = {},
   featured = [],
   newest = [],
   listingsCount,
@@ -52,6 +56,8 @@ export default function HomeContent({
 }: {
   categoryStats: { category: string; count: number }[];
   events?: PrismEvent[];
+  boardPosts?: BoardPost[];
+  boardOrgs?: Record<string, OrgInfo>;
   featured?: Listing[];
   newest?: Listing[];
   listingsCount: number;
@@ -104,6 +110,57 @@ export default function HomeContent({
             );
           })}
         </div>
+      </section>
+
+      {/* ── Community Board: latest asks and offers ── */}
+      <section className="max-w-5xl mx-auto px-6 py-12">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-6">
+          <div>
+            <h2 className="text-2xl font-bold text-[#1E1B3A]">
+              {language === "zh" ? "社區交流板" : language === "zh-Hans" ? "社区交流板" : language === "both" ? "Community Board 社區交流板" : "Community Board"}
+            </h2>
+            <p className="text-[#6B6890] mt-2 text-sm">
+              {language === "zh"
+                ? "社區組織正在尋找及可以提供的資源"
+                : language === "zh-Hans"
+                ? "社区组织正在寻找及可以提供的资源"
+                : "What community groups are looking for, and what they can offer"}
+            </p>
+          </div>
+          <div className="flex items-center gap-4 shrink-0">
+            {boardPosts.length > 0 && (
+              <Link href="/board" className="text-sm font-semibold text-[#7B68EE] hover:underline">
+                {isZh(language) ? "查看全部" : "View all"} →
+              </Link>
+            )}
+            <a
+              href={SUBMIT_FORM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#7B68EE] hover:bg-[#6B5CE7] active:scale-[0.96] text-white rounded-lg font-semibold text-sm transition-[colors,transform] duration-150"
+            >
+              {language === "zh" ? "發佈需求或提供" : language === "zh-Hans" ? "发布需求或提供" : "Post an ask or offer"}
+            </a>
+          </div>
+        </div>
+
+        {boardPosts.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {boardPosts.map((p) => (
+              <PostCard key={p.id} post={p} org={boardOrgs[p.org.toLowerCase().trim()]} language={language} />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-2xl border border-dashed border-[#E8E6F0] bg-white px-6 py-10 text-center">
+            <p className="text-sm text-[#6B6890]">
+              {language === "zh"
+                ? "你的組織正在尋找場地、講者、義工或參加者，或可以提供這些？成為第一個發佈的組織。"
+                : language === "zh-Hans"
+                ? "你的组织正在寻找场地、讲者、义工或参加者，或可以提供这些？成为第一个发布的组织。"
+                : "Is your group looking for a space, speakers, volunteers or participants, or able to offer them? Be the first to post."}
+            </p>
+          </div>
+        )}
       </section>
 
       {/* ── 2. 18 Districts 1 Community ── */}
