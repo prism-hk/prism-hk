@@ -145,7 +145,7 @@ export async function getEvents(): Promise<PrismEvent[]> {
 
   try {
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Events?key=${API_KEY}`;
-    const res = await fetch(url, { next: { revalidate: 300 } });
+    const res = await fetch(url, { next: { revalidate: 3600 } });
     if (!res.ok) return [];
 
     const data = await res.json();

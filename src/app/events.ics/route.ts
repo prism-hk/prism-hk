@@ -1,6 +1,6 @@
 import { getEvents } from "@/lib/events";
 
-export const revalidate = 300;
+export const revalidate = 3600; // 1 hour; use /api/refresh after editing the Sheet
 
 function to24Hour(time: string | null): string {
   if (!time) return "000000";
@@ -44,8 +44,9 @@ function foldLine(line: string): string {
 
 export async function GET() {
   const events = await getEvents();
-  const now = new Date();
-  const dtstamp = now.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  // DTSTAMP is fixed per event (not "now") so the feed is byte-identical until
+  // the events themselves change. A changing timestamp forced a billed Vercel
+  // ISR Write on every regeneration.
 
   const lines: string[] = [
     "BEGIN:VCALENDAR",
@@ -70,7 +71,7 @@ export async function GET() {
 
     lines.push("BEGIN:VEVENT");
     lines.push(foldLine(`UID:${uid}`));
-    lines.push(`DTSTAMP:${dtstamp}`);
+    lines.push(`DTSTAMP:${dateStr}T000000Z`);
     lines.push(`DTSTART;TZID=Asia/Hong_Kong:${dateStr}T${start}`);
     lines.push(`DTEND;TZID=Asia/Hong_Kong:${dateStr}T${end}`);
     lines.push(foldLine(`SUMMARY:${escapeIcs(event.name_en)}`));

@@ -95,7 +95,7 @@ export async function getBoardPosts(): Promise<BoardPost[]> {
 
   try {
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${TAB}?key=${API_KEY}`;
-    const res = await fetch(url, { next: { revalidate: 300 } });
+    const res = await fetch(url, { next: { revalidate: 3600 } });
     if (!res.ok) return []; // Tab missing or sheet unreachable: show the empty state rather than erroring
 
     const data = await res.json();

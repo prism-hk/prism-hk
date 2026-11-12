@@ -3,7 +3,7 @@ import { getBoardPosts } from "@/lib/board";
 import { getPublishedListings } from "@/lib/supabase";
 import BoardClient, { type OrgInfo } from "./BoardClient";
 
-export const revalidate = 300;
+export const revalidate = 3600; // 1 hour; use /api/refresh after editing the Sheet
 
 export const metadata: Metadata = {
   title: "Community Board | PRISM HK 社區交流板",

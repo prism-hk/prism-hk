@@ -1,7 +1,7 @@
 import { getServiceClient } from "@/lib/supabase";
 import EmergencyClient from "./EmergencyClient";
 
-export const revalidate = 300;
+export const revalidate = 3600; // 1 hour; use /api/refresh after editing the Sheet
 
 export const metadata = {
   title: "Emergency Services — PRISM HK 緊急服務",

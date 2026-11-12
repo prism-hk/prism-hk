@@ -28,6 +28,24 @@ export default function AdminSyncPage() {
   const [transStatus, setTransStatus] = useState<"idle" | "syncing" | "done" | "error">("idle");
   const [transLog, setTransLog] = useState<string[]>([]);
 
+  // Page refresh state (events, board, articles read straight from the Sheet)
+  const [refreshStatus, setRefreshStatus] = useState<"idle" | "busy" | "done" | "error">("idle");
+
+  async function handleRefresh() {
+    if (!secret) return;
+    setRefreshStatus("busy");
+    try {
+      const res = await fetch("/api/refresh", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${secret}` },
+      });
+      const data = await res.json();
+      setRefreshStatus(data.success ? "done" : "error");
+    } catch {
+      setRefreshStatus("error");
+    }
+  }
+
   const addListingLog = (msg: string) => setListingLog((prev) => [...prev, `[${new Date().toLocaleTimeString()}] ${msg}`]);
   const addTransLog = (msg: string) => setTransLog((prev) => [...prev, `[${new Date().toLocaleTimeString()}] ${msg}`]);
 
@@ -192,6 +210,24 @@ export default function AdminSyncPage() {
               ? "Failed — Retry?"
               : tab === "listings" ? "Sync Listings" : "Sync Translations"}
       </button>
+
+      {/* Refresh pages: for Events, Board and Articles edits made in the Sheet */}
+      <button
+        onClick={handleRefresh}
+        disabled={!secret || refreshStatus === "busy"}
+        className="w-full mt-3 px-6 py-3 rounded-xl font-semibold text-sm text-[#7B68EE] bg-white border border-[#7B68EE] hover:bg-[#F5F3FF] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {refreshStatus === "busy"
+          ? "Refreshing..."
+          : refreshStatus === "done"
+            ? "Pages refreshed. Refresh again?"
+            : refreshStatus === "error"
+              ? "Refresh failed. Retry?"
+              : "Refresh Pages (Events, Board, Articles)"}
+      </button>
+      <p className="text-xs text-[#6B6890] mt-2">
+        Pages update hourly on their own. Use this after editing the Events, Board or Articles tabs to show changes now.
+      </p>
 
       {/* Log output */}
       {currentLog.length > 0 && (
