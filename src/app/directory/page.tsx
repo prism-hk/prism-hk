@@ -4,7 +4,7 @@ import { getEvents } from "@/lib/events";
 import { getArticles } from "@/lib/articles";
 import DirectoryClient from "./DirectoryClient";
 
-export const revalidate = 300;
+export const revalidate = 3600; // 1 hour; use /api/refresh after editing the Sheet
 
 export const metadata = {
   title: "Directory — PRISM HK 資料庫",

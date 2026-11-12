@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { getPublishedListings, getDistinctDistricts } from "@/lib/supabase";
 import HealthClient from "./HealthClient";
 
-export const revalidate = 300;
+export const revalidate = 3600; // 1 hour; use /api/refresh after editing the Sheet
 
 export const metadata = {
   title: "Healthcare & Support — PRISM HK 醫療支援",

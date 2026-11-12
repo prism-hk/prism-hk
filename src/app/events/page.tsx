@@ -3,7 +3,7 @@ import { getEvents, type PrismEvent } from "@/lib/events";
 import { getPublishedListings } from "@/lib/supabase";
 import EventsClient from "./EventsClient";
 
-export const revalidate = 300;
+export const revalidate = 3600; // 1 hour; use /api/refresh after editing the Sheet
 
 export const metadata: Metadata = {
   title: "Events — PRISM HK 活動",

@@ -6,7 +6,7 @@ import { getEvents } from "@/lib/events";
 import { getBoardPosts } from "@/lib/board";
 import type { OrgInfo } from "@/app/board/BoardClient";
 
-export const revalidate = 300;
+export const revalidate = 3600; // 1 hour; use /api/refresh after editing the Sheet
 
 export default async function HomePage() {
   const [listings, categoryStats, districts, events, boardPosts] = await Promise.all([

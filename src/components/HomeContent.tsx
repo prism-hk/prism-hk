@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useLanguage } from "@/lib/LanguageContext";
 import { isZh, t } from "@/lib/i18n";
@@ -72,6 +72,13 @@ export default function HomeContent({
   const [listingTab, setListingTab] = useState<"featured" | "new">("featured");
   const shownListings = listingTab === "featured" ? featured : newest;
   // Open on Newly Listed until at least one board post is marked Featured
+  // Photo tiles are shuffled only in the browser. Shuffling during the server
+  // render made every 5-minute regeneration produce different HTML, and each
+  // change counts as a billed Vercel ISR Write. The server renders a stable order.
+  const [shuffleSeed, setShuffleSeed] = useState(0);
+  useEffect(() => {
+    setShuffleSeed(Math.floor(Math.random() * 2 ** 31) + 1);
+  }, []);
   const [boardTab, setBoardTab] = useState<"featured" | "new">(boardFeatured.length > 0 ? "featured" : "new");
   const shownBoardPosts = boardTab === "featured" ? boardFeatured : boardNewest;
   const zh3 = (en: string, zh: string, zhHans: string) =>
@@ -217,7 +224,23 @@ export default function HomeContent({
             | { kind: "event"; src: string; event: PrismEvent }
             | { kind: "listing"; src: string; listing: Listing }
             | { kind: "default"; src: string };
-          const shuffle = <T,>(arr: T[]): T[] => [...arr].sort(() => 0.5 - Math.random());
+          const shuffle = <T,>(arr: T[]): T[] => {
+            if (!shuffleSeed) return arr;
+            // Small seeded PRNG (mulberry32) so one page view keeps one order
+            let a = shuffleSeed;
+            const rand = () => {
+              a = (a + 0x6d2b79f5) | 0;
+              let t = Math.imul(a ^ (a >>> 15), 1 | a);
+              t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+              return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+            };
+            const out = [...arr];
+            for (let i = out.length - 1; i > 0; i--) {
+              const j = Math.floor(rand() * (i + 1));
+              [out[i], out[j]] = [out[j], out[i]];
+            }
+            return out;
+          };
           // Showcase real photos from PAST events first — these are the images
           // uploaded to Cloudinary. Picked at random on each load.
           const pastEventTiles: Tile[] = shuffle(
